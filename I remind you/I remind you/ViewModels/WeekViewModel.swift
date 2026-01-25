@@ -32,9 +32,16 @@ final class WeekViewModel: ObservableObject {
     
     var weekTitle: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
+        formatter.locale = Locale.current
         formatter.dateFormat = "'KW' w, MMMM yyyy"
         return formatter.string(from: currentWeekStart)
+    }
+    
+    /// Check if we're currently showing the week that contains today
+    var isCurrentWeek: Bool {
+        let calendar = Calendar.current
+        let today = Date()
+        return calendar.isDate(currentWeekStart, equalTo: today, toGranularity: .weekOfYear)
     }
     
     init(calendarService: CalendarService, reminderService: ReminderService) {

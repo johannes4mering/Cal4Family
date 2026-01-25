@@ -1,0 +1,84 @@
+/* 
+  Localizable.strings (German)
+  I remind you
+
+  Created by Johannes Eiseler on 25.01.26.
+*/
+
+// MARK: - General
+"app_name" = "I remind you";
+"cancel" = "Abbrechen";
+"done" = "Fertig";
+"save" = "Speichern";
+"delete" = "Löschen";
+"edit" = "Bearbeiten";
+"loading" = "Laden...";
+"error" = "Fehler";
+"ok" = "OK";
+
+// MARK: - Week View
+"today_button" = "Heute";
+"week_view_title" = "Wochenansicht";
+"all_day" = "Ganztägig";
+"no_events" = "Keine Termine";
+"pdf_export_error" = "PDF konnte nicht erstellt werden";
+
+// MARK: - Routines
+"routines_title" = "Routinen";
+"morning_routine" = "Morgenroutine";
+"evening_routine" = "Abendroutine";
+"well_done" = "Super gemacht! 🎉";
+"progress" = "Fortschritt";
+
+// MARK: - Settings
+"settings_title" = "Einstellungen";
+"calendars_section" = "Kalender";
+"reminders_section" = "Erinnerungslisten";
+"auto_rules_section" = "Automatische Regeln";
+"family_members_section" = "Familienmitglieder";
+"select_calendars" = "Kalender auswählen";
+"select_reminder_lists" = "Listen auswählen";
+"add_rule" = "Regel hinzufügen";
+"add_member" = "Mitglied hinzufügen";
+
+// MARK: - Onboarding
+"welcome_title" = "Willkommen bei I remind you";
+"welcome_subtitle" = "Der Familienkalender für alle";
+"calendar_permission_title" = "Kalenderzugriff";
+"calendar_permission_description" = "Wir benötigen Zugriff auf deine Kalender, um Termine anzuzeigen und zu verwalten.";
+"reminder_permission_title" = "Erinnerungszugriff";
+"reminder_permission_description" = "Wir benötigen Zugriff auf deine Erinnerungen, um Aufgaben und Routinen zu verwalten.";
+"grant_access" = "Zugriff erlauben";
+"continue_button" = "Weiter";
+"get_started" = "Los geht's";
+
+// MARK: - Days of Week
+"monday" = "Montag";
+"tuesday" = "Dienstag";
+"wednesday" = "Mittwoch";
+"thursday" = "Donnerstag";
+"friday" = "Freitag";
+"saturday" = "Samstag";
+"sunday" = "Sonntag";
+
+"monday_short" = "Mo";
+"tuesday_short" = "Di";
+"wednesday_short" = "Mi";
+"thursday_short" = "Do";
+"friday_short" = "Fr";
+"saturday_short" = "Sa";
+"sunday_short" = "So";
+
+// MARK: - Months
+"january" = "Januar";
+"february" = "Februar";
+"march" = "März";
+"april" = "April";
+"may" = "Mai";
+"june" = "Juni";
+"july" = "Juli";
+"august" = "August";
+"september" = "September";
+"october" = "Oktober";
+"november" = "November";
+"december" = "Dezember";

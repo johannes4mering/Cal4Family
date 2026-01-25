@@ -44,9 +44,11 @@ struct WeekView: View {
                             Image(systemName: "square.and.arrow.up")
                         }
                         
-                        Button("Heute") {
+                        Button(String(localized: "today_button", defaultValue: "Heute")) {
                             viewModel.goToCurrentWeek()
                         }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(viewModel.isCurrentWeek)
                     }
                 }
             }
@@ -148,7 +150,18 @@ struct ShareSheet: UIViewControllerRepresentable {
     let items: [Any]
     
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
+        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        // Exclude irrelevant activities for PDF documents
+        controller.excludedActivityTypes = [
+            .assignToContact,
+            .addToReadingList,
+            .openInIBooks,
+            .postToFlickr,
+            .postToVimeo,
+            .postToWeibo,
+            .postToTencentWeibo
+        ]
+        return controller
     }
     
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}

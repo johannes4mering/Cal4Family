@@ -1,0 +1,84 @@
+/* 
+  Localizable.strings (English)
+  I remind you
+
+  Created by Johannes Eiseler on 25.01.26.
+*/
+
+// MARK: - General
+"app_name" = "I remind you";
+"cancel" = "Cancel";
+"done" = "Done";
+"save" = "Save";
+"delete" = "Delete";
+"edit" = "Edit";
+"loading" = "Loading...";
+"error" = "Error";
+"ok" = "OK";
+
+// MARK: - Week View
+"today_button" = "Today";
+"week_view_title" = "Week View";
+"all_day" = "All Day";
+"no_events" = "No Events";
+"pdf_export_error" = "Could not create PDF";
+
+// MARK: - Routines
+"routines_title" = "Routines";
+"morning_routine" = "Morning Routine";
+"evening_routine" = "Evening Routine";
+"well_done" = "Well Done! 🎉";
+"progress" = "Progress";
+
+// MARK: - Settings
+"settings_title" = "Settings";
+"calendars_section" = "Calendars";
+"reminders_section" = "Reminder Lists";
+"auto_rules_section" = "Automatic Rules";
+"family_members_section" = "Family Members";
+"select_calendars" = "Select Calendars";
+"select_reminder_lists" = "Select Lists";
+"add_rule" = "Add Rule";
+"add_member" = "Add Member";
+
+// MARK: - Onboarding
+"welcome_title" = "Welcome to I remind you";
+"welcome_subtitle" = "The family calendar for everyone";
+"calendar_permission_title" = "Calendar Access";
+"calendar_permission_description" = "We need access to your calendars to display and manage appointments.";
+"reminder_permission_title" = "Reminders Access";
+"reminder_permission_description" = "We need access to your reminders to manage tasks and routines.";
+"grant_access" = "Grant Access";
+"continue_button" = "Continue";
+"get_started" = "Get Started";
+
+// MARK: - Days of Week
+"monday" = "Monday";
+"tuesday" = "Tuesday";
+"wednesday" = "Wednesday";
+"thursday" = "Thursday";
+"friday" = "Friday";
+"saturday" = "Saturday";
+"sunday" = "Sunday";
+
+"monday_short" = "Mon";
+"tuesday_short" = "Tue";
+"wednesday_short" = "Wed";
+"thursday_short" = "Thu";
+"friday_short" = "Fri";
+"saturday_short" = "Sat";
+"sunday_short" = "Sun";
+
+// MARK: - Months
+"january" = "January";
+"february" = "February";
+"march" = "March";
+"april" = "April";
+"may" = "May";
+"june" = "June";
+"july" = "July";
+"august" = "August";
+"september" = "September";
+"october" = "October";
+"november" = "November";
+"december" = "December";
