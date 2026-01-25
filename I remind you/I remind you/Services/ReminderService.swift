@@ -1,0 +1,208 @@
+//
+//  ReminderService.swift
+//  I remind you
+//
+//  Created by Johannes Eiseler on 25.01.26.
+//
+
+import Foundation
+import EventKit
+
+/// Service für den Zugriff auf Apple Erinnerungen via EventKit
+@MainActor
+final class ReminderService: ObservableObject {
+    private let eventStore = EKEventStore()
+    
+    @Published var authorizationStatus: EKAuthorizationStatus = .notDetermined
+    @Published var reminderLists: [EKCalendar] = []
+    @Published var error: Error?
+    
+    init() {
+        updateAuthorizationStatus()
+    }
+    
+    // MARK: - Authorization
+    
+    private func updateAuthorizationStatus() {
+        authorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
+    }
+    
+    /// Fordert Zugriff auf Erinnerungen an (iOS 17+ Full Access)
+    func requestAccess() async -> Bool {
+        do {
+            let granted = try await eventStore.requestFullAccessToReminders()
+            updateAuthorizationStatus()
+            if granted {
+                loadReminderLists()
+            }
+            return granted
+        } catch {
+            self.error = error
+            return false
+        }
+    }
+    
+    // MARK: - Listen laden
+    
+    func loadReminderLists() {
+        reminderLists = eventStore.calendars(for: .reminder)
+    }
+    
+    /// Gibt die Standard-Erinnerungsliste zurück
+    func defaultReminderList() -> EKCalendar? {
+        return eventStore.defaultCalendarForNewReminders()
+    }
+    
+    // MARK: - Erinnerungen laden
+    
+    /// Lädt alle nicht abgeschlossenen Erinnerungen aus einer Liste
+    func fetchIncompleteReminders(from list: EKCalendar) async -> [EKReminder] {
+        let predicate = eventStore.predicateForIncompleteReminders(
+            withDueDateStarting: nil,
+            ending: nil,
+            calendars: [list]
+        )
+        
+        return await withCheckedContinuation { continuation in
+            eventStore.fetchReminders(matching: predicate) { reminders in
+                continuation.resume(returning: reminders ?? [])
+            }
+        }
+    }
+    
+    /// Lädt Erinnerungen für einen Zeitraum
+    func fetchReminders(
+        from startDate: Date,
+        to endDate: Date,
+        lists: [EKCalendar]? = nil
+    ) async -> [EKReminder] {
+        let selectedLists = lists ?? reminderLists
+        
+        let predicate = eventStore.predicateForIncompleteReminders(
+            withDueDateStarting: startDate,
+            ending: endDate,
+            calendars: selectedLists
+        )
+        
+        return await withCheckedContinuation { continuation in
+            eventStore.fetchReminders(matching: predicate) { reminders in
+                continuation.resume(returning: reminders ?? [])
+            }
+        }
+    }
+    
+    /// Lädt alle Erinnerungen (auch abgeschlossene) für einen Zeitraum
+    func fetchAllReminders(
+        from startDate: Date,
+        to endDate: Date,
+        lists: [EKCalendar]? = nil
+    ) async -> [EKReminder] {
+        let selectedLists = lists ?? reminderLists
+        
+        let predicate = eventStore.predicateForReminders(in: selectedLists)
+        
+        return await withCheckedContinuation { continuation in
+            eventStore.fetchReminders(matching: predicate) { reminders in
+                let filtered = (reminders ?? []).filter { reminder in
+                    guard let dueDate = reminder.dueDateComponents?.date else { return false }
+                    return dueDate >= startDate && dueDate <= endDate
+                }
+                continuation.resume(returning: filtered)
+            }
+        }
+    }
+    
+    /// Konvertiert Erinnerungen zu FamilyEvents
+    func fetchFamilyEvents(
+        from startDate: Date,
+        to endDate: Date,
+        lists: [EKCalendar]? = nil
+    ) async -> [FamilyEvent] {
+        let reminders = await fetchReminders(from: startDate, to: endDate, lists: lists)
+        return reminders.map { FamilyEvent.from(reminder: $0) }
+    }
+    
+    // MARK: - Erinnerungen verwalten
+    
+    /// Setzt eine Erinnerung auf erledigt/nicht erledigt
+    func toggleCompletion(for reminder: EKReminder) throws {
+        reminder.isCompleted = !reminder.isCompleted
+        if reminder.isCompleted {
+            reminder.completionDate = Date()
+        } else {
+            reminder.completionDate = nil
+        }
+        try eventStore.save(reminder, commit: true)
+    }
+    
+    /// Setzt eine Erinnerung auf erledigt anhand der ID
+    func setCompleted(reminderIdentifier: String, completed: Bool) async throws {
+        guard let reminder = await fetchReminder(withIdentifier: reminderIdentifier) else {
+            throw ReminderError.reminderNotFound
+        }
+        
+        reminder.isCompleted = completed
+        reminder.completionDate = completed ? Date() : nil
+        try eventStore.save(reminder, commit: true)
+    }
+    
+    /// Lädt eine einzelne Erinnerung anhand der ID
+    func fetchReminder(withIdentifier identifier: String) async -> EKReminder? {
+        return eventStore.calendarItem(withIdentifier: identifier) as? EKReminder
+    }
+    
+    // MARK: - Erinnerungen erstellen
+    
+    /// Erstellt eine neue Erinnerung
+    func createReminder(
+        title: String,
+        dueDate: Date,
+        in list: EKCalendar,
+        notes: String? = nil
+    ) throws -> EKReminder {
+        let reminder = EKReminder(eventStore: eventStore)
+        reminder.title = title
+        reminder.calendar = list
+        reminder.notes = notes
+        
+        let dueDateComponents = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour, .minute],
+            from: dueDate
+        )
+        reminder.dueDateComponents = dueDateComponents
+        
+        // Alarm hinzufügen
+        let alarm = EKAlarm(absoluteDate: dueDate)
+        reminder.addAlarm(alarm)
+        
+        try eventStore.save(reminder, commit: true)
+        return reminder
+    }
+    
+    // MARK: - Listen finden
+    
+    /// Findet eine Liste anhand ihrer ID
+    func list(withIdentifier identifier: String) -> EKCalendar? {
+        return reminderLists.first { $0.calendarIdentifier == identifier }
+    }
+    
+    /// Findet Listen anhand des Titels
+    func lists(withTitle title: String) -> [EKCalendar] {
+        return reminderLists.filter { $0.title.localizedCaseInsensitiveContains(title) }
+    }
+}
+
+// MARK: - Errors
+enum ReminderError: LocalizedError {
+    case reminderNotFound
+    case saveFailed
+    
+    var errorDescription: String? {
+        switch self {
+        case .reminderNotFound:
+            return "Erinnerung nicht gefunden"
+        case .saveFailed:
+            return "Speichern fehlgeschlagen"
+        }
+    }
+}

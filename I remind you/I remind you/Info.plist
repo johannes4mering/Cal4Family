@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>I remind you benötigt Zugriff auf deine Kalender, um Termine in der Wochenansicht anzuzeigen und automatische Erinnerungen aus Kalenderereignissen zu erstellen.</string>
+    <key>NSRemindersFullAccessUsageDescription</key>
+    <string>I remind you benötigt Zugriff auf deine Erinnerungen, um Aufgaben und Routinen anzuzeigen, abzuhaken und automatisch neue Erinnerungen zu erstellen.</string>
+</dict>
+</plist>

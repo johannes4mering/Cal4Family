@@ -1,4 +1,4 @@
-# ~~Projekt: FamilienPlaner (Apple Kalender & Erinnerungen Orchestrator)~~ 🆕 Cal4Family – Familienkalender & Routinen-App
+# ~~Projekt: FamilienPlaner (Apple Kalender & Erinnerungen Orchestrator)~~ 🆕 I remind you – Familienkalender & Routinen-App
 
 > 📝 **Änderungshistorie**: Durchgestrichenes (~~so~~) = ursprünglicher Text, 🆕 = neue/überarbeitete Inhalte
 
