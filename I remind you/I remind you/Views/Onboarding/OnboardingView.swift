@@ -130,34 +130,43 @@ struct OnboardingView: View {
         isRequestingAccess = true
         
         Task {
-            // Erst Kalender
-            if !calendarAccessGranted {
-                let granted = await calendarService.requestAccess()
+            var calendarOK = calendarAccessGranted
+            var reminderOK = reminderAccessGranted
+            
+            // Erst Kalender anfragen
+            if !calendarOK {
+                calendarOK = await calendarService.requestAccess()
                 await MainActor.run {
-                    calendarAccessGranted = granted
+                    calendarAccessGranted = calendarOK
                 }
             }
             
-            // Dann Erinnerungen
-            if !reminderAccessGranted {
-                let granted = await reminderService.requestAccess()
+            // Dann Erinnerungen anfragen
+            if !reminderOK {
+                reminderOK = await reminderService.requestAccess()
                 await MainActor.run {
-                    reminderAccessGranted = granted
+                    reminderAccessGranted = reminderOK
                 }
             }
+            
+            // Kurz warten, damit iOS den Status aktualisieren kann
+            try? await Task.sleep(for: .milliseconds(300))
             
             await MainActor.run {
                 isRequestingAccess = false
                 
-                // Prüfe nochmal den echten Status
-                checkExistingPermissions()
-                
-                // Wenn alle Berechtigungen erteilt: Direkt weiter!
-                if canContinue {
+                // Nutze die direkten Rückgabewerte statt System-Check
+                // (System-Status kann auf echten Geräten verzögert sein)
+                if calendarOK && reminderOK {
                     onComplete()
                 } else {
-                    // Wenn immer noch nicht alle Berechtigungen, zeige Fehler
-                    showError = true
+                    // Falls einer false ist, prüfe nochmal System-Status
+                    checkExistingPermissions()
+                    if canContinue {
+                        onComplete()
+                    } else {
+                        showError = true
+                    }
                 }
             }
         }
