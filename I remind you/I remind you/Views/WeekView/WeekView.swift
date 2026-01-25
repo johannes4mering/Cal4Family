@@ -11,8 +11,7 @@ import SwiftUI
 struct WeekView: View {
     @StateObject private var viewModel: WeekViewModel
     @State private var selectedDate: Date?
-    @State private var showExportSheet = false
-    @State private var pdfData: Data?
+    @State private var exportItem: ExportItem?
     
     init(calendarService: CalendarService, reminderService: ReminderService) {
         _viewModel = StateObject(wrappedValue: WeekViewModel(
@@ -57,10 +56,8 @@ struct WeekView: View {
             .refreshable {
                 await viewModel.loadEvents()
             }
-            .sheet(isPresented: $showExportSheet) {
-                if let data = pdfData {
-                    ShareSheet(items: [data])
-                }
+            .sheet(item: $exportItem) { item in
+                ShareSheet(items: [item.data])
             }
         }
     }
@@ -88,8 +85,7 @@ struct WeekView: View {
         
         let pdfService = PDFExportService()
         if let data = pdfService.generateWeekPDF(weekData: weekData) {
-            self.pdfData = data
-            self.showExportSheet = true
+            self.exportItem = ExportItem(data: data)
         }
     }
     
@@ -137,6 +133,13 @@ struct WeekView: View {
             .padding()
         }
     }
+}
+
+// MARK: - Export Item Wrapper
+
+struct ExportItem: Identifiable {
+    let id = UUID()
+    let data: Data
 }
 
 // MARK: - Share Sheet
