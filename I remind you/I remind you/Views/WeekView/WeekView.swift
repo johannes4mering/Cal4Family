@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import EventKit
 
 /// Hauptansicht: Wochenübersicht mit Terminen und Aufgaben
 struct WeekView: View {
