@@ -66,9 +66,9 @@ I remind you/
 - [x] **Routinen-View** – Kindgerechte UI mit großen Buttons, Fortschrittsring, Emojis
 - [x] **Gamification** – Feier-Overlay wenn alle Aufgaben erledigt
 - [x] **Einstellungen-View** – Kalender/Listen auswählen, Auto-Regeln erstellen
+- [x] **PDF-Export** – Wochenkalender drucken (A4, Share Sheet)
 
 ### Noch offen
-- [ ] **PDF-Export** – Wochenkalender drucken
 - [ ] **Widgets** – Home-Screen & Lock-Screen
 
 ---
