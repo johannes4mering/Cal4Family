@@ -94,10 +94,10 @@ final class RoutinesViewModel: ObservableObject {
         
         print("📝 Lade Routinen aus Liste: \(list.title)")
         
-        // Hole ALLE Erinnerungen aus der Liste (erledigt + unerledigt)
-        let reminders = await reminderService.fetchAllRemindersFromList(list)
+        // Hole nur HEUTIGE Erinnerungen (unerledigt + heute erledigt)
+        let reminders = await reminderService.fetchTodaysReminders(from: list)
         
-        print("📝 Gefundene Erinnerungen: \(reminders.count)")
+        print("📝 Gefundene Erinnerungen für heute: \(reminders.count)")
         
         // Konvertiere zu RoutineItems
         routines = reminders

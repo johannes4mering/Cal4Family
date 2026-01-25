@@ -95,6 +95,55 @@ final class ReminderService: ObservableObject {
         }
     }
     
+    /// Lädt heutige Erinnerungen aus einer Liste (für Routinen)
+    /// Zeigt: Unerledigte für heute + Heute erledigte
+    func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder] {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        // Hole alle unerledigten die heute oder früher fällig sind
+        let incompletePredicate = eventStore.predicateForIncompleteReminders(
+            withDueDateStarting: nil,
+            ending: endOfDay,
+            calendars: [list]
+        )
+        
+        // Hole alle erledigten von heute
+        let completedPredicate = eventStore.predicateForCompletedReminders(
+            withCompletionDateStarting: startOfDay,
+            ending: endOfDay,
+            calendars: [list]
+        )
+        
+        async let incompleteReminders = withCheckedContinuation { (continuation: CheckedContinuation<[EKReminder], Never>) in
+            eventStore.fetchReminders(matching: incompletePredicate) { reminders in
+                continuation.resume(returning: reminders ?? [])
+            }
+        }
+        
+        async let completedReminders = withCheckedContinuation { (continuation: CheckedContinuation<[EKReminder], Never>) in
+            eventStore.fetchReminders(matching: completedPredicate) { reminders in
+                continuation.resume(returning: reminders ?? [])
+            }
+        }
+        
+        let (incomplete, completed) = await (incompleteReminders, completedReminders)
+        
+        // Kombiniere und entferne Duplikate
+        var seen = Set<String>()
+        var result: [EKReminder] = []
+        
+        for reminder in incomplete + completed {
+            if !seen.contains(reminder.calendarItemIdentifier) {
+                seen.insert(reminder.calendarItemIdentifier)
+                result.append(reminder)
+            }
+        }
+        
+        return result
+    }
+    
     /// Lädt alle nicht abgeschlossenen Erinnerungen aus einer Liste
     func fetchIncompleteReminders(from list: EKCalendar) async -> [EKReminder] {
         let predicate = eventStore.predicateForIncompleteReminders(
