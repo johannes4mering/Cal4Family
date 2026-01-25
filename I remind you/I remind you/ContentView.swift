@@ -29,11 +29,19 @@ struct ContentView: View {
                     calendarService: calendarService,
                     reminderService: reminderService,
                     onComplete: {
-                        hasCompletedOnboarding = true
+                        // Kurze Verzögerung, damit der Authorization-Status aktualisiert werden kann
+                        Task { @MainActor in
+                            // Warte kurz, damit die Services ihren Status aktualisieren
+                            try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 Sekunden
+                            hasCompletedOnboarding = true
+                        }
                     }
                 )
             }
         }
+        // Reagiere auf Änderungen des Authorization-Status
+        .onChange(of: calendarService.authorizationStatus) { _, _ in }
+        .onChange(of: reminderService.authorizationStatus) { _, _ in }
     }
     
     private var hasRequiredPermissions: Bool {
