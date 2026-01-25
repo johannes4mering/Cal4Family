@@ -26,6 +26,9 @@ struct WeekView: View {
                 // Wochen-Navigation
                 weekNavigationHeader
                 
+                // Legende
+                legendView
+                
                 // Wochentage
                 if viewModel.isLoading {
                     ProgressView("Laden...")
@@ -130,6 +133,33 @@ struct WeekView: View {
         }
         .padding()
         .background(Color(.systemBackground))
+    }
+    
+    private var legendView: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                // Kalender
+                ForEach(viewModel.activeCalendars, id: \.calendarIdentifier) { calendar in
+                    LegendItem(
+                        color: Color(cgColor: calendar.cgColor),
+                        title: calendar.title,
+                        icon: "calendar"
+                    )
+                }
+                
+                // Erinnerungslisten
+                ForEach(viewModel.activeReminderLists, id: \.calendarIdentifier) { list in
+                    LegendItem(
+                        color: Color(cgColor: list.cgColor),
+                        title: list.title,
+                        icon: "checklist"
+                    )
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+        }
+        .background(Color(.secondarySystemBackground))
     }
     
     private var weekContent: some View {
@@ -382,6 +412,35 @@ extension Color {
             green: Double((rgb & 0x00FF00) >> 8) / 255.0,
             blue: Double(rgb & 0x0000FF) / 255.0
         )
+    }
+}
+
+// MARK: - Legend Item
+
+struct LegendItem: View {
+    let color: Color
+    let title: String
+    let icon: String
+    
+    var body: some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(color)
+                .frame(width: 10, height: 10)
+            
+            Image(systemName: icon)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color(.tertiarySystemBackground))
+        .clipShape(Capsule())
     }
 }
 

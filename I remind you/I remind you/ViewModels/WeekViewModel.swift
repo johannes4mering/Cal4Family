@@ -49,6 +49,22 @@ final class WeekViewModel: ObservableObject {
         return calendarService.calendars.filter { identifiers.contains($0.calendarIdentifier) }
     }
     
+    /// Aktive Kalender für die Legende (die tatsächlich angezeigt werden)
+    var activeCalendars: [EKCalendar] {
+        if let selected = selectedCalendars {
+            return selected
+        }
+        return calendarService.calendars
+    }
+    
+    /// Aktive Erinnerungslisten für die Legende (die tatsächlich angezeigt werden)
+    var activeReminderLists: [EKCalendar] {
+        if let selected = selectedReminderLists {
+            return selected
+        }
+        return reminderService.reminderLists
+    }
+    
     /// Gefilterte Erinnerungslisten basierend auf Auswahl
     private var selectedReminderLists: [EKCalendar]? {
         let identifiers = selectedReminderListIdentifiers
