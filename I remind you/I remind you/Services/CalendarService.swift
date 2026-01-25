@@ -7,6 +7,7 @@
 
 import Foundation
 import EventKit
+import Combine
 
 /// Service für den Zugriff auf Apple Kalender via EventKit
 @MainActor

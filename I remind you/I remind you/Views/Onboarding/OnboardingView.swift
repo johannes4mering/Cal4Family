@@ -25,7 +25,7 @@ struct OnboardingView: View {
             // App Icon / Illustration
             Image(systemName: "calendar.badge.checkmark")
                 .font(.system(size: 80))
-                .foregroundStyle(.accent)
+                .foregroundStyle(.tint)
                 .symbolEffect(.bounce, value: currentStep)
             
             // Titel
@@ -125,7 +125,7 @@ struct PermissionRow: View {
                 .frame(width: 44, height: 44)
                 .background(Color.accentColor.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .foregroundStyle(.accent)
+                .foregroundStyle(.tint)
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)

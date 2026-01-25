@@ -8,6 +8,7 @@
 import Foundation
 import EventKit
 import SwiftData
+import Combine
 
 /// Engine für automatische Erinnerungserstellung aus Kalenderereignissen
 @MainActor

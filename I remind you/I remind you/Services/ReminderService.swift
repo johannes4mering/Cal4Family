@@ -7,6 +7,7 @@
 
 import Foundation
 import EventKit
+import Combine
 
 /// Service für den Zugriff auf Apple Erinnerungen via EventKit
 @MainActor
