@@ -46,21 +46,24 @@ struct OnboardingView: View {
             
             Spacer()
             
-            // Status-Anzeige
-            VStack(spacing: 12) {
-                PermissionStatusRow(
-                    icon: "calendar",
+            // Status-Anzeige als einfache Checkliste
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Benötigte Berechtigungen:")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                
+                PermissionCheckItem(
                     title: "Kalender",
                     isGranted: calendarAccessGranted
                 )
                 
-                PermissionStatusRow(
-                    icon: "checklist",
+                PermissionCheckItem(
                     title: "Erinnerungen",
                     isGranted: reminderAccessGranted
                 )
             }
-            .padding(.horizontal)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 40)
             
             Spacer()
             
@@ -173,34 +176,21 @@ struct OnboardingView: View {
     }
 }
 
-// MARK: - Permission Status Row (nur Anzeige, kein Button)
+// MARK: - Permission Check Item (einfache Checkliste)
 
-struct PermissionStatusRow: View {
-    let icon: String
+struct PermissionCheckItem: View {
     let title: String
     let isGranted: Bool
     
     var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: icon)
-                .font(.title2)
-                .frame(width: 44, height: 44)
-                .background(isGranted ? Color.green.opacity(0.1) : Color.accentColor.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .foregroundStyle(isGranted ? Color.green : Color.accentColor)
+        HStack(spacing: 12) {
+            Image(systemName: isGranted ? "checkmark.circle.fill" : "circle")
+                .font(.title3)
+                .foregroundStyle(isGranted ? .green : .tertiary)
             
             Text(title)
-                .font(.headline)
-            
-            Spacer()
-            
-            Image(systemName: isGranted ? "checkmark.circle.fill" : "circle")
-                .font(.title2)
-                .foregroundStyle(isGranted ? .green : .secondary)
+                .foregroundStyle(isGranted ? .primary : .secondary)
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
