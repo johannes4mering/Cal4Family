@@ -72,6 +72,46 @@ extension FamilyEvent {
             originalEventIdentifier: reminder.calendarItemIdentifier
         )
     }
+    
+    /// Erstellt ein "expandiertes" FamilyEvent für ein bestimmtes Datum
+    /// Wird für wiederkehrende Routinen verwendet
+    static func expandedFrom(reminder: EKReminder, forDate date: Date) -> FamilyEvent {
+        let calendar = Calendar.current
+        
+        // Zeit vom Original übernehmen, falls vorhanden
+        var eventDate = calendar.startOfDay(for: date)
+        if let dueComponents = reminder.dueDateComponents,
+           let hour = dueComponents.hour,
+           let minute = dueComponents.minute {
+            eventDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: eventDate) ?? eventDate
+        }
+        
+        // Eindeutige ID für expandiertes Event: Original-ID + Datum
+        let dateString = ISO8601DateFormatter().string(from: calendar.startOfDay(for: date))
+        let expandedId = "\(reminder.calendarItemIdentifier)_\(dateString)"
+        
+        // Prüfe ob für diesen Tag bereits erledigt
+        // Bei wiederkehrenden Reminders: Nur die aktuelle Instanz ist als completed markiert
+        let isCompletedToday: Bool
+        if reminder.isCompleted, let completionDate = reminder.completionDate {
+            isCompletedToday = calendar.isDate(completionDate, inSameDayAs: date)
+        } else {
+            isCompletedToday = false
+        }
+        
+        return FamilyEvent(
+            id: expandedId,
+            title: reminder.title ?? "Ohne Titel",
+            startDate: eventDate,
+            endDate: nil,
+            isAllDay: reminder.dueDateComponents?.hour == nil,
+            type: .routine,
+            calendarColor: reminder.calendar?.cgColor?.hexString ?? "#34C759",
+            calendarName: reminder.calendar?.title ?? "Routinen",
+            isCompleted: isCompletedToday,
+            originalEventIdentifier: reminder.calendarItemIdentifier
+        )
+    }
 }
 
 // MARK: - CGColor Extension für Hex-Konvertierung

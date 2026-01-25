@@ -211,6 +211,94 @@ final class ReminderService: ObservableObject {
         return reminders.map { FamilyEvent.from(reminder: $0) }
     }
     
+    // MARK: - Recurring Reminders expandieren
+    
+    /// Expandiert wiederkehrende Erinnerungen für einen Zeitraum
+    /// Erstellt "virtuelle" FamilyEvents für jeden Tag, an dem die Wiederholung zutrifft
+    func expandRecurringReminders(
+        for dateRange: DateInterval,
+        lists: [EKCalendar]? = nil
+    ) async -> [FamilyEvent] {
+        let selectedLists = lists ?? reminderLists
+        guard !selectedLists.isEmpty else { return [] }
+        
+        // Alle Reminders mit Wiederholungsregeln laden
+        let predicate = eventStore.predicateForReminders(in: selectedLists)
+        
+        let allReminders: [EKReminder] = await withCheckedContinuation { continuation in
+            eventStore.fetchReminders(matching: predicate) { reminders in
+                continuation.resume(returning: reminders ?? [])
+            }
+        }
+        
+        // Nur Reminders mit Wiederholungsregeln
+        let recurringReminders = allReminders.filter { $0.hasRecurrenceRules }
+        
+        var expandedEvents: [FamilyEvent] = []
+        let calendar = Calendar.current
+        
+        // Für jeden Tag im Zeitraum prüfen
+        var currentDate = calendar.startOfDay(for: dateRange.start)
+        let endDate = calendar.startOfDay(for: dateRange.end)
+        
+        while currentDate < endDate {
+            for reminder in recurringReminders {
+                guard let ekRule = reminder.recurrenceRules?.first,
+                      let rule = RecurrenceRule.from(ekRule: ekRule),
+                      let startDateComponents = reminder.startDateComponents,
+                      let reminderStartDate = startDateComponents.date ?? reminder.dueDateComponents?.date else {
+                    continue
+                }
+                
+                // Prüfe ob die Regel für diesen Tag zutrifft
+                if rule.matches(date: currentDate, startDate: reminderStartDate) {
+                    // Erstelle ein "virtuelles" FamilyEvent für diesen Tag
+                    let event = FamilyEvent.expandedFrom(
+                        reminder: reminder,
+                        forDate: currentDate
+                    )
+                    expandedEvents.append(event)
+                }
+            }
+            
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? endDate
+        }
+        
+        return expandedEvents
+    }
+    
+    /// Lädt alle Erinnerungen für einen Zeitraum, inklusive expandierter Wiederholungen
+    func fetchAllFamilyEvents(
+        from startDate: Date,
+        to endDate: Date,
+        lists: [EKCalendar]? = nil
+    ) async -> [FamilyEvent] {
+        let dateRange = DateInterval(start: startDate, end: endDate)
+        
+        // Normale (nicht-wiederkehrende) Reminders laden
+        let normalReminders = await fetchReminders(from: startDate, to: endDate, lists: lists)
+        let normalEvents = normalReminders
+            .filter { !$0.hasRecurrenceRules }
+            .map { FamilyEvent.from(reminder: $0) }
+        
+        // Wiederkehrende Reminders expandieren
+        let expandedEvents = await expandRecurringReminders(for: dateRange, lists: lists)
+        
+        // Kombinieren und Duplikate entfernen (basierend auf Reminder-ID und Datum)
+        var seen = Set<String>()
+        var result: [FamilyEvent] = []
+        
+        for event in normalEvents + expandedEvents {
+            let key = "\(event.originalEventIdentifier)_\(Calendar.current.startOfDay(for: event.startDate))"
+            if !seen.contains(key) {
+                seen.insert(key)
+                result.append(event)
+            }
+        }
+        
+        return result.sorted { $0.startDate < $1.startDate }
+    }
+    
     // MARK: - Erinnerungen verwalten
     
     /// Setzt eine Erinnerung auf erledigt/nicht erledigt

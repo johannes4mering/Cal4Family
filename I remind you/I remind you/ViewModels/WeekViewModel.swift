@@ -99,8 +99,8 @@ final class WeekViewModel: ObservableObject {
                 to: weekEndDate
             )
             
-            // Erinnerungen laden
-            let reminderEvents = await reminderService.fetchFamilyEvents(
+            // Erinnerungen laden (mit expandierten Wiederholungen)
+            let reminderEvents = await reminderService.fetchAllFamilyEvents(
                 from: currentWeekStart,
                 to: weekEndDate
             )

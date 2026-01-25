@@ -110,4 +110,105 @@ struct RecurrenceRule: Equatable, Codable {
     static var monthly: RecurrenceRule {
         RecurrenceRule(frequency: .monthly, interval: 1)
     }
+    
+    // MARK: - Matching
+    
+    /// Prüft ob diese Wiederholungsregel für ein bestimmtes Datum gilt
+    /// - Parameters:
+    ///   - date: Das zu prüfende Datum
+    ///   - startDate: Das Startdatum der Wiederholung (erste Instanz)
+    /// - Returns: true wenn die Regel für dieses Datum zutrifft
+    func matches(date: Date, startDate: Date) -> Bool {
+        let calendar = Calendar.current
+        
+        // Datum muss nach oder gleich dem Startdatum sein
+        guard calendar.startOfDay(for: date) >= calendar.startOfDay(for: startDate) else {
+            return false
+        }
+        
+        // Falls Enddatum gesetzt, muss Datum davor liegen
+        if let endDate = endDate, date > endDate {
+            return false
+        }
+        
+        switch frequency {
+        case .daily:
+            // Bei täglich: Prüfe Intervall
+            let daysBetween = calendar.dateComponents([.day], from: startDate, to: date).day ?? 0
+            return daysBetween % interval == 0
+            
+        case .weekly:
+            // Bei wöchentlich mit bestimmten Wochentagen
+            if !weekdays.isEmpty {
+                let dateWeekday = calendar.component(.weekday, from: date)
+                guard let weekday = Weekday(rawValue: dateWeekday) else { return false }
+                
+                // Prüfe ob der Wochentag in der Liste ist
+                if !weekdays.contains(weekday) {
+                    return false
+                }
+                
+                // Prüfe Intervall (Wochen seit Start)
+                let weeksBetween = calendar.dateComponents([.weekOfYear], from: startDate, to: date).weekOfYear ?? 0
+                return weeksBetween % interval == 0
+            } else {
+                // Ohne spezifische Wochentage: gleicher Wochentag wie Start
+                let startWeekday = calendar.component(.weekday, from: startDate)
+                let dateWeekday = calendar.component(.weekday, from: date)
+                guard startWeekday == dateWeekday else { return false }
+                
+                let weeksBetween = calendar.dateComponents([.weekOfYear], from: startDate, to: date).weekOfYear ?? 0
+                return weeksBetween % interval == 0
+            }
+            
+        case .monthly:
+            // Bei monatlich: gleicher Tag im Monat
+            let startDay = calendar.component(.day, from: startDate)
+            let dateDay = calendar.component(.day, from: date)
+            guard startDay == dateDay else { return false }
+            
+            let monthsBetween = calendar.dateComponents([.month], from: startDate, to: date).month ?? 0
+            return monthsBetween % interval == 0
+            
+        case .yearly:
+            // Bei jährlich: gleicher Tag und Monat
+            let startComponents = calendar.dateComponents([.month, .day], from: startDate)
+            let dateComponents = calendar.dateComponents([.month, .day], from: date)
+            guard startComponents.month == dateComponents.month,
+                  startComponents.day == dateComponents.day else {
+                return false
+            }
+            
+            let yearsBetween = calendar.dateComponents([.year], from: startDate, to: date).year ?? 0
+            return yearsBetween % interval == 0
+        }
+    }
+    
+    /// Erstellt eine RecurrenceRule aus einer EKRecurrenceRule
+    static func from(ekRule: EKRecurrenceRule) -> RecurrenceRule? {
+        let frequency: Frequency
+        switch ekRule.frequency {
+        case .daily: frequency = .daily
+        case .weekly: frequency = .weekly
+        case .monthly: frequency = .monthly
+        case .yearly: frequency = .yearly
+        @unknown default: return nil
+        }
+        
+        var weekdays: Set<Weekday> = []
+        if let ekDays = ekRule.daysOfTheWeek {
+            for ekDay in ekDays {
+                if let weekday = Weekday(rawValue: ekDay.dayOfTheWeek.rawValue) {
+                    weekdays.insert(weekday)
+                }
+            }
+        }
+        
+        return RecurrenceRule(
+            frequency: frequency,
+            interval: ekRule.interval,
+            weekdays: weekdays,
+            endDate: ekRule.recurrenceEnd?.endDate
+        )
+    }
 }
