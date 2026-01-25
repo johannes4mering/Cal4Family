@@ -172,10 +172,16 @@ struct SettingsView: View {
     
     private var infoSection: some View {
         Section {
+            NavigationLink {
+                HelpView()
+            } label: {
+                Label("Hilfe", systemImage: "questionmark.circle")
+            }
+            
             HStack {
                 Text("Version")
                 Spacer()
-                Text("0.1.0")
+                Text("0.5.1")
                     .foregroundStyle(.secondary)
             }
             
