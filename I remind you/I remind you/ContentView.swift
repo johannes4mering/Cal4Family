@@ -18,7 +18,7 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if hasCompletedOnboarding && hasRequiredPermissions {
+            if hasCompletedOnboarding {
                 MainTabView(
                     calendarService: calendarService,
                     reminderService: reminderService,
@@ -29,24 +29,11 @@ struct ContentView: View {
                     calendarService: calendarService,
                     reminderService: reminderService,
                     onComplete: {
-                        // Kurze Verzögerung, damit der Authorization-Status aktualisiert werden kann
-                        Task { @MainActor in
-                            // Warte kurz, damit die Services ihren Status aktualisieren
-                            try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 Sekunden
-                            hasCompletedOnboarding = true
-                        }
+                        hasCompletedOnboarding = true
                     }
                 )
             }
         }
-        // Reagiere auf Änderungen des Authorization-Status
-        .onChange(of: calendarService.authorizationStatus) { _, _ in }
-        .onChange(of: reminderService.authorizationStatus) { _, _ in }
-    }
-    
-    private var hasRequiredPermissions: Bool {
-        calendarService.authorizationStatus == .fullAccess &&
-        reminderService.authorizationStatus == .fullAccess
     }
 }
 

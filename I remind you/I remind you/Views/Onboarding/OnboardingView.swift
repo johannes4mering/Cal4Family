@@ -14,9 +14,10 @@ struct OnboardingView: View {
     @ObservedObject var reminderService: ReminderService
     let onComplete: () -> Void
     
-    @State private var currentStep = 0
+    @State private var isRequestingAccess = false
     @State private var calendarAccessGranted = false
     @State private var reminderAccessGranted = false
+    @State private var showError = false
     
     var body: some View {
         VStack(spacing: 32) {
@@ -26,7 +27,6 @@ struct OnboardingView: View {
             Image(systemName: "calendar.badge.checkmark")
                 .font(.system(size: 80))
                 .foregroundStyle(.tint)
-                .symbolEffect(.bounce, value: currentStep)
             
             // Titel
             VStack(spacing: 8) {
@@ -46,44 +46,66 @@ struct OnboardingView: View {
             
             Spacer()
             
-            // Berechtigungen
-            VStack(spacing: 16) {
-                PermissionRow(
+            // Status-Anzeige
+            VStack(spacing: 12) {
+                PermissionStatusRow(
                     icon: "calendar",
                     title: "Kalender",
-                    description: "Termine anzeigen",
-                    isGranted: calendarAccessGranted,
-                    action: requestCalendarAccess
+                    isGranted: calendarAccessGranted
                 )
                 
-                PermissionRow(
+                PermissionStatusRow(
                     icon: "checklist",
                     title: "Erinnerungen",
-                    description: "Aufgaben verwalten",
-                    isGranted: reminderAccessGranted,
-                    action: requestReminderAccess
+                    isGranted: reminderAccessGranted
                 )
             }
             .padding(.horizontal)
             
             Spacer()
             
-            // Weiter-Button
-            Button(action: onComplete) {
-                Text("Los geht's")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(canContinue ? Color.accentColor : Color.gray)
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            // Einziger Aktions-Button
+            Button(action: handleButtonTap) {
+                HStack {
+                    if isRequestingAccess {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(buttonTitle)
+                        .font(.headline)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.accentColor)
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
-            .disabled(!canContinue)
+            .disabled(isRequestingAccess)
             .padding(.horizontal)
             .padding(.bottom, 32)
         }
         .onAppear {
             checkExistingPermissions()
+        }
+        .alert("Berechtigung erforderlich", isPresented: $showError) {
+            Button("Einstellungen öffnen") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Bitte erlaube den Zugriff auf Kalender und Erinnerungen in den Einstellungen.")
+        }
+    }
+    
+    private var buttonTitle: String {
+        if canContinue {
+            return "Los geht's"
+        } else if !calendarAccessGranted {
+            return "Zugriff erlauben"
+        } else {
+            return "Zugriff erlauben"
         }
     }
     
@@ -92,62 +114,77 @@ struct OnboardingView: View {
     }
     
     private func checkExistingPermissions() {
-        calendarAccessGranted = calendarService.authorizationStatus == .fullAccess
-        reminderAccessGranted = reminderService.authorizationStatus == .fullAccess
+        calendarAccessGranted = EKEventStore.authorizationStatus(for: .event) == .fullAccess
+        reminderAccessGranted = EKEventStore.authorizationStatus(for: .reminder) == .fullAccess
     }
     
-    private func requestCalendarAccess() {
-        Task {
-            calendarAccessGranted = await calendarService.requestAccess()
+    private func handleButtonTap() {
+        if canContinue {
+            onComplete()
+        } else {
+            requestAllPermissions()
         }
     }
     
-    private func requestReminderAccess() {
+    private func requestAllPermissions() {
+        isRequestingAccess = true
+        
         Task {
-            reminderAccessGranted = await reminderService.requestAccess()
+            // Erst Kalender
+            if !calendarAccessGranted {
+                let granted = await calendarService.requestAccess()
+                await MainActor.run {
+                    calendarAccessGranted = granted
+                }
+            }
+            
+            // Dann Erinnerungen
+            if !reminderAccessGranted {
+                let granted = await reminderService.requestAccess()
+                await MainActor.run {
+                    reminderAccessGranted = granted
+                }
+            }
+            
+            await MainActor.run {
+                isRequestingAccess = false
+                
+                // Prüfe nochmal den echten Status
+                checkExistingPermissions()
+                
+                // Wenn immer noch nicht alle Berechtigungen, zeige Fehler
+                if !canContinue {
+                    showError = true
+                }
+            }
         }
     }
 }
 
-// MARK: - Permission Row
+// MARK: - Permission Status Row (nur Anzeige, kein Button)
 
-struct PermissionRow: View {
+struct PermissionStatusRow: View {
     let icon: String
     let title: String
-    let description: String
     let isGranted: Bool
-    let action: () -> Void
     
     var body: some View {
         HStack(spacing: 16) {
             Image(systemName: icon)
                 .font(.title2)
                 .frame(width: 44, height: 44)
-                .background(Color.accentColor.opacity(0.1))
+                .background(isGranted ? Color.green.opacity(0.1) : Color.accentColor.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .foregroundStyle(.tint)
+                .foregroundStyle(isGranted ? .green : .tint)
             
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.headline)
-                Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Text(title)
+                .font(.headline)
             
             Spacer()
             
-            if isGranted {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(.green)
-            } else {
-                Button("Erlauben") {
-                    action()
-                }
-                .buttonStyle(.bordered)
-                .tint(.accentColor)
-            }
+            Image(systemName: isGranted ? "checkmark.circle.fill" : "circle")
+                .font(.title2)
+                .foregroundStyle(isGranted ? .green : .secondary)
         }
         .padding()
         .background(Color(.secondarySystemBackground))
