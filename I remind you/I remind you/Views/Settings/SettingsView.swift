@@ -13,6 +13,7 @@ import EventKit
 struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @State private var showAddRuleSheet = false
+    @State private var showShareListSheet = false
     
     init(calendarService: CalendarService, reminderService: ReminderService, modelContext: ModelContext) {
         _viewModel = StateObject(wrappedValue: SettingsViewModel(
@@ -30,6 +31,9 @@ struct SettingsView: View {
                 
                 // Erinnerungslisten-Sektion
                 reminderListsSection
+                
+                // Familien-Sektion
+                familyShareSection
                 
                 // Auto-Regeln-Sektion
                 autoRulesSection
@@ -49,6 +53,9 @@ struct SettingsView: View {
                         viewModel.addRule(rule)
                     }
                 )
+            }
+            .sheet(isPresented: $showShareListSheet) {
+                ShareListView(reminderService: viewModel.reminderService)
             }
         }
     }
@@ -96,6 +103,33 @@ struct SettingsView: View {
             Label("Erinnerungslisten", systemImage: "checklist")
         } footer: {
             Text("Ausgewählte Listen werden in der Wochenansicht angezeigt")
+        }
+    }
+    
+    // MARK: - Familien-Sektion
+    
+    private var familyShareSection: some View {
+        Section {
+            Button {
+                showShareListSheet = true
+            } label: {
+                Label {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Listen mit Familie teilen")
+                            .foregroundStyle(.primary)
+                        Text("Routinen für Kinder vorbereiten")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: "person.3.fill")
+                        .foregroundStyle(.purple)
+                }
+            }
+        } header: {
+            Label("Familie", systemImage: "heart.fill")
+        } footer: {
+            Text("Teile Erinnerungslisten über iCloud mit deiner Familie")
         }
     }
     

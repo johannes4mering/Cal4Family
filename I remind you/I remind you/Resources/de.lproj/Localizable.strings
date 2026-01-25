@@ -34,6 +34,56 @@
 "evening_routine" = "Abendroutine";
 "well_done" = "Super gemacht! 🎉";
 "progress" = "Fortschritt";
+"add_routine" = "Neue Routine";
+"routine_title" = "Titel";
+"routine_title_placeholder" = "z.B. Zähne putzen";
+"select_list" = "Liste auswählen";
+"reminder_time" = "Uhrzeit";
+"no_time" = "Keine";
+"with_time" = "Mit Uhrzeit";
+
+// MARK: - Recurrence
+"recurrence" = "Wiederholung";
+"recurrence_daily" = "Täglich";
+"recurrence_weekdays" = "Wochentags (Mo-Fr)";
+"recurrence_weekly" = "Wöchentlich";
+"recurrence_monthly" = "Monatlich";
+"recurrence_custom" = "Benutzerdefiniert";
+"weekdays_selection" = "Wochentage auswählen";
+"preview" = "Vorschau";
+"repeats" = "Wiederholt sich:";
+
+// MARK: - Family Sharing
+"family_section" = "Familie";
+"share_lists" = "Listen mit Familie teilen";
+"share_lists_subtitle" = "Routinen für Kinder vorbereiten";
+"share_lists_title" = "Listen teilen";
+"share_via_icloud" = "Listen über iCloud teilen";
+"share_via_icloud_description" = "Teile Erinnerungslisten mit deiner Familie, um Routinen gemeinsam zu verwalten. Änderungen werden automatisch synchronisiert.";
+"select_list_to_share" = "Liste auswählen";
+"open_in_reminders" = "In Erinnerungen-App öffnen";
+"open_in_reminders_subtitle" = "Teilen über die native App";
+"family_sharing_instructions" = "Anleitung: Familienfreigabe";
+"family_sharing_instructions_subtitle" = "So teilst du mit deiner Familie";
+"quick_guide" = "Kurzanleitung";
+"step_open_list" = "Liste öffnen";
+"step_open_list_desc" = "Öffne die Erinnerungen-App auf deinem Gerät";
+"step_select_list" = "Liste auswählen";
+"step_select_list_desc" = "Tippe auf die Liste, die du teilen möchtest";
+"step_share" = "Teilen";
+"step_share_desc" = "Tippe auf ••• → „Liste teilen" → Wähle Familienmitglieder";
+"family_sharing_title" = "Familienfreigabe für Erinnerungen";
+"family_sharing_subtitle" = "So bereitest du Routinen für dein Kind vor – auch ohne dessen Gerät";
+"prerequisites" = "Voraussetzungen";
+"prerequisite_1" = "Familienfreigabe muss eingerichtet sein";
+"prerequisite_2" = "Kind muss eine Apple-ID haben (auch mit Kinderkonto)";
+"prerequisite_3" = "iCloud Erinnerungen müssen auf beiden Geräten aktiv sein";
+"step_1_create_list" = "1. Liste erstellen";
+"step_2_add_routines" = "2. Routinen hinzufügen";
+"step_3_share_with_child" = "3. Mit Kind teilen";
+"step_4_on_child_device" = "4. Auf Kinderseite";
+"tip" = "Tipp";
+"tip_prepare_routines" = "Du kannst Routinen komplett auf deinem Gerät vorbereiten. Sobald du die Liste teilst, erscheinen alle Einträge automatisch auf dem Gerät deines Kindes.";
 
 // MARK: - Settings
 "settings_title" = "Einstellungen";

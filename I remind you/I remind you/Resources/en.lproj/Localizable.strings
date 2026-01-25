@@ -34,6 +34,56 @@
 "evening_routine" = "Evening Routine";
 "well_done" = "Well Done! 🎉";
 "progress" = "Progress";
+"add_routine" = "New Routine";
+"routine_title" = "Title";
+"routine_title_placeholder" = "e.g. Brush teeth";
+"select_list" = "Select List";
+"reminder_time" = "Time";
+"no_time" = "None";
+"with_time" = "With Time";
+
+// MARK: - Recurrence
+"recurrence" = "Recurrence";
+"recurrence_daily" = "Daily";
+"recurrence_weekdays" = "Weekdays (Mon-Fri)";
+"recurrence_weekly" = "Weekly";
+"recurrence_monthly" = "Monthly";
+"recurrence_custom" = "Custom";
+"weekdays_selection" = "Select Weekdays";
+"preview" = "Preview";
+"repeats" = "Repeats:";
+
+// MARK: - Family Sharing
+"family_section" = "Family";
+"share_lists" = "Share Lists with Family";
+"share_lists_subtitle" = "Prepare routines for children";
+"share_lists_title" = "Share Lists";
+"share_via_icloud" = "Share Lists via iCloud";
+"share_via_icloud_description" = "Share reminder lists with your family to manage routines together. Changes sync automatically.";
+"select_list_to_share" = "Select List";
+"open_in_reminders" = "Open in Reminders App";
+"open_in_reminders_subtitle" = "Share via native app";
+"family_sharing_instructions" = "Guide: Family Sharing";
+"family_sharing_instructions_subtitle" = "How to share with your family";
+"quick_guide" = "Quick Guide";
+"step_open_list" = "Open List";
+"step_open_list_desc" = "Open the Reminders app on your device";
+"step_select_list" = "Select List";
+"step_select_list_desc" = "Tap on the list you want to share";
+"step_share" = "Share";
+"step_share_desc" = "Tap ••• → 'Share List' → Choose family members";
+"family_sharing_title" = "Family Sharing for Reminders";
+"family_sharing_subtitle" = "How to prepare routines for your child – even without their device";
+"prerequisites" = "Prerequisites";
+"prerequisite_1" = "Family Sharing must be set up";
+"prerequisite_2" = "Child must have an Apple ID (child accounts work too)";
+"prerequisite_3" = "iCloud Reminders must be enabled on both devices";
+"step_1_create_list" = "1. Create List";
+"step_2_add_routines" = "2. Add Routines";
+"step_3_share_with_child" = "3. Share with Child";
+"step_4_on_child_device" = "4. On Child's Device";
+"tip" = "Tip";
+"tip_prepare_routines" = "You can prepare routines entirely on your device. Once you share the list, all entries automatically appear on your child's device.";
 
 // MARK: - Settings
 "settings_title" = "Settings";

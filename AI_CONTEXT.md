@@ -8,15 +8,17 @@
 **App-Name:** I remind you  
 **Typ:** iOS & macOS App (SwiftUI, Multiplatform)  
 **Zweck:** Familienkalender & Routinen-App für Kinder und Eltern  
-**Version:** v0.3.0
+**Version:** v0.4.0
 
 ### Kernfunktionen
 1. **Wochenansicht** – Termine + Aufgaben kombiniert
 2. **Kinder-Routinen** – Wiederkehrende Aufgaben abhaken (kindgerechte UI)
-3. **Auto-Regeln** – Automatisch Erinnerungen aus Kalenderevents erstellen
-4. **PDF-Druck** – Wochenkalender für Kühlschrank/Pinnwand
-5. **Bidirektionale Sync** – Änderungen in Apple Apps werden sofort reflektiert
-6. **Lokalisierung** – Deutsch und Englisch
+3. **Routine-Editor** – Neue Routinen mit Wiederholungen erstellen
+4. **Listen teilen** – iCloud Listen mit Familie teilen (für Kinder vorbereiten)
+5. **Auto-Regeln** – Automatisch Erinnerungen aus Kalenderevents erstellen
+6. **PDF-Druck** – Wochenkalender für Kühlschrank/Pinnwand
+7. **Bidirektionale Sync** – Änderungen in Apple Apps werden sofort reflektiert
+8. **Lokalisierung** – Deutsch und Englisch
 
 ### Technische Grundlagen
 - **SwiftUI** + **SwiftData**
@@ -53,12 +55,12 @@ I remind you/
 
 ---
 
-## ✅ Aktueller Stand (v0.3.0)
+## ✅ Aktueller Stand (v0.4.0)
 
 ### Implementiert
 - [x] Xcode-Projekt mit iOS 17+ & macOS 14+ Support
 - [x] SwiftData konfiguriert (AutoRule, FamilyMember)
-- [x] Models: FamilyEvent, AutoRule, FamilyMember
+- [x] Models: FamilyEvent, AutoRule, FamilyMember, RecurrenceRule
 - [x] CalendarService (Kalender lesen + Change Observer)
 - [x] ReminderService (Erinnerungen CRUD + Change Observer)
 - [x] RuleEngine (Logik für Auto-Erinnerungen)
@@ -74,10 +76,10 @@ I remind you/
 - [x] **Bidirektionale Sync** – EKEventStoreChanged Observer
 - [x] **Lokalisierung** – Deutsch & Englisch (Localizable.strings)
 - [x] **TestDataGenerator** – Testdaten erstellen & löschen (Debug)
+- [x] **Routine-Editor** – Neue Routinen mit Wiederholungen erstellen (AddRoutineView)
+- [x] **Listen teilen** – Anleitung für iCloud-Sharing mit Familie (ShareListView)
 
 ### Noch offen
-- [ ] **Routine-Editor** – Neue Routinen mit Wiederholungen erstellen
-- [ ] **Listen teilen** – iCloud Listen mit Familie teilen
 - [ ] **Widgets** – Home-Screen & Lock-Screen (WidgetKit)
 
 ---
@@ -135,22 +137,12 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 
 ---
 
-## 📋 Nächste Schritte (v0.4.0)
+## 📋 Nächste Schritte (v0.5.0)
 
-1. **Routine-Editor**
-   - Neue Erinnerungen mit Wiederholungen erstellen
-   - Intervalle: Täglich, Wöchentlich (bestimmte Tage), Monatlich
-   - Uhrzeit festlegen
-
-2. **Listen teilen**
-   - Integration mit iOS Share Sheet für Erinnerungslisten
-   - Anleitung für Familienfreigabe
-   - Eltern können Listen für Kinder vorbereiten
-
-3. **Widgets** (Phase 2)
-   - WidgetKit Extension
+1. **Widgets** (WidgetKit)
    - Kleines Widget: Nächste 3 Termine
    - Mittleres Widget: Routine-Fortschritt
+   - Lock-Screen Widget
 
 ---
 
@@ -162,6 +154,7 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 | v0.2.0 | MVP Feature-Complete |
 | v0.2.1 | PDF Export Bugfix |
 | v0.3.0 | Bidirektionale Sync + Lokalisierung + Routine-Fixes |
+| v0.4.0 | Routine-Editor + Listen teilen |
 
 ---
 
@@ -170,13 +163,12 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 ```
 Projekt: I remind you – Familienkalender & Routinen-App
 Pfad: /Users/johannes/work/xcode/Cal4Family/I remind you/
-Version: v0.3.0
+Version: v0.4.0
 
 Lies AI_CONTEXT.md für den vollen Kontext.
 
 Nächste Features:
-- Routine-Editor (neue Routinen erstellen)
-- Listen teilen (für Kinder vorbereiten)
+- Widgets (Home-Screen & Lock-Screen)
 ```
 
 ---

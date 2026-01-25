@@ -247,7 +247,8 @@ final class ReminderService: ObservableObject {
         title: String,
         dueDate: Date,
         in list: EKCalendar,
-        notes: String? = nil
+        notes: String? = nil,
+        recurrence: RecurrenceRule? = nil
     ) throws -> EKReminder {
         let reminder = EKReminder(eventStore: eventStore)
         reminder.title = title
@@ -264,8 +265,35 @@ final class ReminderService: ObservableObject {
         let alarm = EKAlarm(absoluteDate: dueDate)
         reminder.addAlarm(alarm)
         
+        // Wiederholung hinzufügen
+        if let recurrence = recurrence {
+            let rule = recurrence.toEKRecurrenceRule()
+            reminder.addRecurrenceRule(rule)
+        }
+        
         try eventStore.save(reminder, commit: true)
         return reminder
+    }
+    
+    /// Erstellt eine neue Erinnerungsliste
+    func createReminderList(title: String, color: CGColor? = nil) throws -> EKCalendar {
+        let list = EKCalendar(for: .reminder, eventStore: eventStore)
+        list.title = title
+        
+        if let color = color {
+            list.cgColor = color
+        }
+        
+        // Quelle finden
+        if let source = eventStore.sources.first(where: { $0.sourceType == .local }) ??
+                       eventStore.sources.first(where: { $0.sourceType == .calDAV }) ??
+                       eventStore.defaultCalendarForNewReminders()?.source {
+            list.source = source
+        }
+        
+        try eventStore.saveCalendar(list, commit: true)
+        loadReminderLists() // Liste aktualisieren
+        return list
     }
     
     // MARK: - Listen finden

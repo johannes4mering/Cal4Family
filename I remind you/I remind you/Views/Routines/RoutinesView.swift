@@ -12,6 +12,7 @@ import EventKit
 struct RoutinesView: View {
     @StateObject private var viewModel: RoutinesViewModel
     @State private var showListPicker = false
+    @State private var showAddRoutine = false
     @State private var celebrateCompletion = false
     
     init(reminderService: ReminderService) {
@@ -38,11 +39,28 @@ struct RoutinesView: View {
             .navigationTitle("Routinen")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showListPicker = true
-                    } label: {
-                        Label("Liste", systemImage: "list.bullet")
+                    HStack(spacing: 12) {
+                        Button {
+                            showAddRoutine = true
+                        } label: {
+                            Label("Neu", systemImage: "plus")
+                        }
+                        
+                        Button {
+                            showListPicker = true
+                        } label: {
+                            Label("Liste", systemImage: "list.bullet")
+                        }
                     }
+                }
+            }
+            .sheet(isPresented: $showAddRoutine) {
+                AddRoutineView(
+                    reminderService: viewModel.reminderService,
+                    selectedList: viewModel.selectedList
+                ) {
+                    // Reload after adding new routine
+                    viewModel.loadRoutineLists()
                 }
             }
             .sheet(isPresented: $showListPicker) {
