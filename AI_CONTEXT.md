@@ -65,9 +65,9 @@ I remind you/
 - [x] Aufgaben abhaken in der App
 - [x] **Routinen-View** – Kindgerechte UI mit großen Buttons, Fortschrittsring, Emojis
 - [x] **Gamification** – Feier-Overlay wenn alle Aufgaben erledigt
+- [x] **Einstellungen-View** – Kalender/Listen auswählen, Auto-Regeln erstellen
 
 ### Noch offen
-- [ ] **Einstellungen-View** – Kalender/Listen auswählen, Regeln konfigurieren
 - [ ] **PDF-Export** – Wochenkalender drucken
 - [ ] **Widgets** – Home-Screen & Lock-Screen
 

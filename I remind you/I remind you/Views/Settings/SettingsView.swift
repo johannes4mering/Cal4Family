@@ -154,10 +154,57 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            
+            #if DEBUG
+            debugSection
+            #endif
         } header: {
             Label("Info", systemImage: "info.circle")
         }
     }
+    
+    #if DEBUG
+    @State private var isGeneratingTestData = false
+    @State private var testDataGenerated = false
+    
+    private var debugSection: some View {
+        Group {
+            Button {
+                generateTestData()
+            } label: {
+                HStack {
+                    Label("Testdaten generieren", systemImage: "ladybug.fill")
+                    Spacer()
+                    if isGeneratingTestData {
+                        ProgressView()
+                    } else if testDataGenerated {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
+                }
+            }
+            .disabled(isGeneratingTestData)
+            
+            Text("⚠️ Debug-Modus: Erstellt Kalender, Listen und Beispieldaten")
+                .font(.caption2)
+                .foregroundStyle(.orange)
+        }
+    }
+    
+    private func generateTestData() {
+        isGeneratingTestData = true
+        Task {
+            let generator = TestDataGenerator()
+            await generator.generateAllTestData()
+            
+            // Services neu laden
+            viewModel.loadData()
+            
+            isGeneratingTestData = false
+            testDataGenerated = true
+        }
+    }
+    #endif
 }
 
 // MARK: - Calendar Row
