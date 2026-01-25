@@ -175,7 +175,7 @@ struct PermissionStatusRow: View {
                 .frame(width: 44, height: 44)
                 .background(isGranted ? Color.green.opacity(0.1) : Color.accentColor.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .foregroundStyle(isGranted ? .green : .tint)
+                .foregroundStyle(isGranted ? Color.green : Color.accentColor)
             
             Text(title)
                 .font(.headline)
