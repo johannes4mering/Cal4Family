@@ -55,7 +55,7 @@ struct MainTabView: View {
                 Label("Woche", systemImage: "calendar")
             }
             
-            RoutinesPlaceholderView()
+            RoutinesView(reminderService: reminderService)
                 .tabItem {
                     Label("Routinen", systemImage: "checklist")
                 }
@@ -69,19 +69,6 @@ struct MainTabView: View {
 }
 
 // MARK: - Placeholder Views
-
-struct RoutinesPlaceholderView: View {
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView(
-                "Routinen",
-                systemImage: "checklist",
-                description: Text("Hier werden bald die Kinder-Routinen angezeigt")
-            )
-            .navigationTitle("Routinen")
-        }
-    }
-}
 
 struct SettingsPlaceholderView: View {
     var body: some View {

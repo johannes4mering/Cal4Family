@@ -69,7 +69,6 @@ I remind you/
 - [ ] **Einstellungen-View** – Kalender/Listen auswählen, Regeln konfigurieren
 - [ ] **PDF-Export** – Wochenkalender drucken
 - [ ] **Widgets** – Home-Screen & Lock-Screen
-- [ ] **Info.plist Berechtigungen** in Xcode Target konfigurieren
 
 ---
 
