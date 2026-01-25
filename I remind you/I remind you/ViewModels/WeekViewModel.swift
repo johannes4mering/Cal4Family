@@ -19,6 +19,7 @@ final class WeekViewModel: ObservableObject {
     @Published var events: [FamilyEvent] = []
     @Published var isLoading: Bool = false
     @Published var error: Error?
+    @Published var scrollToToday: Bool = false
     
     var weekDays: [Date] {
         (0..<7).compactMap { offset in
@@ -78,7 +79,11 @@ final class WeekViewModel: ObservableObject {
         let weekday = calendar.component(.weekday, from: today)
         let daysToSubtract = (weekday + 5) % 7
         currentWeekStart = calendar.date(byAdding: .day, value: -daysToSubtract, to: calendar.startOfDay(for: today)) ?? today
-        Task { await loadEvents() }
+        Task { 
+            await loadEvents()
+            // Trigger scroll to today after loading
+            scrollToToday = true
+        }
     }
     
     // MARK: - Daten laden

@@ -16,6 +16,11 @@
 "error" = "Error";
 "ok" = "OK";
 
+// MARK: - Tabs
+"tab_week" = "Week";
+"tab_routines" = "Routines";
+"tab_settings" = "Settings";
+
 // MARK: - Week View
 "today_button" = "Today";
 "week_view_title" = "Week View";

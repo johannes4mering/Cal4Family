@@ -117,22 +117,43 @@ struct WeekView: View {
     }
     
     private var weekContent: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
-                ForEach(viewModel.weekDays, id: \.self) { date in
-                    DayCard(
-                        date: date,
-                        calendarEvents: viewModel.calendarEvents(for: date),
-                        tasks: viewModel.tasks(for: date),
-                        onToggleTask: { task in
-                            Task {
-                                await viewModel.toggleTaskCompletion(task)
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    ForEach(viewModel.weekDays, id: \.self) { date in
+                        DayCard(
+                            date: date,
+                            calendarEvents: viewModel.calendarEvents(for: date),
+                            tasks: viewModel.tasks(for: date),
+                            onToggleTask: { task in
+                                Task {
+                                    await viewModel.toggleTaskCompletion(task)
+                                }
                             }
-                        }
-                    )
+                        )
+                        .id(Calendar.current.startOfDay(for: date))
+                    }
+                }
+                .padding()
+            }
+            .onChange(of: viewModel.scrollToToday) { _, shouldScroll in
+                if shouldScroll {
+                    withAnimation {
+                        proxy.scrollTo(Calendar.current.startOfDay(for: Date()), anchor: .top)
+                    }
+                    viewModel.scrollToToday = false
                 }
             }
-            .padding()
+            .onAppear {
+                // Initial scroll to today if in current week
+                if viewModel.isCurrentWeek {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation {
+                            proxy.scrollTo(Calendar.current.startOfDay(for: Date()), anchor: .top)
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -181,15 +202,15 @@ struct DayCard: View {
     
     private var dayName: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
+        formatter.locale = Locale.current
         formatter.dateFormat = "EEEE"
         return formatter.string(from: date)
     }
     
     private var dayNumber: String {
         let formatter = DateFormatter()
+        formatter.locale = Locale.current
         formatter.dateFormat = "d. MMM"
-        formatter.locale = Locale(identifier: "de_DE")
         return formatter.string(from: date)
     }
     
@@ -209,7 +230,7 @@ struct DayCard: View {
                 Spacer()
                 
                 if isToday {
-                    Text("Heute")
+                    Text(String(localized: "today_button", defaultValue: "Heute"))
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)

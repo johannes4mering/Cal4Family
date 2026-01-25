@@ -56,12 +56,12 @@ struct MainTabView: View {
                 reminderService: reminderService
             )
             .tabItem {
-                Label("Woche", systemImage: "calendar")
+                Label(String(localized: "tab_week", defaultValue: "Woche"), systemImage: "calendar")
             }
             
             RoutinesView(reminderService: reminderService)
                 .tabItem {
-                    Label("Routinen", systemImage: "checklist")
+                    Label(String(localized: "tab_routines", defaultValue: "Routinen"), systemImage: "checklist")
                 }
             
             SettingsView(
@@ -70,7 +70,7 @@ struct MainTabView: View {
                 modelContext: modelContext
             )
             .tabItem {
-                Label("Einstellungen", systemImage: "gear")
+                Label(String(localized: "tab_settings", defaultValue: "Einstellungen"), systemImage: "gear")
             }
         }
     }
