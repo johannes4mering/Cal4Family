@@ -296,6 +296,12 @@ final class ReminderService: ObservableObject {
         // Nur Reminders mit Wiederholungsregeln
         let recurringReminders = allReminders.filter { $0.hasRecurrenceRules }
         
+        print("🔄 expandRecurringReminders: \(dateRange.start) bis \(dateRange.end)")
+        print("   Wiederkehrende Reminders: \(recurringReminders.count)")
+        for r in recurringReminders {
+            print("   - \(r.title ?? "?") hasRules: \(r.hasRecurrenceRules), startDate: \(String(describing: r.startDateComponents?.date)), dueDate: \(String(describing: r.dueDateComponents?.date))")
+        }
+        
         var expandedEvents: [FamilyEvent] = []
         let calendar = Calendar.current
         
@@ -303,28 +309,52 @@ final class ReminderService: ObservableObject {
         var currentDate = calendar.startOfDay(for: dateRange.start)
         let endDate = calendar.startOfDay(for: dateRange.end)
         
+        print("   Prüfe Tage von \(currentDate) bis \(endDate)")
+        
         while currentDate < endDate {
             for reminder in recurringReminders {
-                guard let ekRule = reminder.recurrenceRules?.first,
-                      let rule = RecurrenceRule.from(ekRule: ekRule),
-                      let startDateComponents = reminder.startDateComponents,
-                      let reminderStartDate = startDateComponents.date ?? reminder.dueDateComponents?.date else {
+                guard let ekRule = reminder.recurrenceRules?.first else {
+                    print("   ⚠️ \(reminder.title ?? "?"): Keine Recurrence Rule")
+                    continue
+                }
+                
+                guard let rule = RecurrenceRule.from(ekRule: ekRule) else {
+                    print("   ⚠️ \(reminder.title ?? "?"): Konnte Rule nicht parsen: \(ekRule)")
+                    continue
+                }
+                
+                // Startdatum: Versuche startDateComponents, dann dueDateComponents
+                let reminderStartDate: Date?
+                if let startComps = reminder.startDateComponents, let date = startComps.date {
+                    reminderStartDate = date
+                } else if let dueComps = reminder.dueDateComponents, let date = calendar.date(from: dueComps) {
+                    reminderStartDate = date
+                } else {
+                    reminderStartDate = nil
+                }
+                
+                guard let startDate = reminderStartDate else {
+                    print("   ⚠️ \(reminder.title ?? "?"): Kein Start/Due Datum")
                     continue
                 }
                 
                 // Prüfe ob die Regel für diesen Tag zutrifft
-                if rule.matches(date: currentDate, startDate: reminderStartDate) {
+                let matches = rule.matches(date: currentDate, startDate: startDate)
+                if matches {
                     // Erstelle ein "virtuelles" FamilyEvent für diesen Tag
                     let event = FamilyEvent.expandedFrom(
                         reminder: reminder,
                         forDate: currentDate
                     )
                     expandedEvents.append(event)
+                    print("   ✅ \(reminder.title ?? "?") matched für \(currentDate)")
                 }
             }
             
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? endDate
         }
+        
+        print("   Expandiert: \(expandedEvents.count) Events")
         
         return expandedEvents
     }
