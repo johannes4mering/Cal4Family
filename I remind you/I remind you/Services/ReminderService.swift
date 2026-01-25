@@ -103,6 +103,7 @@ final class ReminderService: ObservableObject {
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
         // Hole alle unerledigten die heute oder früher fällig sind
+        // WICHTIG: ending ist EXKLUSIV, also endOfDay = morgen 00:00 ist korrekt
         let incompletePredicate = eventStore.predicateForIncompleteReminders(
             withDueDateStarting: nil,
             ending: endOfDay,
@@ -138,20 +139,33 @@ final class ReminderService: ObservableObject {
             print("   [completed] \(r.title ?? "?") - ID: \(r.calendarItemIdentifier)")
         }
         
-        // Kombiniere und entferne Duplikate
+        // Filtere: Nur Erinnerungen die HEUTE fällig sind (nicht morgen!)
+        // Bei Erinnerungen ohne Datum: trotzdem anzeigen
         var seen = Set<String>()
         var result: [EKReminder] = []
         
         for reminder in incomplete + completed {
-            if !seen.contains(reminder.calendarItemIdentifier) {
-                seen.insert(reminder.calendarItemIdentifier)
-                result.append(reminder)
-            } else {
+            // Duplikat-Check
+            guard !seen.contains(reminder.calendarItemIdentifier) else {
                 print("   ⚠️ Duplikat gefunden: \(reminder.title ?? "?")")
+                continue
             }
+            seen.insert(reminder.calendarItemIdentifier)
+            
+            // Datum-Check: Nur heute oder früher, NICHT morgen
+            if let dueComponents = reminder.dueDateComponents,
+               let dueDate = dueComponents.date {
+                // Wenn das Fälligkeitsdatum >= morgen ist, überspringen
+                if dueDate >= endOfDay {
+                    print("   ⏭️ Übersprungen (morgen oder später): \(reminder.title ?? "?") - \(dueDate)")
+                    continue
+                }
+            }
+            
+            result.append(reminder)
         }
         
-        print("📋 fetchTodaysReminders - Ergebnis: \(result.count) (nach Duplikat-Entfernung)")
+        print("📋 fetchTodaysReminders - Ergebnis: \(result.count) (nach Filter)")
         
         return result
     }
