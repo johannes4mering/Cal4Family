@@ -70,23 +70,27 @@ final class RoutinesViewModel: ObservableObject {
     }
     
     func loadRoutines() async {
-        guard let list = selectedList else { return }
+        guard let list = selectedList else { 
+            print("⚠️ Keine Liste ausgewählt")
+            return 
+        }
         
         isLoading = true
         error = nil
         
-        // Lade Erinnerungen für heute
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
+        print("📝 Lade Routinen aus Liste: \(list.title)")
         
-        // Hole alle unerledigten Erinnerungen aus der Liste
-        let reminders = await reminderService.fetchIncompleteReminders(from: list)
+        // Hole ALLE Erinnerungen aus der Liste (erledigt + unerledigt)
+        let reminders = await reminderService.fetchAllRemindersFromList(list)
+        
+        print("📝 Gefundene Erinnerungen: \(reminders.count)")
         
         // Konvertiere zu RoutineItems
         routines = reminders
             .sorted { ($0.dueDateComponents?.date ?? Date.distantFuture) < ($1.dueDateComponents?.date ?? Date.distantFuture) }
             .map { RoutineItem.from(reminder: $0) }
+        
+        print("📝 Routinen geladen: \(routines.count)")
         
         isLoading = false
     }

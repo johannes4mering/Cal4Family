@@ -84,6 +84,17 @@ final class ReminderService: ObservableObject {
     
     // MARK: - Erinnerungen laden
     
+    /// Lädt alle Erinnerungen aus einer Liste (erledigt und unerledigt)
+    func fetchAllRemindersFromList(_ list: EKCalendar) async -> [EKReminder] {
+        let predicate = eventStore.predicateForReminders(in: [list])
+        
+        return await withCheckedContinuation { continuation in
+            eventStore.fetchReminders(matching: predicate) { reminders in
+                continuation.resume(returning: reminders ?? [])
+            }
+        }
+    }
+    
     /// Lädt alle nicht abgeschlossenen Erinnerungen aus einer Liste
     func fetchIncompleteReminders(from list: EKCalendar) async -> [EKReminder] {
         let predicate = eventStore.predicateForIncompleteReminders(

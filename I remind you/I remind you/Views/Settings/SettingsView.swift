@@ -165,7 +165,9 @@ struct SettingsView: View {
     
     #if DEBUG
     @State private var isGeneratingTestData = false
+    @State private var isDeletingTestData = false
     @State private var testDataGenerated = false
+    @State private var testDataDeleted = false
     
     private var debugSection: some View {
         Group {
@@ -183,9 +185,25 @@ struct SettingsView: View {
                     }
                 }
             }
-            .disabled(isGeneratingTestData)
+            .disabled(isGeneratingTestData || isDeletingTestData)
             
-            Text("⚠️ Debug-Modus: Erstellt Kalender, Listen und Beispieldaten")
+            Button(role: .destructive) {
+                deleteTestData()
+            } label: {
+                HStack {
+                    Label("Testdaten löschen", systemImage: "trash.fill")
+                    Spacer()
+                    if isDeletingTestData {
+                        ProgressView()
+                    } else if testDataDeleted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
+                }
+            }
+            .disabled(isGeneratingTestData || isDeletingTestData)
+            
+            Text("⚠️ Debug-Modus: Erstellt/Löscht Kalender, Listen und Beispieldaten")
                 .font(.caption2)
                 .foregroundStyle(.orange)
         }
@@ -193,6 +211,8 @@ struct SettingsView: View {
     
     private func generateTestData() {
         isGeneratingTestData = true
+        testDataGenerated = false
+        testDataDeleted = false
         Task {
             let generator = TestDataGenerator()
             await generator.generateAllTestData()
@@ -202,6 +222,22 @@ struct SettingsView: View {
             
             isGeneratingTestData = false
             testDataGenerated = true
+        }
+    }
+    
+    private func deleteTestData() {
+        isDeletingTestData = true
+        testDataGenerated = false
+        testDataDeleted = false
+        Task {
+            let generator = TestDataGenerator()
+            await generator.deleteAllTestData()
+            
+            // Services neu laden
+            viewModel.loadData()
+            
+            isDeletingTestData = false
+            testDataDeleted = true
         }
     }
     #endif

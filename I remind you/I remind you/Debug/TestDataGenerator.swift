@@ -280,5 +280,43 @@ final class TestDataGenerator {
             print("❌ Fehler: \(error)")
         }
     }
+    
+    // MARK: - Alles löschen
+    
+    func deleteAllTestData() async {
+        print("\n🗑️ Starte Löschung der Testdaten...\n")
+        
+        do {
+            let eventAccess = try await eventStore.requestFullAccessToEvents()
+            let reminderAccess = try await eventStore.requestFullAccessToReminders()
+            
+            guard eventAccess && reminderAccess else {
+                print("❌ Keine Berechtigung")
+                return
+            }
+            
+            // Test-Kalender löschen
+            let testCalendarNames = ["Familie", "Müllabfuhr", "Schule", "Sport"]
+            for calendar in eventStore.calendars(for: .event) {
+                if testCalendarNames.contains(calendar.title) {
+                    try eventStore.removeCalendar(calendar, commit: true)
+                    print("🗑️ Kalender gelöscht: \(calendar.title)")
+                }
+            }
+            
+            // Test-Erinnerungslisten löschen
+            let testListNames = ["Paul – Morgenroutine", "Paul – Abendroutine", "Emma – Routine", "Haushalt", "Einkaufen"]
+            for list in eventStore.calendars(for: .reminder) {
+                if testListNames.contains(list.title) {
+                    try eventStore.removeCalendar(list, commit: true)
+                    print("🗑️ Liste gelöscht: \(list.title)")
+                }
+            }
+            
+            print("\n✅ Testdaten erfolgreich gelöscht!\n")
+        } catch {
+            print("❌ Fehler beim Löschen: \(error)")
+        }
+    }
 }
 #endif
