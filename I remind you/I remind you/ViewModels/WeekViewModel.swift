@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import EventKit
 
 /// ViewModel für die Wochenansicht
 @MainActor
@@ -20,6 +21,40 @@ final class WeekViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: Error?
     @Published var scrollToToday: Bool = false
+    
+    // UserDefaults Keys (gleich wie in SettingsViewModel)
+    private let selectedCalendarsKey = "selectedCalendarIdentifiers"
+    private let selectedRemindersKey = "selectedReminderListIdentifiers"
+    
+    /// Gibt die ausgewählten Kalender-IDs aus UserDefaults zurück
+    private var selectedCalendarIdentifiers: Set<String> {
+        if let saved = UserDefaults.standard.array(forKey: selectedCalendarsKey) as? [String] {
+            return Set(saved)
+        }
+        return []
+    }
+    
+    /// Gibt die ausgewählten Listen-IDs aus UserDefaults zurück
+    private var selectedReminderListIdentifiers: Set<String> {
+        if let saved = UserDefaults.standard.array(forKey: selectedRemindersKey) as? [String] {
+            return Set(saved)
+        }
+        return []
+    }
+    
+    /// Gefilterte Kalender basierend auf Auswahl
+    private var selectedCalendars: [EKCalendar]? {
+        let identifiers = selectedCalendarIdentifiers
+        guard !identifiers.isEmpty else { return nil } // nil = alle anzeigen
+        return calendarService.calendars.filter { identifiers.contains($0.calendarIdentifier) }
+    }
+    
+    /// Gefilterte Erinnerungslisten basierend auf Auswahl
+    private var selectedReminderLists: [EKCalendar]? {
+        let identifiers = selectedReminderListIdentifiers
+        guard !identifiers.isEmpty else { return nil } // nil = alle anzeigen
+        return reminderService.reminderLists.filter { identifiers.contains($0.calendarIdentifier) }
+    }
     
     var weekDays: [Date] {
         (0..<7).compactMap { offset in
@@ -93,16 +128,18 @@ final class WeekViewModel: ObservableObject {
         error = nil
         
         do {
-            // Kalender-Events laden
+            // Kalender-Events laden (gefiltert nach Auswahl)
             let calendarEvents = calendarService.fetchFamilyEvents(
                 from: currentWeekStart,
-                to: weekEndDate
+                to: weekEndDate,
+                calendars: selectedCalendars
             )
             
-            // Erinnerungen laden (mit expandierten Wiederholungen)
+            // Erinnerungen laden (mit expandierten Wiederholungen, gefiltert nach Auswahl)
             let reminderEvents = await reminderService.fetchAllFamilyEvents(
                 from: currentWeekStart,
-                to: weekEndDate
+                to: weekEndDate,
+                lists: selectedReminderLists
             )
             
             // Kombinieren und sortieren
