@@ -152,8 +152,11 @@ struct OnboardingView: View {
                 // Prüfe nochmal den echten Status
                 checkExistingPermissions()
                 
-                // Wenn immer noch nicht alle Berechtigungen, zeige Fehler
-                if !canContinue {
+                // Wenn alle Berechtigungen erteilt: Direkt weiter!
+                if canContinue {
+                    onComplete()
+                } else {
+                    // Wenn immer noch nicht alle Berechtigungen, zeige Fehler
                     showError = true
                 }
             }
