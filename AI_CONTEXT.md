@@ -7,13 +7,16 @@
 
 **App-Name:** I remind you  
 **Typ:** iOS & macOS App (SwiftUI, Multiplatform)  
-**Zweck:** Familienkalender & Routinen-App für Kinder und Eltern
+**Zweck:** Familienkalender & Routinen-App für Kinder und Eltern  
+**Version:** v0.3.0
 
 ### Kernfunktionen
 1. **Wochenansicht** – Termine + Aufgaben kombiniert
 2. **Kinder-Routinen** – Wiederkehrende Aufgaben abhaken (kindgerechte UI)
 3. **Auto-Regeln** – Automatisch Erinnerungen aus Kalenderevents erstellen
 4. **PDF-Druck** – Wochenkalender für Kühlschrank/Pinnwand
+5. **Bidirektionale Sync** – Änderungen in Apple Apps werden sofort reflektiert
+6. **Lokalisierung** – Deutsch und Englisch
 
 ### Technische Grundlagen
 - **SwiftUI** + **SwiftData**
@@ -50,16 +53,17 @@ I remind you/
 
 ---
 
-## ✅ Aktueller Stand
+## ✅ Aktueller Stand (v0.3.0)
 
-### Implementiert (v0.1.0)
-- [x] Xcode-Projekt mit iOS & macOS Support
-- [x] SwiftData konfiguriert
+### Implementiert
+- [x] Xcode-Projekt mit iOS 17+ & macOS 14+ Support
+- [x] SwiftData konfiguriert (AutoRule, FamilyMember)
 - [x] Models: FamilyEvent, AutoRule, FamilyMember
-- [x] CalendarService (Kalender lesen)
-- [x] ReminderService (Erinnerungen lesen/schreiben/abhaken)
+- [x] CalendarService (Kalender lesen + Change Observer)
+- [x] ReminderService (Erinnerungen CRUD + Change Observer)
 - [x] RuleEngine (Logik für Auto-Erinnerungen)
-- [x] Wochenansicht mit Tagen, Terminen, Aufgaben
+- [x] **Wochenansicht** mit Tagen, Terminen, Aufgaben
+- [x] **Heute-Button** springt zur aktuellen Woche + scrollt zum Tag
 - [x] Onboarding mit Berechtigungsanfragen
 - [x] Tab-Navigation (Woche, Routinen, Einstellungen)
 - [x] Aufgaben abhaken in der App
@@ -67,9 +71,14 @@ I remind you/
 - [x] **Gamification** – Feier-Overlay wenn alle Aufgaben erledigt
 - [x] **Einstellungen-View** – Kalender/Listen auswählen, Auto-Regeln erstellen
 - [x] **PDF-Export** – Wochenkalender drucken (A4, Share Sheet)
+- [x] **Bidirektionale Sync** – EKEventStoreChanged Observer
+- [x] **Lokalisierung** – Deutsch & Englisch (Localizable.strings)
+- [x] **TestDataGenerator** – Testdaten erstellen & löschen (Debug)
 
 ### Noch offen
-- [ ] **Widgets** – Home-Screen & Lock-Screen
+- [ ] **Routine-Editor** – Neue Routinen mit Wiederholungen erstellen
+- [ ] **Listen teilen** – iCloud Listen mit Familie teilen
+- [ ] **Widgets** – Home-Screen & Lock-Screen (WidgetKit)
 
 ---
 
@@ -80,6 +89,7 @@ I remind you/
 - Sync über iCloud automatisch
 - Systemweit nutzbar (Siri, Apple Watch, andere Apps)
 - Familienfreigabe möglich
+- **Listen können mit anderen Apple-IDs geteilt werden**
 
 ### Unified FamilyEvent Model
 ```swift
@@ -117,42 +127,56 @@ try await eventStore.requestFullAccessToReminders()
 func setCompleted(reminderIdentifier: String, completed: Bool) async throws
 ```
 
-### Auto-Regel ausführen
+### Heutige Routinen laden
 ```swift
-// RuleEngine.swift
-func executeRules(_ rules: [AutoRule], from: Date, to: Date) async throws -> [CreatedReminder]
+// ReminderService.swift
+func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 ```
 
 ---
 
-## 📋 Nächste Schritte (priorisiert)
+## 📋 Nächste Schritte (v0.4.0)
 
-1. **Info.plist in Xcode konfigurieren**
-   - `Privacy - Calendars Full Access Usage Description`
-   - `Privacy - Reminders Full Access Usage Description`
+1. **Routine-Editor**
+   - Neue Erinnerungen mit Wiederholungen erstellen
+   - Intervalle: Täglich, Wöchentlich (bestimmte Tage), Monatlich
+   - Uhrzeit festlegen
 
-2. **Routinen-View implementieren**
-   - Liste der Kinder
-   - Pro Kind: Tages-Routinen mit großen Abhak-Buttons
-   - Fortschrittsanzeige
+2. **Listen teilen**
+   - Integration mit iOS Share Sheet für Erinnerungslisten
+   - Anleitung für Familienfreigabe
+   - Eltern können Listen für Kinder vorbereiten
 
-3. **Einstellungen-View**
-   - Kalender auswählen
-   - Erinnerungslisten zuweisen
-   - Auto-Regeln erstellen/bearbeiten
+3. **Widgets** (Phase 2)
+   - WidgetKit Extension
+   - Kleines Widget: Nächste 3 Termine
+   - Mittleres Widget: Routine-Fortschritt
 
-4. **PDF-Export**
-   - Wochenkalender als A4-PDF
-   - Share Sheet Integration
+---
+
+## 🏷️ Git Tags
+
+| Tag | Beschreibung |
+|-----|--------------|
+| v0.1.0 | Initiale Struktur |
+| v0.2.0 | MVP Feature-Complete |
+| v0.2.1 | PDF Export Bugfix |
+| v0.3.0 | Bidirektionale Sync + Lokalisierung + Routine-Fixes |
 
 ---
 
 ## 🚀 Schnellstart für neue Session
 
 ```
-Ich arbeite an der iOS/macOS App "I remind you" (Familienkalender & Routinen).
-Lies bitte zuerst: AI_CONTEXT.md und readme_überarbeitet.md
-Aktueller Stand: v0.1.0 (Grundgerüst mit Wochenansicht)
+Projekt: I remind you – Familienkalender & Routinen-App
+Pfad: /Users/johannes/work/xcode/Cal4Family/I remind you/
+Version: v0.3.0
+
+Lies AI_CONTEXT.md für den vollen Kontext.
+
+Nächste Features:
+- Routine-Editor (neue Routinen erstellen)
+- Listen teilen (für Kinder vorbereiten)
 ```
 
 ---
