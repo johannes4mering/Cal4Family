@@ -130,6 +130,14 @@ final class ReminderService: ObservableObject {
         
         let (incomplete, completed) = await (incompleteReminders, completedReminders)
         
+        print("📋 fetchTodaysReminders - incomplete: \(incomplete.count), completed: \(completed.count)")
+        for r in incomplete {
+            print("   [incomplete] \(r.title ?? "?") - ID: \(r.calendarItemIdentifier) - due: \(String(describing: r.dueDateComponents))")
+        }
+        for r in completed {
+            print("   [completed] \(r.title ?? "?") - ID: \(r.calendarItemIdentifier)")
+        }
+        
         // Kombiniere und entferne Duplikate
         var seen = Set<String>()
         var result: [EKReminder] = []
@@ -138,8 +146,12 @@ final class ReminderService: ObservableObject {
             if !seen.contains(reminder.calendarItemIdentifier) {
                 seen.insert(reminder.calendarItemIdentifier)
                 result.append(reminder)
+            } else {
+                print("   ⚠️ Duplikat gefunden: \(reminder.title ?? "?")")
             }
         }
+        
+        print("📋 fetchTodaysReminders - Ergebnis: \(result.count) (nach Duplikat-Entfernung)")
         
         return result
     }

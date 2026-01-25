@@ -298,13 +298,25 @@ struct RoutineCard: View {
                             .fill(routine.isCompleted ? Color.green.opacity(0.2) : Color.accentColor.opacity(0.1))
                     )
                 
-                // Titel
-                Text(routine.title)
-                    .font(.title3)
-                    .fontWeight(.medium)
-                    .strikethrough(routine.isCompleted, color: .secondary)
-                    .foregroundStyle(routine.isCompleted ? .secondary : .primary)
-                    .multilineTextAlignment(.leading)
+                // Titel und Uhrzeit
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(routine.title)
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .strikethrough(routine.isCompleted, color: .secondary)
+                        .foregroundStyle(routine.isCompleted ? .secondary : .primary)
+                        .multilineTextAlignment(.leading)
+                    
+                    if let dueDate = routine.dueDate {
+                        Text(dueDate, style: .time)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Keine Uhrzeit")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                }
                 
                 Spacer()
                 
