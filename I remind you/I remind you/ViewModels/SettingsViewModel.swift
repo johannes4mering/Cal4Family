@@ -43,6 +43,10 @@ final class SettingsViewModel: ObservableObject {
     // MARK: - Laden
     
     func loadData() {
+        // Ensure services reload their data
+        calendarService.loadCalendars()
+        reminderService.loadReminderLists()
+        
         calendars = calendarService.calendars
         reminderLists = reminderService.reminderLists
         loadAutoRules()

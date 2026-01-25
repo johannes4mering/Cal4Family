@@ -43,15 +43,21 @@ final class RoutinesViewModel: ObservableObject {
     // MARK: - Daten laden
     
     func loadRoutineLists() {
-        // Filtere Listen die "Routine" im Namen haben oder vom Nutzer ausgewählt wurden
-        routineLists = reminderService.reminderLists.filter { list in
-            list.title.localizedCaseInsensitiveContains("routine") ||
-            list.title.localizedCaseInsensitiveContains("morgen") ||
-            list.title.localizedCaseInsensitiveContains("abend") ||
-            list.title.localizedCaseInsensitiveContains("kind")
+        // Ensure reminder lists are loaded
+        if reminderService.reminderLists.isEmpty {
+            reminderService.loadReminderLists()
         }
         
-        // Falls keine gefunden, zeige alle Listen
+        // Filtere Listen die typische Routine-Schlüsselwörter enthalten
+        let routineKeywords = ["routine", "morgen", "abend", "kind", "paul", "emma", "lisa", "max", "morning", "evening", "routine"]
+        
+        routineLists = reminderService.reminderLists.filter { list in
+            routineKeywords.contains { keyword in
+                list.title.localizedCaseInsensitiveContains(keyword)
+            }
+        }
+        
+        // Falls keine gefunden, zeige alle Listen zur Auswahl
         if routineLists.isEmpty {
             routineLists = reminderService.reminderLists
         }

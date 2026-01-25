@@ -20,6 +20,10 @@ final class ReminderService: ObservableObject {
     
     init() {
         updateAuthorizationStatus()
+        // Load lists if already authorized
+        if authorizationStatus == .fullAccess {
+            loadReminderLists()
+        }
     }
     
     // MARK: - Authorization
