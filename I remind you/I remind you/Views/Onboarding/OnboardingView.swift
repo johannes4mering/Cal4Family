@@ -186,7 +186,7 @@ struct PermissionCheckItem: View {
         HStack(spacing: 12) {
             Image(systemName: isGranted ? "checkmark.circle.fill" : "circle")
                 .font(.title3)
-                .foregroundStyle(isGranted ? .green : .tertiary)
+                .foregroundStyle(isGranted ? Color.green : Color.gray.opacity(0.5))
             
             Text(title)
                 .foregroundStyle(isGranted ? .primary : .secondary)
