@@ -43,13 +43,16 @@ final class RoutinesViewModel: ObservableObject {
     // MARK: - Daten laden
     
     func loadRoutineLists() {
-        // Ensure reminder lists are loaded
-        if reminderService.reminderLists.isEmpty {
-            reminderService.loadReminderLists()
+        // IMMER neu laden um Änderungen zu erfassen
+        reminderService.loadReminderLists()
+        
+        print("📋 ReminderService hat \(reminderService.reminderLists.count) Listen")
+        for list in reminderService.reminderLists {
+            print("   - \(list.title)")
         }
         
         // Filtere Listen die typische Routine-Schlüsselwörter enthalten
-        let routineKeywords = ["routine", "morgen", "abend", "kind", "paul", "emma", "lisa", "max", "morning", "evening", "routine"]
+        let routineKeywords = ["routine", "morgen", "abend", "kind", "paul", "emma", "lisa", "max", "morning", "evening"]
         
         routineLists = reminderService.reminderLists.filter { list in
             routineKeywords.contains { keyword in
@@ -57,14 +60,25 @@ final class RoutinesViewModel: ObservableObject {
             }
         }
         
+        print("📋 Gefilterte Routine-Listen: \(routineLists.count)")
+        for list in routineLists {
+            print("   - \(list.title)")
+        }
+        
         // Falls keine gefunden, zeige alle Listen zur Auswahl
         if routineLists.isEmpty {
             routineLists = reminderService.reminderLists
+            print("📋 Keine Routine-Listen gefunden, zeige alle \(routineLists.count) Listen")
         }
         
-        // Wähle erste Liste automatisch
+        // Wähle erste Liste automatisch wenn noch keine ausgewählt
         if selectedList == nil, let first = routineLists.first {
+            print("📋 Wähle automatisch Liste: \(first.title)")
             selectedList = first
+            Task { await loadRoutines() }
+        } else if let selected = selectedList {
+            print("📋 Bereits ausgewählt: \(selected.title)")
+            // Trotzdem neu laden falls sich Inhalt geändert hat
             Task { await loadRoutines() }
         }
     }

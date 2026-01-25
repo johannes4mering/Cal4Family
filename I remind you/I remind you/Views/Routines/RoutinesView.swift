@@ -48,16 +48,17 @@ struct RoutinesView: View {
             .sheet(isPresented: $showListPicker) {
                 listPickerSheet
             }
-            .onAppear {
+            .task {
+                // Task wird bei jedem Erscheinen ausgeführt
                 viewModel.loadRoutineLists()
             }
             .refreshable {
-                await viewModel.loadRoutines()
+                viewModel.loadRoutineLists()
             }
             .onReceive(viewModel.reminderService.$externalChangeOccurred) { changed in
                 if changed {
                     Task {
-                        await viewModel.loadRoutines()
+                        viewModel.loadRoutineLists()
                         viewModel.reminderService.externalChangeOccurred = false
                     }
                 }
