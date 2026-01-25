@@ -99,7 +99,7 @@ struct ShareListView: View {
                             }
                         }
                     } header: {
-                        Label("„\(selected.title)" teilen", systemImage: "square.and.arrow.up")
+                        Label("\(selected.title) teilen", systemImage: "square.and.arrow.up")
                     }
                 }
                 
@@ -124,7 +124,7 @@ struct ShareListView: View {
                             number: 3,
                             icon: "3.circle.fill",
                             title: "Teilen",
-                            description: "Tippe auf ••• → „Liste teilen" → Wähle Familienmitglieder"
+                            description: "Tippe auf ... -> Liste teilen -> Wähle Familienmitglieder"
                         )
                     }
                     .padding(.vertical, 8)
@@ -265,8 +265,8 @@ struct FamilyShareInstructionsView: View {
                         color: .blue,
                         steps: [
                             "Öffne die Erinnerungen-App",
-                            "Tippe auf „Liste hinzufügen"",
-                            "Gib einen Namen ein (z.B. „Morgenroutine")",
+                            "Tippe auf \"Liste hinzufügen\"",
+                            "Gib einen Namen ein (z.B. \"Morgenroutine\")",
                             "Wähle eine Farbe und ein Symbol"
                         ]
                     )
@@ -278,7 +278,7 @@ struct FamilyShareInstructionsView: View {
                         color: .orange,
                         steps: [
                             "Öffne die neue Liste",
-                            "Füge Erinnerungen hinzu (z.B. „Zähne putzen")",
+                            "Füge Erinnerungen hinzu (z.B. \"Zähne putzen\")",
                             "Stelle Wiederholungen ein (täglich, wochentags, etc.)",
                             "Optional: Füge Uhrzeiten hinzu"
                         ]
@@ -290,8 +290,8 @@ struct FamilyShareInstructionsView: View {
                         icon: "square.and.arrow.up",
                         color: .purple,
                         steps: [
-                            "Tippe auf ••• (oben rechts)",
-                            "Wähle „Liste teilen"",
+                            "Tippe auf ... (oben rechts)",
+                            "Wähle \"Liste teilen\"",
                             "Wähle dein Kind aus der Familienfreigabe",
                             "Sende die Einladung"
                         ]
@@ -304,7 +304,7 @@ struct FamilyShareInstructionsView: View {
                         color: .cyan,
                         steps: [
                             "Die Liste erscheint automatisch in der Erinnerungen-App",
-                            "In „I remind you" wird die Liste im Routinen-Tab sichtbar",
+                            "In \"I remind you\" wird die Liste im Routinen-Tab sichtbar",
                             "Änderungen werden in Echtzeit synchronisiert"
                         ]
                     )

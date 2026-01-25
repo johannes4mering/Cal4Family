@@ -57,11 +57,11 @@ struct RoutinesView: View {
             .sheet(isPresented: $showAddRoutine) {
                 AddRoutineView(
                     reminderService: viewModel.reminderService,
-                    selectedList: viewModel.selectedList
-                ) {
-                    // Reload after adding new routine
-                    viewModel.loadRoutineLists()
-                }
+                    onSave: {
+                        // Reload after adding new routine
+                        viewModel.loadRoutineLists()
+                    }
+                )
             }
             .sheet(isPresented: $showListPicker) {
                 listPickerSheet

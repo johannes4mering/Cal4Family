@@ -71,9 +71,9 @@
 "step_select_list" = "Liste auswählen";
 "step_select_list_desc" = "Tippe auf die Liste, die du teilen möchtest";
 "step_share" = "Teilen";
-"step_share_desc" = "Tippe auf ••• → „Liste teilen" → Wähle Familienmitglieder";
+"step_share_desc" = "Tippe auf ... -> Liste teilen -> Wähle Familienmitglieder";
 "family_sharing_title" = "Familienfreigabe für Erinnerungen";
-"family_sharing_subtitle" = "So bereitest du Routinen für dein Kind vor – auch ohne dessen Gerät";
+"family_sharing_subtitle" = "So bereitest du Routinen für dein Kind vor - auch ohne dessen Gerät";
 "prerequisites" = "Voraussetzungen";
 "prerequisite_1" = "Familienfreigabe muss eingerichtet sein";
 "prerequisite_2" = "Kind muss eine Apple-ID haben (auch mit Kinderkonto)";

@@ -15,7 +15,7 @@ import SwiftData
 @MainActor
 final class SettingsViewModel: ObservableObject {
     private let calendarService: CalendarService
-    private let reminderService: ReminderService
+    let reminderService: ReminderService
     private let modelContext: ModelContext
     
     @Published var calendars: [EKCalendar] = []
