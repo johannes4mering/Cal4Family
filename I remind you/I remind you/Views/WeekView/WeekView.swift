@@ -138,22 +138,36 @@ struct WeekView: View {
     
     private var legendView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 // Kalender
-                ForEach(viewModel.activeCalendars, id: \.calendarIdentifier) { calendar in
+                ForEach(viewModel.allCalendars, id: \.calendarIdentifier) { calendar in
                     LegendItem(
                         color: Color(cgColor: calendar.cgColor),
                         title: calendar.title,
-                        icon: "calendar"
+                        icon: "calendar",
+                        isActive: viewModel.isCalendarActive(calendar),
+                        onTap: {
+                            viewModel.toggleCalendar(calendar)
+                        }
                     )
                 }
                 
+                // Trennlinie wenn beide vorhanden
+                if !viewModel.allCalendars.isEmpty && !viewModel.allReminderLists.isEmpty {
+                    Divider()
+                        .frame(height: 20)
+                }
+                
                 // Erinnerungslisten
-                ForEach(viewModel.activeReminderLists, id: \.calendarIdentifier) { list in
+                ForEach(viewModel.allReminderLists, id: \.calendarIdentifier) { list in
                     LegendItem(
                         color: Color(cgColor: list.cgColor),
                         title: list.title,
-                        icon: "checklist"
+                        icon: "checklist",
+                        isActive: viewModel.isReminderListActive(list),
+                        onTap: {
+                            viewModel.toggleReminderList(list)
+                        }
                     )
                 }
             }
@@ -422,26 +436,43 @@ struct LegendItem: View {
     let color: Color
     let title: String
     let icon: String
+    var isActive: Bool = true
+    var onTap: (() -> Void)? = nil
     
     var body: some View {
-        HStack(spacing: 6) {
-            Circle()
-                .fill(color)
-                .frame(width: 10, height: 10)
-            
-            Image(systemName: icon)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-            
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+        Button(action: { onTap?() }) {
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(isActive ? color : color.opacity(0.3))
+                    .frame(width: 10, height: 10)
+                    .overlay {
+                        if !isActive {
+                            Circle()
+                                .stroke(color.opacity(0.5), lineWidth: 1)
+                        }
+                    }
+                
+                Image(systemName: icon)
+                    .font(.caption2)
+                    .foregroundStyle(isActive ? .secondary : .tertiary)
+                
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(isActive ? .primary : .tertiary)
+                    .lineLimit(1)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(isActive ? Color(.tertiarySystemBackground) : Color(.tertiarySystemBackground).opacity(0.5))
+            .clipShape(Capsule())
+            .overlay {
+                if !isActive {
+                    Capsule()
+                        .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                }
+            }
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(Capsule())
+        .buttonStyle(.plain)
     }
 }
 

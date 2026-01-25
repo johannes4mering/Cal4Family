@@ -27,19 +27,19 @@ final class WeekViewModel: ObservableObject {
     private let selectedRemindersKey = "selectedReminderListIdentifiers"
     
     /// Gibt die ausgewählten Kalender-IDs aus UserDefaults zurück
-    private var selectedCalendarIdentifiers: Set<String> {
-        if let saved = UserDefaults.standard.array(forKey: selectedCalendarsKey) as? [String] {
-            return Set(saved)
-        }
-        return []
-    }
+    @Published private(set) var selectedCalendarIdentifiers: Set<String> = []
     
     /// Gibt die ausgewählten Listen-IDs aus UserDefaults zurück
-    private var selectedReminderListIdentifiers: Set<String> {
-        if let saved = UserDefaults.standard.array(forKey: selectedRemindersKey) as? [String] {
-            return Set(saved)
+    @Published private(set) var selectedReminderListIdentifiers: Set<String> = []
+    
+    /// Lädt die Auswahl aus UserDefaults
+    private func loadSelections() {
+        if let saved = UserDefaults.standard.array(forKey: selectedCalendarsKey) as? [String] {
+            selectedCalendarIdentifiers = Set(saved)
         }
-        return []
+        if let saved = UserDefaults.standard.array(forKey: selectedRemindersKey) as? [String] {
+            selectedReminderListIdentifiers = Set(saved)
+        }
     }
     
     /// Gefilterte Kalender basierend auf Auswahl
@@ -47,6 +47,86 @@ final class WeekViewModel: ObservableObject {
         let identifiers = selectedCalendarIdentifiers
         guard !identifiers.isEmpty else { return nil } // nil = alle anzeigen
         return calendarService.calendars.filter { identifiers.contains($0.calendarIdentifier) }
+    }
+    
+    /// Alle Kalender für die Legende
+    var allCalendars: [EKCalendar] {
+        calendarService.calendars
+    }
+    
+    /// Alle Erinnerungslisten für die Legende
+    var allReminderLists: [EKCalendar] {
+        reminderService.reminderLists
+    }
+    
+    /// Prüft ob ein Kalender aktiv (ausgewählt) ist
+    func isCalendarActive(_ calendar: EKCalendar) -> Bool {
+        // Wenn keine Auswahl getroffen wurde, sind alle aktiv
+        if selectedCalendarIdentifiers.isEmpty {
+            return true
+        }
+        return selectedCalendarIdentifiers.contains(calendar.calendarIdentifier)
+    }
+    
+    /// Prüft ob eine Liste aktiv (ausgewählt) ist
+    func isReminderListActive(_ list: EKCalendar) -> Bool {
+        // Wenn keine Auswahl getroffen wurde, sind alle aktiv
+        if selectedReminderListIdentifiers.isEmpty {
+            return true
+        }
+        return selectedReminderListIdentifiers.contains(list.calendarIdentifier)
+    }
+    
+    /// Toggled einen Kalender ein/aus
+    func toggleCalendar(_ calendar: EKCalendar) {
+        var identifiers = selectedCalendarIdentifiers
+        
+        // Wenn noch keine Auswahl: Alle aktuellen IDs als Basis nehmen
+        if identifiers.isEmpty {
+            identifiers = Set(calendarService.calendars.map { $0.calendarIdentifier })
+        }
+        
+        if identifiers.contains(calendar.calendarIdentifier) {
+            identifiers.remove(calendar.calendarIdentifier)
+        } else {
+            identifiers.insert(calendar.calendarIdentifier)
+        }
+        
+        // Wenn alle ausgewählt: leeres Set speichern (= alle anzeigen)
+        if identifiers.count == calendarService.calendars.count {
+            identifiers = []
+        }
+        
+        selectedCalendarIdentifiers = identifiers
+        UserDefaults.standard.set(Array(identifiers), forKey: selectedCalendarsKey)
+        
+        Task { await loadEvents() }
+    }
+    
+    /// Toggled eine Erinnerungsliste ein/aus
+    func toggleReminderList(_ list: EKCalendar) {
+        var identifiers = selectedReminderListIdentifiers
+        
+        // Wenn noch keine Auswahl: Alle aktuellen IDs als Basis nehmen
+        if identifiers.isEmpty {
+            identifiers = Set(reminderService.reminderLists.map { $0.calendarIdentifier })
+        }
+        
+        if identifiers.contains(list.calendarIdentifier) {
+            identifiers.remove(list.calendarIdentifier)
+        } else {
+            identifiers.insert(list.calendarIdentifier)
+        }
+        
+        // Wenn alle ausgewählt: leeres Set speichern (= alle anzeigen)
+        if identifiers.count == reminderService.reminderLists.count {
+            identifiers = []
+        }
+        
+        selectedReminderListIdentifiers = identifiers
+        UserDefaults.standard.set(Array(identifiers), forKey: selectedRemindersKey)
+        
+        Task { await loadEvents() }
     }
     
     /// Aktive Kalender für die Legende (die tatsächlich angezeigt werden)
@@ -106,6 +186,9 @@ final class WeekViewModel: ObservableObject {
         let weekday = calendar.component(.weekday, from: today)
         let daysToSubtract = (weekday + 5) % 7 // Montag = 0
         self.currentWeekStart = calendar.date(byAdding: .day, value: -daysToSubtract, to: calendar.startOfDay(for: today)) ?? today
+        
+        // Auswahl aus UserDefaults laden
+        loadSelections()
     }
     
     // MARK: - Navigation
