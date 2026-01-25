@@ -193,17 +193,53 @@ final class ReminderService: ObservableObject {
     ) async -> [EKReminder] {
         let selectedLists = lists ?? reminderLists
         
+        print("📅 fetchReminders: \(startDate) bis \(endDate)")
+        print("   Listen: \(selectedLists.map { $0.title })")
+        
+        // WICHTIG: Wir laden ALLE unerledigten Reminders, nicht nur die mit Datum im Bereich
+        // Grund: Erinnerungen ohne Uhrzeit oder mit Datum-only werden sonst nicht gefunden
         let predicate = eventStore.predicateForIncompleteReminders(
-            withDueDateStarting: startDate,
-            ending: endDate,
+            withDueDateStarting: nil,  // Kein Start-Filter
+            ending: endDate,           // Nur bis Ende des Zeitraums
             calendars: selectedLists
         )
         
-        return await withCheckedContinuation { continuation in
+        let reminders = await withCheckedContinuation { (continuation: CheckedContinuation<[EKReminder], Never>) in
             eventStore.fetchReminders(matching: predicate) { reminders in
                 continuation.resume(returning: reminders ?? [])
             }
         }
+        
+        print("   Gefunden (vor Filter): \(reminders.count)")
+        
+        // Manuell filtern: Nur Reminders die im Zeitraum liegen
+        let filtered = reminders.filter { reminder in
+            guard let dueComponents = reminder.dueDateComponents else {
+                print("   ⚠️ Kein Datum: \(reminder.title ?? "?")")
+                return false
+            }
+            
+            // Datum aus Components erstellen
+            guard let dueDate = Calendar.current.date(from: dueComponents) else {
+                print("   ⚠️ Ungültiges Datum: \(reminder.title ?? "?")")
+                return false
+            }
+            
+            // Prüfe ob im Zeitraum (startDate <= dueDate < endDate)
+            let isInRange = dueDate >= startDate && dueDate < endDate
+            
+            if isInRange {
+                print("   ✅ \(reminder.title ?? "?") - \(dueDate)")
+            } else {
+                print("   ⏭️ Außerhalb: \(reminder.title ?? "?") - \(dueDate)")
+            }
+            
+            return isInRange
+        }
+        
+        print("   Gefunden (nach Filter): \(filtered.count)")
+        
+        return filtered
     }
     
     /// Lädt alle Erinnerungen (auch abgeschlossene) für einen Zeitraum
