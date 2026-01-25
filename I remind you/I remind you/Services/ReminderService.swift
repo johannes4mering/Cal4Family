@@ -103,7 +103,6 @@ final class ReminderService: ObservableObject {
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
         // Hole alle unerledigten die heute oder früher fällig sind
-        // WICHTIG: ending ist EXKLUSIV, also endOfDay = morgen 00:00 ist korrekt
         let incompletePredicate = eventStore.predicateForIncompleteReminders(
             withDueDateStarting: nil,
             ending: endOfDay,
@@ -131,41 +130,23 @@ final class ReminderService: ObservableObject {
         
         let (incomplete, completed) = await (incompleteReminders, completedReminders)
         
-        print("📋 fetchTodaysReminders - incomplete: \(incomplete.count), completed: \(completed.count)")
-        for r in incomplete {
-            print("   [incomplete] \(r.title ?? "?") - ID: \(r.calendarItemIdentifier) - due: \(String(describing: r.dueDateComponents))")
-        }
-        for r in completed {
-            print("   [completed] \(r.title ?? "?") - ID: \(r.calendarItemIdentifier)")
-        }
-        
         // Filtere: Nur Erinnerungen die HEUTE fällig sind (nicht morgen!)
-        // Bei Erinnerungen ohne Datum: trotzdem anzeigen
         var seen = Set<String>()
         var result: [EKReminder] = []
         
         for reminder in incomplete + completed {
             // Duplikat-Check
-            guard !seen.contains(reminder.calendarItemIdentifier) else {
-                print("   ⚠️ Duplikat gefunden: \(reminder.title ?? "?")")
-                continue
-            }
+            guard !seen.contains(reminder.calendarItemIdentifier) else { continue }
             seen.insert(reminder.calendarItemIdentifier)
             
             // Datum-Check: Nur heute oder früher, NICHT morgen
             if let dueComponents = reminder.dueDateComponents,
                let dueDate = dueComponents.date {
-                // Wenn das Fälligkeitsdatum >= morgen ist, überspringen
-                if dueDate >= endOfDay {
-                    print("   ⏭️ Übersprungen (morgen oder später): \(reminder.title ?? "?") - \(dueDate)")
-                    continue
-                }
+                if dueDate >= endOfDay { continue }
             }
             
             result.append(reminder)
         }
-        
-        print("📋 fetchTodaysReminders - Ergebnis: \(result.count) (nach Filter)")
         
         return result
     }
@@ -193,9 +174,6 @@ final class ReminderService: ObservableObject {
     ) async -> [EKReminder] {
         let selectedLists = lists ?? reminderLists
         
-        print("📅 fetchReminders: \(startDate) bis \(endDate)")
-        print("   Listen: \(selectedLists.map { $0.title })")
-        
         // WICHTIG: Wir laden ALLE unerledigten Reminders, nicht nur die mit Datum im Bereich
         // Grund: Erinnerungen ohne Uhrzeit oder mit Datum-only werden sonst nicht gefunden
         let predicate = eventStore.predicateForIncompleteReminders(
@@ -210,36 +188,15 @@ final class ReminderService: ObservableObject {
             }
         }
         
-        print("   Gefunden (vor Filter): \(reminders.count)")
-        
         // Manuell filtern: Nur Reminders die im Zeitraum liegen
-        let filtered = reminders.filter { reminder in
-            guard let dueComponents = reminder.dueDateComponents else {
-                print("   ⚠️ Kein Datum: \(reminder.title ?? "?")")
+        return reminders.filter { reminder in
+            guard let dueComponents = reminder.dueDateComponents,
+                  let dueDate = Calendar.current.date(from: dueComponents) else {
                 return false
             }
-            
-            // Datum aus Components erstellen
-            guard let dueDate = Calendar.current.date(from: dueComponents) else {
-                print("   ⚠️ Ungültiges Datum: \(reminder.title ?? "?")")
-                return false
-            }
-            
             // Prüfe ob im Zeitraum (startDate <= dueDate < endDate)
-            let isInRange = dueDate >= startDate && dueDate < endDate
-            
-            if isInRange {
-                print("   ✅ \(reminder.title ?? "?") - \(dueDate)")
-            } else {
-                print("   ⏭️ Außerhalb: \(reminder.title ?? "?") - \(dueDate)")
-            }
-            
-            return isInRange
+            return dueDate >= startDate && dueDate < endDate
         }
-        
-        print("   Gefunden (nach Filter): \(filtered.count)")
-        
-        return filtered
     }
     
     /// Lädt alle Erinnerungen (auch abgeschlossene) für einen Zeitraum
@@ -296,12 +253,6 @@ final class ReminderService: ObservableObject {
         // Nur Reminders mit Wiederholungsregeln
         let recurringReminders = allReminders.filter { $0.hasRecurrenceRules }
         
-        print("🔄 expandRecurringReminders: \(dateRange.start) bis \(dateRange.end)")
-        print("   Wiederkehrende Reminders: \(recurringReminders.count)")
-        for r in recurringReminders {
-            print("   - \(r.title ?? "?") hasRules: \(r.hasRecurrenceRules), startDate: \(String(describing: r.startDateComponents?.date)), dueDate: \(String(describing: r.dueDateComponents?.date))")
-        }
-        
         var expandedEvents: [FamilyEvent] = []
         let calendar = Calendar.current
         
@@ -309,17 +260,10 @@ final class ReminderService: ObservableObject {
         var currentDate = calendar.startOfDay(for: dateRange.start)
         let endDate = calendar.startOfDay(for: dateRange.end)
         
-        print("   Prüfe Tage von \(currentDate) bis \(endDate)")
-        
         while currentDate < endDate {
             for reminder in recurringReminders {
-                guard let ekRule = reminder.recurrenceRules?.first else {
-                    print("   ⚠️ \(reminder.title ?? "?"): Keine Recurrence Rule")
-                    continue
-                }
-                
-                guard let rule = RecurrenceRule.from(ekRule: ekRule) else {
-                    print("   ⚠️ \(reminder.title ?? "?"): Konnte Rule nicht parsen: \(ekRule)")
+                guard let ekRule = reminder.recurrenceRules?.first,
+                      let rule = RecurrenceRule.from(ekRule: ekRule) else {
                     continue
                 }
                 
@@ -333,28 +277,21 @@ final class ReminderService: ObservableObject {
                     reminderStartDate = nil
                 }
                 
-                guard let startDate = reminderStartDate else {
-                    print("   ⚠️ \(reminder.title ?? "?"): Kein Start/Due Datum")
-                    continue
-                }
+                guard let startDate = reminderStartDate else { continue }
                 
                 // Prüfe ob die Regel für diesen Tag zutrifft
-                let matches = rule.matches(date: currentDate, startDate: startDate)
-                if matches {
+                if rule.matches(date: currentDate, startDate: startDate) {
                     // Erstelle ein "virtuelles" FamilyEvent für diesen Tag
                     let event = FamilyEvent.expandedFrom(
                         reminder: reminder,
                         forDate: currentDate
                     )
                     expandedEvents.append(event)
-                    print("   ✅ \(reminder.title ?? "?") matched für \(currentDate)")
                 }
             }
             
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? endDate
         }
-        
-        print("   Expandiert: \(expandedEvents.count) Events")
         
         return expandedEvents
     }
