@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 import EventKit
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
     @StateObject private var calendarService = CalendarService()
     @StateObject private var reminderService = ReminderService()
     
@@ -19,7 +21,8 @@ struct ContentView: View {
             if hasCompletedOnboarding && hasRequiredPermissions {
                 MainTabView(
                     calendarService: calendarService,
-                    reminderService: reminderService
+                    reminderService: reminderService,
+                    modelContext: modelContext
                 )
             } else {
                 OnboardingView(
@@ -44,6 +47,7 @@ struct ContentView: View {
 struct MainTabView: View {
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var reminderService: ReminderService
+    let modelContext: ModelContext
     
     var body: some View {
         TabView {
@@ -60,29 +64,19 @@ struct MainTabView: View {
                     Label("Routinen", systemImage: "checklist")
                 }
             
-            SettingsPlaceholderView()
-                .tabItem {
-                    Label("Einstellungen", systemImage: "gear")
-                }
-        }
-    }
-}
-
-// MARK: - Placeholder Views
-
-struct SettingsPlaceholderView: View {
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView(
-                "Einstellungen",
-                systemImage: "gear",
-                description: Text("Hier kannst du bald Kalender und Regeln konfigurieren")
+            SettingsView(
+                calendarService: calendarService,
+                reminderService: reminderService,
+                modelContext: modelContext
             )
-            .navigationTitle("Einstellungen")
+            .tabItem {
+                Label("Einstellungen", systemImage: "gear")
+            }
         }
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: [AutoRule.self, FamilyMember.self])
 }
