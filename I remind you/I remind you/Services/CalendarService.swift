@@ -13,13 +13,37 @@ import Combine
 @MainActor
 final class CalendarService: ObservableObject {
     private let eventStore = EKEventStore()
+    private var notificationObserver: NSObjectProtocol?
     
     @Published var authorizationStatus: EKAuthorizationStatus = .notDetermined
     @Published var calendars: [EKCalendar] = []
     @Published var error: Error?
     
+    /// Triggered when external changes occur (e.g., from Apple Calendar app)
+    @Published var externalChangeOccurred: Bool = false
+    
     init() {
         updateAuthorizationStatus()
+        setupNotificationObserver()
+    }
+    
+    deinit {
+        if let observer = notificationObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
+    private func setupNotificationObserver() {
+        // Listen for changes from Apple Calendar app
+        notificationObserver = NotificationCenter.default.addObserver(
+            forName: .EKEventStoreChanged,
+            object: eventStore,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.externalChangeOccurred = true
+            }
+        }
     }
     
     // MARK: - Authorization

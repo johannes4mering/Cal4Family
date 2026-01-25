@@ -54,6 +54,14 @@ struct RoutinesView: View {
             .refreshable {
                 await viewModel.loadRoutines()
             }
+            .onReceive(viewModel.reminderService.$externalChangeOccurred) { changed in
+                if changed {
+                    Task {
+                        await viewModel.loadRoutines()
+                        viewModel.reminderService.externalChangeOccurred = false
+                    }
+                }
+            }
             .overlay {
                 if celebrateCompletion {
                     celebrationOverlay

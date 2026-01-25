@@ -13,16 +13,40 @@ import Combine
 @MainActor
 final class ReminderService: ObservableObject {
     private let eventStore = EKEventStore()
+    private var notificationObserver: NSObjectProtocol?
     
     @Published var authorizationStatus: EKAuthorizationStatus = .notDetermined
     @Published var reminderLists: [EKCalendar] = []
     @Published var error: Error?
+    
+    /// Triggered when external changes occur (e.g., from Apple Reminders app)
+    @Published var externalChangeOccurred: Bool = false
     
     init() {
         updateAuthorizationStatus()
         // Load lists if already authorized
         if authorizationStatus == .fullAccess {
             loadReminderLists()
+        }
+        setupNotificationObserver()
+    }
+    
+    deinit {
+        if let observer = notificationObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
+    private func setupNotificationObserver() {
+        // Listen for changes from Apple Reminders app
+        notificationObserver = NotificationCenter.default.addObserver(
+            forName: .EKEventStoreChanged,
+            object: eventStore,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.externalChangeOccurred = true
+            }
         }
     }
     

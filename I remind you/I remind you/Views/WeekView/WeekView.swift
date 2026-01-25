@@ -58,6 +58,22 @@ struct WeekView: View {
             .refreshable {
                 await viewModel.loadEvents()
             }
+            .onReceive(viewModel.calendarService.$externalChangeOccurred) { changed in
+                if changed {
+                    Task {
+                        await viewModel.loadEvents()
+                        viewModel.calendarService.externalChangeOccurred = false
+                    }
+                }
+            }
+            .onReceive(viewModel.reminderService.$externalChangeOccurred) { changed in
+                if changed {
+                    Task {
+                        await viewModel.loadEvents()
+                        viewModel.reminderService.externalChangeOccurred = false
+                    }
+                }
+            }
             .sheet(item: $exportItem) { item in
                 ShareSheet(items: [item.data])
             }

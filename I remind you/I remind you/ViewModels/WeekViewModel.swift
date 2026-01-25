@@ -12,8 +12,8 @@ import Combine
 /// ViewModel für die Wochenansicht
 @MainActor
 final class WeekViewModel: ObservableObject {
-    private let calendarService: CalendarService
-    private let reminderService: ReminderService
+    let calendarService: CalendarService
+    let reminderService: ReminderService
     
     @Published var currentWeekStart: Date
     @Published var events: [FamilyEvent] = []

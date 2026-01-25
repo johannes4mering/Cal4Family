@@ -13,7 +13,7 @@ import EventKit
 /// ViewModel für die Routinen-Ansicht
 @MainActor
 final class RoutinesViewModel: ObservableObject {
-    private let reminderService: ReminderService
+    let reminderService: ReminderService
     
     @Published var routineLists: [EKCalendar] = []
     @Published var selectedList: EKCalendar?
