@@ -186,7 +186,7 @@ struct RoutinesView: View {
                         Spacer()
                         if list.calendarIdentifier == viewModel.selectedList?.calendarIdentifier {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(.accent)
+                                .foregroundStyle(.tint)
                         }
                     }
                 }

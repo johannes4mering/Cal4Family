@@ -63,9 +63,10 @@ I remind you/
 - [x] Onboarding mit Berechtigungsanfragen
 - [x] Tab-Navigation (Woche, Routinen, Einstellungen)
 - [x] Aufgaben abhaken in der App
+- [x] **Routinen-View** – Kindgerechte UI mit großen Buttons, Fortschrittsring, Emojis
+- [x] **Gamification** – Feier-Overlay wenn alle Aufgaben erledigt
 
 ### Noch offen
-- [ ] **Routinen-View** – Kindgerechte UI für Routinen
 - [ ] **Einstellungen-View** – Kalender/Listen auswählen, Regeln konfigurieren
 - [ ] **PDF-Export** – Wochenkalender drucken
 - [ ] **Widgets** – Home-Screen & Lock-Screen
