@@ -11,6 +11,8 @@ import SwiftUI
 struct WeekView: View {
     @StateObject private var viewModel: WeekViewModel
     @State private var selectedDate: Date?
+    @State private var showExportSheet = false
+    @State private var pdfData: Data?
     
     init(calendarService: CalendarService, reminderService: ReminderService) {
         _viewModel = StateObject(wrappedValue: WeekViewModel(
@@ -36,8 +38,16 @@ struct WeekView: View {
             .navigationTitle("Wochenansicht")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Heute") {
-                        viewModel.goToCurrentWeek()
+                    HStack(spacing: 16) {
+                        Button {
+                            exportPDF()
+                        } label: {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        
+                        Button("Heute") {
+                            viewModel.goToCurrentWeek()
+                        }
                     }
                 }
             }
@@ -47,6 +57,39 @@ struct WeekView: View {
             .refreshable {
                 await viewModel.loadEvents()
             }
+            .sheet(isPresented: $showExportSheet) {
+                if let data = pdfData {
+                    ShareSheet(items: [data])
+                }
+            }
+        }
+    }
+    
+    // MARK: - PDF Export
+    
+    private func exportPDF() {
+        let calendar = Calendar.current
+        let weekNumber = calendar.component(.weekOfYear, from: viewModel.currentWeekStart)
+        let year = calendar.component(.year, from: viewModel.currentWeekStart)
+        
+        let days = viewModel.weekDays.map { date in
+            PDFExportService.DayData(
+                date: date,
+                events: viewModel.calendarEvents(for: date),
+                tasks: viewModel.tasks(for: date)
+            )
+        }
+        
+        let weekData = PDFExportService.WeekData(
+            weekNumber: weekNumber,
+            year: year,
+            days: days
+        )
+        
+        let pdfService = PDFExportService()
+        if let data = pdfService.generateWeekPDF(weekData: weekData) {
+            self.pdfData = data
+            self.showExportSheet = true
         }
     }
     
@@ -94,6 +137,18 @@ struct WeekView: View {
             .padding()
         }
     }
+}
+
+// MARK: - Share Sheet
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: - Day Card
