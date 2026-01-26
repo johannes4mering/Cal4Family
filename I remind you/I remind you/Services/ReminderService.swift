@@ -96,16 +96,16 @@ final class ReminderService: ObservableObject {
     }
     
     /// Lädt heutige Erinnerungen aus einer Liste (für Routinen)
-    /// Zeigt: Unerledigte für heute + Heute erledigte
+    /// Zeigt: Nur HEUTE fällige (unerledigt + heute erledigt)
     func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
-        // Hole alle unerledigten die heute oder früher fällig sind
+        // Hole alle unerledigten die heute fällig sind
         let incompletePredicate = eventStore.predicateForIncompleteReminders(
-            withDueDateStarting: nil,
-            ending: endOfDay,
+            withDueDateStarting: startOfDay,  // Ab heute
+            ending: endOfDay,                  // Bis heute 23:59
             calendars: [list]
         )
         
@@ -130,7 +130,7 @@ final class ReminderService: ObservableObject {
         
         let (incomplete, completed) = await (incompleteReminders, completedReminders)
         
-        // Filtere: Nur Erinnerungen die HEUTE fällig sind (nicht morgen!)
+        // Filtere: Nur Erinnerungen die HEUTE fällig sind
         var seen = Set<String>()
         var result: [EKReminder] = []
         
@@ -139,10 +139,11 @@ final class ReminderService: ObservableObject {
             guard !seen.contains(reminder.calendarItemIdentifier) else { continue }
             seen.insert(reminder.calendarItemIdentifier)
             
-            // Datum-Check: Nur heute oder früher, NICHT morgen
+            // Datum-Check: Nur heute (startOfDay <= dueDate < endOfDay)
             if let dueComponents = reminder.dueDateComponents,
-               let dueDate = dueComponents.date {
-                if dueDate >= endOfDay { continue }
+               let dueDate = calendar.date(from: dueComponents) {
+                // Muss HEUTE sein, nicht gestern und nicht morgen
+                if dueDate < startOfDay || dueDate >= endOfDay { continue }
             }
             
             result.append(reminder)
