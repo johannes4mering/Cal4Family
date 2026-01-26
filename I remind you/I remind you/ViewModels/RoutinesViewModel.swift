@@ -46,30 +46,8 @@ final class RoutinesViewModel: ObservableObject {
         // IMMER neu laden um Änderungen zu erfassen
         reminderService.loadReminderLists()
         
-        print("📋 ReminderService hat \(reminderService.reminderLists.count) Listen")
-        for list in reminderService.reminderLists {
-            print("   - \(list.title)")
-        }
-        
-        // Filtere Listen die typische Routine-Schlüsselwörter enthalten
-        let routineKeywords = ["routine", "morgen", "abend", "kind", "paul", "emma", "lisa", "max", "morning", "evening"]
-        
-        routineLists = reminderService.reminderLists.filter { list in
-            routineKeywords.contains { keyword in
-                list.title.localizedCaseInsensitiveContains(keyword)
-            }
-        }
-        
-        print("📋 Gefilterte Routine-Listen: \(routineLists.count)")
-        for list in routineLists {
-            print("   - \(list.title)")
-        }
-        
-        // Falls keine gefunden, zeige alle Listen zur Auswahl
-        if routineLists.isEmpty {
-            routineLists = reminderService.reminderLists
-            print("📋 Keine Routine-Listen gefunden, zeige alle \(routineLists.count) Listen")
-        }
+        // Alle Listen anzeigen (keine Filterung)
+        routineLists = reminderService.reminderLists
         
         // Wähle erste Liste automatisch wenn noch keine ausgewählt
         if selectedList == nil, let first = routineLists.first {
