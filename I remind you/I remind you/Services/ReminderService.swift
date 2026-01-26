@@ -97,15 +97,16 @@ final class ReminderService: ObservableObject {
     
     /// Lädt heutige Erinnerungen aus einer Liste (für Routinen)
     /// Zeigt: Nur HEUTE fällige (unerledigt + heute erledigt)
+    /// Bei wiederkehrenden: Auch wenn dueDate in Vergangenheit liegt, aber Regel heute matcht
     func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
-        // Hole alle unerledigten die heute fällig sind
+        // Hole ALLE unerledigten (auch überfällige, wegen wiederkehrender Erinnerungen)
         let incompletePredicate = eventStore.predicateForIncompleteReminders(
-            withDueDateStarting: startOfDay,  // Ab heute
-            ending: endOfDay,                  // Bis heute 23:59
+            withDueDateStarting: nil,   // Alle, auch überfällige
+            ending: endOfDay,           // Bis heute 23:59
             calendars: [list]
         )
         
@@ -130,7 +131,6 @@ final class ReminderService: ObservableObject {
         
         let (incomplete, completed) = await (incompleteReminders, completedReminders)
         
-        // Filtere: Nur Erinnerungen die HEUTE fällig sind
         var seen = Set<String>()
         var result: [EKReminder] = []
         
@@ -139,14 +139,39 @@ final class ReminderService: ObservableObject {
             guard !seen.contains(reminder.calendarItemIdentifier) else { continue }
             seen.insert(reminder.calendarItemIdentifier)
             
-            // Datum-Check: Nur heute (startOfDay <= dueDate < endOfDay)
-            if let dueComponents = reminder.dueDateComponents,
-               let dueDate = calendar.date(from: dueComponents) {
-                // Muss HEUTE sein, nicht gestern und nicht morgen
-                if dueDate < startOfDay || dueDate >= endOfDay { continue }
+            // Bei wiederkehrenden Erinnerungen: Prüfe ob Regel HEUTE matcht
+            if reminder.hasRecurrenceRules {
+                if let ekRule = reminder.recurrenceRules?.first,
+                   let rule = RecurrenceRule.from(ekRule: ekRule) {
+                    // Startdatum für Regel-Check
+                    let ruleStartDate: Date?
+                    if let startComps = reminder.startDateComponents, let date = startComps.date {
+                        ruleStartDate = date
+                    } else if let dueComps = reminder.dueDateComponents, let date = calendar.date(from: dueComps) {
+                        ruleStartDate = date
+                    } else {
+                        ruleStartDate = nil
+                    }
+                    
+                    if let startDate = ruleStartDate {
+                        // Wenn Regel heute matcht: anzeigen!
+                        if rule.matches(date: startOfDay, startDate: startDate) {
+                            result.append(reminder)
+                            continue
+                        }
+                    }
+                }
+                // Wiederkehrend aber matcht heute nicht: überspringen
+                continue
             }
             
-            result.append(reminder)
+            // Nicht-wiederkehrend: Nur wenn dueDate HEUTE ist
+            if let dueComponents = reminder.dueDateComponents,
+               let dueDate = calendar.date(from: dueComponents) {
+                if dueDate >= startOfDay && dueDate < endOfDay {
+                    result.append(reminder)
+                }
+            }
         }
         
         return result
