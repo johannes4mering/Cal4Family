@@ -178,12 +178,32 @@ struct RoutineItem: Identifiable {
     }
     
     static func from(reminder: EKReminder) -> RoutineItem {
-        RoutineItem(
+        // Bei wiederkehrenden Erinnerungen: Datum auf HEUTE setzen, Uhrzeit beibehalten
+        var displayDate: Date? = nil
+        if let dueComps = reminder.dueDateComponents {
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            
+            // Erstelle Datum für heute mit der Uhrzeit aus der Erinnerung
+            var todayComps = calendar.dateComponents([.year, .month, .day], from: today)
+            todayComps.hour = dueComps.hour
+            todayComps.minute = dueComps.minute
+            
+            if reminder.hasRecurrenceRules {
+                // Bei wiederkehrenden: Immer HEUTE + Uhrzeit
+                displayDate = calendar.date(from: todayComps)
+            } else {
+                // Bei einmaligen: Original-Datum verwenden
+                displayDate = calendar.date(from: dueComps)
+            }
+        }
+        
+        return RoutineItem(
             id: reminder.calendarItemIdentifier,
             title: reminder.title ?? "Aufgabe",
             isCompleted: reminder.isCompleted,
             reminderIdentifier: reminder.calendarItemIdentifier,
-            dueDate: reminder.dueDateComponents?.date,
+            dueDate: displayDate,
             priority: reminder.priority,
             hasRecurrence: reminder.hasRecurrenceRules
         )
