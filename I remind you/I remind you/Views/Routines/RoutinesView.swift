@@ -66,8 +66,8 @@ struct RoutinesView: View {
             .sheet(isPresented: $showListPicker) {
                 listPickerSheet
             }
-            .task {
-                // Task wird bei jedem Erscheinen ausgeführt
+            .onAppear {
+                // Bei jedem Erscheinen neu laden (auch nach Tab-Wechsel)
                 viewModel.loadRoutineLists()
             }
             .refreshable {
