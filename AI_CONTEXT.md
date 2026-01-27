@@ -8,7 +8,7 @@
 **App-Name:** I remind you  
 **Typ:** iOS & macOS App (SwiftUI, Multiplatform)  
 **Zweck:** Familienkalender & Routinen-App für Kinder und Eltern  
-**Version:** v0.4.0
+**Version:** v0.5.5
 
 ### Kernfunktionen
 1. **Wochenansicht** – Termine + Aufgaben kombiniert
@@ -55,7 +55,7 @@ I remind you/
 
 ---
 
-## ✅ Aktueller Stand (v0.4.0)
+## ✅ Aktueller Stand (v0.5.5)
 
 ### Implementiert
 - [x] Xcode-Projekt mit iOS 17+ & macOS 14+ Support
@@ -72,7 +72,8 @@ I remind you/
 - [x] **Routinen-View** – Kindgerechte UI mit großen Buttons, Fortschrittsring, Emojis
 - [x] **Gamification** – Feier-Overlay wenn alle Aufgaben erledigt
 - [x] **Einstellungen-View** – Kalender/Listen auswählen, Auto-Regeln erstellen
-- [x] **PDF-Export** – Wochenkalender drucken (A4, Share Sheet)
+- [x] **PDF-Export** – Wochenkalender drucken (A4/US Letter, Querformat, Share Sheet)
+- [x] **Zweispaltiges PDF-Layout** – Termine links, Erinnerungen rechts
 - [x] **Bidirektionale Sync** – EKEventStoreChanged Observer
 - [x] **Lokalisierung** – Deutsch & Englisch (Localizable.strings)
 - [x] **TestDataGenerator** – Testdaten erstellen & löschen (Debug)
@@ -155,6 +156,10 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 | v0.2.1 | PDF Export Bugfix |
 | v0.3.0 | Bidirektionale Sync + Lokalisierung + Routine-Fixes |
 | v0.4.0 | Routine-Editor + Listen teilen |
+| v0.5.0 | Onboarding-Fixes + Hilfe-Seite |
+| v0.5.1 | Onboarding Auto-Continue nach Berechtigungen |
+| v0.5.4 | Routinen-Fixes (wiederkehrende Erinnerungen, Datumsfilter) |
+| v0.5.5 | PDF Querformat + Zweispaltenlayout + US Letter + Testdaten-Sicherheit |
 
 ---
 
@@ -163,7 +168,7 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 ```
 Projekt: I remind you – Familienkalender & Routinen-App
 Pfad: /Users/johannes/work/xcode/Cal4Family/I remind you/
-Version: v0.4.0
+Version: v0.5.5
 
 Lies AI_CONTEXT.md für den vollen Kontext.
 

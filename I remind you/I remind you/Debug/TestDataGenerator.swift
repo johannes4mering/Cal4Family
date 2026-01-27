@@ -20,10 +20,10 @@ final class TestDataGenerator {
         var createdCalendars: [EKCalendar] = []
         
         let calendarData = [
-            ("Familie", CGColor(red: 0.2, green: 0.6, blue: 1.0, alpha: 1.0)),
-            ("Müllabfuhr", CGColor(red: 0.4, green: 0.3, blue: 0.2, alpha: 1.0)),
-            ("Schule", CGColor(red: 1.0, green: 0.6, blue: 0.0, alpha: 1.0)),
-            ("Sport", CGColor(red: 0.3, green: 0.8, blue: 0.3, alpha: 1.0)),
+            ("Test Familie", CGColor(red: 0.2, green: 0.6, blue: 1.0, alpha: 1.0)),
+            ("Test Müllabfuhr", CGColor(red: 0.4, green: 0.3, blue: 0.2, alpha: 1.0)),
+            ("Test Schule", CGColor(red: 1.0, green: 0.6, blue: 0.0, alpha: 1.0)),
+            ("Test Sport", CGColor(red: 0.3, green: 0.8, blue: 0.3, alpha: 1.0)),
         ]
         
         guard let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) ??
@@ -63,11 +63,11 @@ final class TestDataGenerator {
         var createdLists: [EKCalendar] = []
         
         let listData = [
-            ("Paul – Morgenroutine", CGColor(red: 0.9, green: 0.5, blue: 0.1, alpha: 1.0)),
-            ("Paul – Abendroutine", CGColor(red: 0.5, green: 0.3, blue: 0.7, alpha: 1.0)),
-            ("Emma – Routine", CGColor(red: 1.0, green: 0.4, blue: 0.6, alpha: 1.0)),
-            ("Haushalt", CGColor(red: 0.3, green: 0.7, blue: 0.9, alpha: 1.0)),
-            ("Einkaufen", CGColor(red: 0.2, green: 0.8, blue: 0.4, alpha: 1.0)),
+            ("Test Paul – Morgenroutine", CGColor(red: 0.9, green: 0.5, blue: 0.1, alpha: 1.0)),
+            ("Test Paul – Abendroutine", CGColor(red: 0.5, green: 0.3, blue: 0.7, alpha: 1.0)),
+            ("Test Emma – Routine", CGColor(red: 1.0, green: 0.4, blue: 0.6, alpha: 1.0)),
+            ("Test Haushalt", CGColor(red: 0.3, green: 0.7, blue: 0.9, alpha: 1.0)),
+            ("Test Einkaufen", CGColor(red: 0.2, green: 0.8, blue: 0.4, alpha: 1.0)),
         ]
         
         guard let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) ??
@@ -103,10 +103,10 @@ final class TestDataGenerator {
     // MARK: - Test-Events erstellen
     
     func createTestEvents() async throws {
-        let familyCalendar = eventStore.calendars(for: .event).first { $0.title == "Familie" }
-        let muellCalendar = eventStore.calendars(for: .event).first { $0.title == "Müllabfuhr" }
-        let schoolCalendar = eventStore.calendars(for: .event).first { $0.title == "Schule" }
-        let sportCalendar = eventStore.calendars(for: .event).first { $0.title == "Sport" }
+        let familyCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Familie" }
+        let muellCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Müllabfuhr" }
+        let schoolCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Schule" }
+        let sportCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Sport" }
         
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -157,10 +157,10 @@ final class TestDataGenerator {
     // MARK: - Test-Erinnerungen erstellen
     
     func createTestReminders() async throws {
-        let paulMorning = eventStore.calendars(for: .reminder).first { $0.title == "Paul – Morgenroutine" }
-        let paulEvening = eventStore.calendars(for: .reminder).first { $0.title == "Paul – Abendroutine" }
-        let emmaRoutine = eventStore.calendars(for: .reminder).first { $0.title == "Emma – Routine" }
-        let haushalt = eventStore.calendars(for: .reminder).first { $0.title == "Haushalt" }
+        let paulMorning = eventStore.calendars(for: .reminder).first { $0.title == "Test Paul – Morgenroutine" }
+        let paulEvening = eventStore.calendars(for: .reminder).first { $0.title == "Test Paul – Abendroutine" }
+        let emmaRoutine = eventStore.calendars(for: .reminder).first { $0.title == "Test Emma – Routine" }
+        let haushalt = eventStore.calendars(for: .reminder).first { $0.title == "Test Haushalt" }
         
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -283,6 +283,8 @@ final class TestDataGenerator {
     
     // MARK: - Alles löschen
     
+    /// ACHTUNG: Diese Funktion löscht nur Kalender aus LOKALER Quelle!
+    /// iCloud-Kalender werden nicht gelöscht.
     func deleteAllTestData() async {
         print("\n🗑️ Starte Löschung der Testdaten...\n")
         
@@ -295,18 +297,34 @@ final class TestDataGenerator {
                 return
             }
             
-            // Test-Kalender löschen
-            let testCalendarNames = ["Familie", "Müllabfuhr", "Schule", "Sport"]
+            // Test-Kalender löschen - NUR wenn sie aus LOKALER Quelle stammen!
+            let testCalendarNames = ["Test Familie", "Test Müllabfuhr", "Test Schule", "Test Sport"]
             for calendar in eventStore.calendars(for: .event) {
+                // Nur lokale Kalender löschen, keine iCloud/CalDAV Kalender!
+                guard calendar.source.sourceType == .local else {
+                    if testCalendarNames.contains(calendar.title) {
+                        print("⚠️ Kalender '\(calendar.title)' übersprungen (nicht lokal, Quelle: \(calendar.source.title))")
+                    }
+                    continue
+                }
+                
                 if testCalendarNames.contains(calendar.title) {
                     try eventStore.removeCalendar(calendar, commit: true)
                     print("🗑️ Kalender gelöscht: \(calendar.title)")
                 }
             }
             
-            // Test-Erinnerungslisten löschen
-            let testListNames = ["Paul – Morgenroutine", "Paul – Abendroutine", "Emma – Routine", "Haushalt", "Einkaufen"]
+            // Test-Erinnerungslisten löschen - NUR wenn sie aus LOKALER Quelle stammen!
+            let testListNames = ["Test Paul – Morgenroutine", "Test Paul – Abendroutine", "Test Emma – Routine", "Test Haushalt", "Test Einkaufen"]
             for list in eventStore.calendars(for: .reminder) {
+                // Nur lokale Listen löschen, keine iCloud Listen!
+                guard list.source.sourceType == .local else {
+                    if testListNames.contains(list.title) {
+                        print("⚠️ Liste '\(list.title)' übersprungen (nicht lokal, Quelle: \(list.source.title))")
+                    }
+                    continue
+                }
+                
                 if testListNames.contains(list.title) {
                     try eventStore.removeCalendar(list, commit: true)
                     print("🗑️ Liste gelöscht: \(list.title)")

@@ -208,6 +208,7 @@ struct SettingsView: View {
     @State private var isDeletingTestData = false
     @State private var testDataGenerated = false
     @State private var testDataDeleted = false
+    @State private var showDeleteConfirmation = false
     
     private var debugSection: some View {
         Group {
@@ -228,7 +229,7 @@ struct SettingsView: View {
             .disabled(isGeneratingTestData || isDeletingTestData)
             
             Button(role: .destructive) {
-                deleteTestData()
+                showDeleteConfirmation = true
             } label: {
                 HStack {
                     Label("Testdaten löschen", systemImage: "trash.fill")
@@ -242,6 +243,18 @@ struct SettingsView: View {
                 }
             }
             .disabled(isGeneratingTestData || isDeletingTestData)
+            .confirmationDialog(
+                "Testdaten wirklich löschen?",
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Testdaten löschen", role: .destructive) {
+                    deleteTestData()
+                }
+                Button("Abbrechen", role: .cancel) { }
+            } message: {
+                Text("Folgende Test-Kalender und -Listen werden gelöscht:\n• Test Familie, Test Müllabfuhr, Test Schule, Test Sport\n• Test Paul – Morgenroutine/Abendroutine\n• Test Emma – Routine, Test Haushalt, Test Einkaufen")
+            }
             
             Text("⚠️ Debug-Modus: Erstellt/Löscht Kalender, Listen und Beispieldaten")
                 .font(.caption2)

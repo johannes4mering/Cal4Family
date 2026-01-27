@@ -78,13 +78,18 @@ Die App ergänzt Apple Erinnerungen und Kalender – sie ersetzt sie nicht.
 ---
 
 ### 7) Druck: Wochenkalender
-- Die App kann einen **druckbaren Wochenkalender (A4)** als PDF erzeugen
+- Die App kann einen **druckbaren Wochenkalender** als PDF erzeugen
+- **Papierformate:** A4 und US Letter
+- **Orientierung:** Querformat (Standard) oder Hochformat
+- **Zweispaltiges Layout pro Tag:**
+  - Linke Spalte: Kalendertermine (📅) mit Uhrzeit
+  - Rechte Spalte: Erinnerungen (☑️) mit Checkbox
 - Inhalt:
   - Woche / Kalenderwoche
   - Pro Tag:
     - Termine (Uhrzeit + Titel)
     - Aufgaben (Checkbox-Status)
-  - Optional: Notizfeld
+  - Farbliche Hervorhebung für heute (blau) und Wochenende (orange)
 - Der Wochenkalender ist für Küche / Pinnwand / Kühlschrank geeignet
 - Export via Share Sheet (iOS) / Datei & Drucken (macOS)
 
