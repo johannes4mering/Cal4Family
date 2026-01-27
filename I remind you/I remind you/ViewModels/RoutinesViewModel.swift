@@ -121,6 +121,7 @@ struct RoutineItem: Identifiable {
     let dueDate: Date?
     let priority: Int
     let hasRecurrence: Bool
+    let listName: String
     
     /// Emoji basierend auf Titel
     var emoji: String {
@@ -183,7 +184,8 @@ struct RoutineItem: Identifiable {
             reminderIdentifier: reminder.calendarItemIdentifier,
             dueDate: displayDate,
             priority: reminder.priority,
-            hasRecurrence: reminder.hasRecurrenceRules
+            hasRecurrence: reminder.hasRecurrenceRules,
+            listName: reminder.calendar?.title ?? ""
         )
     }
 }
