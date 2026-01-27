@@ -307,18 +307,21 @@ struct RoutineCard: View {
                         .foregroundStyle(routine.isCompleted ? .secondary : .primary)
                         .multilineTextAlignment(.leading)
                     
-                    HStack(spacing: 4) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        // Zeile 1: Datum und Uhrzeit
                         if let dueDate = routine.dueDate {
-                            Text(dueDate, format: .dateTime.day().month(.twoDigits).year())
-                            Text("-")
-                            Text(dueDate, style: .time)
+                            HStack(spacing: 4) {
+                                Text(dueDate, format: .dateTime.day().month(.twoDigits).year())
+                                Text("-")
+                                Text(dueDate, style: .time)
+                            }
                         } else {
                             Text("Kein Datum")
                                 .foregroundStyle(.orange)
                         }
                         
+                        // Zeile 2: Listenname
                         if !routine.listName.isEmpty {
-                            Text("·")
                             Text(routine.listName)
                         }
                     }
