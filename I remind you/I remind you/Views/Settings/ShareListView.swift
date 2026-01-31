@@ -8,6 +8,12 @@
 import SwiftUI
 import EventKit
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
 /// View zum Teilen von Erinnerungslisten mit Familienmitgliedern
 struct ShareListView: View {
     @Environment(\.dismiss) private var dismiss
@@ -133,7 +139,9 @@ struct ShareListView: View {
                 }
             }
             .navigationTitle("Listen teilen")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Fertig") {
@@ -151,7 +159,11 @@ struct ShareListView: View {
         // Öffne die Erinnerungen-App
         // Leider gibt es keinen direkten Deep-Link zu einer spezifischen Liste
         if let url = URL(string: "x-apple-reminderkit://") {
+            #if os(iOS)
             UIApplication.shared.open(url)
+            #else
+            NSWorkspace.shared.open(url)
+            #endif
         }
     }
 }
@@ -328,7 +340,9 @@ struct FamilyShareInstructionsView: View {
                 .padding()
             }
             .navigationTitle("Anleitung")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Fertig") {

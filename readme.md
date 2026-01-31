@@ -8,6 +8,8 @@ Entwicklung einer Apple-nativen App (iOS, optional macOS), die Apple Kalender un
 - Einkaufslisten zu pflegen,
 - und einen übersichtlichen, druckbaren **Wochenkalender** zu erzeugen.
 
+**Besonders geeignet für Kinder mit ADHS:** Die App bietet klare Strukturen, visuelle Routinen und große, übersichtliche Buttons – ohne Ablenkung durch unnötige Funktionen. So hilft sie, den Alltag zu meistern.
+
 Die App ergänzt Apple Erinnerungen und Kalender – sie ersetzt sie nicht.
 
 ---
@@ -27,8 +29,7 @@ Die App ergänzt Apple Erinnerungen und Kalender – sie ersetzt sie nicht.
 - Für jedes Kind existiert mindestens eine eigene Erinnerungs-Liste (z. B. „Paul – Routine“)
 - Aufgaben sind wiederkehrend (täglich, wöchentlich)
 - Aufgaben werden **in der Apple Erinnerungen-App abgehakt**
-- Die App liest den Status und visualisiert den Fortschritt
-
+- Die App liest den Status und visualisiert den Fortschritt- **ADHS-freundlich:** Große Buttons, Emojis zur Orientierung, klare visuelle Struktur ohne Ablenkung
 ---
 
 ### 2) Kalender zusammenführen

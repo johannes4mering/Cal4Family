@@ -107,7 +107,9 @@ struct AddRoutineView: View {
                 }
             }
             .navigationTitle(String(localized: "add_routine_title", defaultValue: "Neue Routine"))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(String(localized: "cancel", defaultValue: "Abbrechen")) {
@@ -142,7 +144,7 @@ struct AddRoutineView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .frame(width: 36, height: 36)
-                        .background(selectedWeekdays.contains(day) ? Color.accentColor : Color(.systemGray5))
+                        .background(selectedWeekdays.contains(day) ? Color.accentColor : Color.gray.opacity(0.2))
                         .foregroundStyle(selectedWeekdays.contains(day) ? .white : .primary)
                         .clipShape(Circle())
                 }

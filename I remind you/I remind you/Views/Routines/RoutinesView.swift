@@ -8,6 +8,10 @@
 import SwiftUI
 import EventKit
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 /// Kindgerechte Routinen-Ansicht mit großen Abhak-Buttons
 struct RoutinesView: View {
     @StateObject private var viewModel: RoutinesViewModel
@@ -74,11 +78,15 @@ struct RoutinesView: View {
                 viewModel.loadRoutineLists()
             }
             .onReceive(viewModel.reminderService.$externalChangeOccurred) { changed in
-                if changed {
+                // Ignoriere externe Änderungen während wir selbst toggeln
+                if changed && !viewModel.isCurrentlyToggling {
                     Task {
                         viewModel.loadRoutineLists()
                         viewModel.reminderService.externalChangeOccurred = false
                     }
+                } else if changed {
+                    // Nur Flag zurücksetzen, nicht neu laden
+                    viewModel.reminderService.externalChangeOccurred = false
                 }
             }
             .overlay {
@@ -91,8 +99,8 @@ struct RoutinesView: View {
                     withAnimation(.spring(duration: 0.5)) {
                         celebrateCompletion = true
                     }
-                    // Nach 3 Sekunden ausblenden
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    // Nach 1.5 Sekunden ausblenden
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         withAnimation {
                             celebrateCompletion = false
                         }
@@ -144,7 +152,7 @@ struct RoutinesView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.platformSecondarySystemBackground)
     }
     
     private var motivationText: String {
@@ -220,7 +228,9 @@ struct RoutinesView: View {
                 .foregroundStyle(.primary)
             }
             .navigationTitle("Liste wählen")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Fertig") {
@@ -272,9 +282,11 @@ struct RoutineCard: View {
     
     var body: some View {
         Button(action: {
-            // Haptic Feedback
+            // Haptic Feedback (nur iOS)
+            #if os(iOS)
             let impact = UIImpactFeedbackGenerator(style: .medium)
             impact.impactOccurred()
+            #endif
             
             withAnimation(.spring(duration: 0.3)) {
                 isPressed = true
@@ -288,17 +300,24 @@ struct RoutineCard: View {
             
             onToggle()
         }) {
-            HStack(spacing: 16) {
-                // Emoji
-                Text(routine.emoji)
-                    .font(.system(size: 40))
-                    .frame(width: 60, height: 60)
-                    .background(
-                        Circle()
-                            .fill(routine.isCompleted ? Color.green.opacity(0.2) : Color.accentColor.opacity(0.1))
-                    )
-                
-                // Titel und Datum/Uhrzeit
+            routineCardContent
+        }
+        .buttonStyle(.plain)
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+    }
+    
+    private var routineCardContent: some View {
+        HStack(spacing: 16) {
+            // Emoji
+            Text(routine.emoji)
+                .font(.system(size: 40))
+                .frame(width: 60, height: 60)
+                .background(
+                    Circle()
+                        .fill(routine.isCompleted ? Color.green.opacity(0.2) : Color.accentColor.opacity(0.1))
+                )
+            
+            // Titel und Datum/Uhrzeit
                 VStack(alignment: .leading, spacing: 4) {
                     Text(routine.title)
                         .font(.title3)
@@ -341,17 +360,12 @@ struct RoutineCard: View {
             .frame(maxWidth: .infinity, minHeight: 80)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(routine.isCompleted ? Color.green.opacity(0.1) : Color(.secondarySystemBackground))
+                    .fill(routine.isCompleted ? Color.green.opacity(0.1) : Color.platformSecondarySystemBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .stroke(routine.isCompleted ? Color.green.opacity(0.3) : Color.clear, lineWidth: 2)
             )
-            .scaleEffect(isPressed ? 0.97 : 1.0)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("\(routine.title), \(routine.isCompleted ? "erledigt" : "offen")")
-        .accessibilityHint("Doppeltippen zum \(routine.isCompleted ? "als offen markieren" : "abhaken")")
     }
 }
 

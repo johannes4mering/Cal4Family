@@ -9,6 +9,48 @@ import Foundation
 import SwiftUI
 import PDFKit
 
+#if canImport(UIKit)
+import UIKit
+typealias PlatformColor = UIColor
+typealias PlatformFont = UIFont
+typealias PlatformBezierPath = UIBezierPath
+#elseif canImport(AppKit)
+import AppKit
+typealias PlatformColor = NSColor
+typealias PlatformFont = NSFont
+typealias PlatformBezierPath = NSBezierPath
+
+// Extension für NSBezierPath, um cgPath zu unterstützen
+extension NSBezierPath {
+    var cgPath: CGPath {
+        let path = CGMutablePath()
+        var points = [CGPoint](repeating: .zero, count: 3)
+        
+        for i in 0..<self.elementCount {
+            let type = self.element(at: i, associatedPoints: &points)
+            switch type {
+            case .moveTo:
+                path.move(to: points[0])
+            case .lineTo:
+                path.addLine(to: points[0])
+            case .curveTo:
+                path.addCurve(to: points[2], control1: points[0], control2: points[1])
+            case .closePath:
+                path.closeSubpath()
+            case .cubicCurveTo:
+                path.addCurve(to: points[2], control1: points[0], control2: points[1])
+            case .quadraticCurveTo:
+                path.addQuadCurve(to: points[1], control: points[0])
+            @unknown default:
+                break
+            }
+        }
+        
+        return path
+    }
+}
+#endif
+
 /// Service zum Erstellen von PDF-Wochenkalendern
 @MainActor
 final class PDFExportService {
@@ -29,32 +71,55 @@ final class PDFExportService {
     
     func generateWeekPDF(weekData: WeekData, layout: PDFLayout = .standard, orientation: PDFOrientation = .landscape, paperSize: PDFPaperSize = .a4) -> Data? {
         let pageRect = CGRect(origin: .zero, size: paperSize.pageSize(orientation: orientation))
+        
+        #if canImport(UIKit)
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
         
         let data = renderer.pdfData { context in
             context.beginPage()
             
             let ctx = context.cgContext
-            
-            // Hintergrund
-            ctx.setFillColor(UIColor.white.cgColor)
-            ctx.fill(pageRect)
-            
-            // Header zeichnen
-            drawHeader(in: ctx, rect: pageRect, weekData: weekData)
-            
-            // Tage zeichnen - je nach Orientierung
-            if orientation == .landscape {
-                drawDaysLandscape(in: ctx, rect: pageRect, weekData: weekData, layout: layout)
-            } else {
-                drawDays(in: ctx, rect: pageRect, weekData: weekData, layout: layout)
-            }
-            
-            // Footer
-            drawFooter(in: ctx, rect: pageRect)
+            drawPDFContent(in: ctx, rect: pageRect, weekData: weekData, layout: layout, orientation: orientation)
         }
         
         return data
+        #else
+        // macOS: Verwende CGContext direkt
+        let pdfData = NSMutableData()
+        guard let consumer = CGDataConsumer(data: pdfData as CFMutableData),
+              let ctx = CGContext(consumer: consumer, mediaBox: nil, nil) else {
+            return nil
+        }
+        
+        var mediaBox = pageRect
+        ctx.beginPDFPage([kCGPDFContextMediaBox as String: NSValue(rect: mediaBox)] as CFDictionary)
+        
+        drawPDFContent(in: ctx, rect: pageRect, weekData: weekData, layout: layout, orientation: orientation)
+        
+        ctx.endPDFPage()
+        ctx.closePDF()
+        
+        return pdfData as Data
+        #endif
+    }
+    
+    private func drawPDFContent(in ctx: CGContext, rect: CGRect, weekData: WeekData, layout: PDFLayout, orientation: PDFOrientation) {
+        // Hintergrund
+        ctx.setFillColor(PlatformColor.white.cgColor)
+        ctx.fill(rect)
+        
+        // Header zeichnen
+        drawHeader(in: ctx, rect: rect, weekData: weekData)
+        
+        // Tage zeichnen - je nach Orientierung
+        if orientation == .landscape {
+            drawDaysLandscape(in: ctx, rect: rect, weekData: weekData, layout: layout)
+        } else {
+            drawDays(in: ctx, rect: rect, weekData: weekData, layout: layout)
+        }
+        
+        // Footer
+        drawFooter(in: ctx, rect: rect)
     }
     
     // MARK: - Header
@@ -65,8 +130,8 @@ final class PDFExportService {
         let titleFontSize: CGFloat = isLandscape ? 22 : 28
         let subtitleFontSize: CGFloat = isLandscape ? 12 : 14
         
-        let titleFont = UIFont.systemFont(ofSize: titleFontSize, weight: .bold)
-        let subtitleFont = UIFont.systemFont(ofSize: subtitleFontSize, weight: .medium)
+        let titleFont = PlatformFont.systemFont(ofSize: titleFontSize, weight: .bold)
+        let subtitleFont = PlatformFont.systemFont(ofSize: subtitleFontSize, weight: .medium)
         
         // Im Landscape: Kompakter Header in einer Zeile
         if isLandscape {
@@ -74,7 +139,7 @@ final class PDFExportService {
             let title = "Wochenplan"
             let titleAttributes: [NSAttributedString.Key: Any] = [
                 .font: titleFont,
-                .foregroundColor: UIColor.black
+                .foregroundColor: PlatformColor.black
             ]
             title.draw(at: CGPoint(x: 20, y: 20), withAttributes: titleAttributes)
             
@@ -82,7 +147,7 @@ final class PDFExportService {
             let subtitle = "KW \(weekData.weekNumber) / \(weekData.year)"
             let subtitleAttributes: [NSAttributedString.Key: Any] = [
                 .font: subtitleFont,
-                .foregroundColor: UIColor.darkGray
+                .foregroundColor: PlatformColor.darkGray
             ]
             let subtitleSize = subtitle.size(withAttributes: subtitleAttributes)
             subtitle.draw(at: CGPoint(x: (rect.width - subtitleSize.width) / 2, y: 25), withAttributes: subtitleAttributes)
@@ -99,7 +164,7 @@ final class PDFExportService {
             }
             
             // Trennlinie
-            ctx.setStrokeColor(UIColor(white: 0.85, alpha: 1).cgColor)
+            ctx.setStrokeColor(PlatformColor(white: 0.85, alpha: 1).cgColor)
             ctx.setLineWidth(1)
             ctx.move(to: CGPoint(x: 15, y: 75))
             ctx.addLine(to: CGPoint(x: rect.width - 15, y: 75))
@@ -110,7 +175,7 @@ final class PDFExportService {
             let title = "Wochenplan"
             let titleAttributes: [NSAttributedString.Key: Any] = [
                 .font: titleFont,
-                .foregroundColor: UIColor.black
+                .foregroundColor: PlatformColor.black
             ]
             
             let titleSize = title.size(withAttributes: titleAttributes)
@@ -126,7 +191,7 @@ final class PDFExportService {
             let subtitle = "KW \(weekData.weekNumber) / \(weekData.year)"
             let subtitleAttributes: [NSAttributedString.Key: Any] = [
                 .font: subtitleFont,
-                .foregroundColor: UIColor.darkGray
+                .foregroundColor: PlatformColor.darkGray
             ]
             
             let subtitleSize = subtitle.size(withAttributes: subtitleAttributes)
@@ -207,28 +272,28 @@ final class PDFExportService {
         let isWeekend = calendar.isDateInWeekend(day.date)
         
         // Hintergrund
-        let bgColor: UIColor
+        let bgColor: PlatformColor
         if isToday {
-            bgColor = UIColor.systemBlue.withAlphaComponent(0.15)
+            bgColor = PlatformColor.systemBlue.withAlphaComponent(0.15)
         } else if isWeekend {
-            bgColor = UIColor.systemOrange.withAlphaComponent(0.08)
+            bgColor = PlatformColor.systemOrange.withAlphaComponent(0.08)
         } else {
-            bgColor = UIColor(white: 0.97, alpha: 1)
+            bgColor = PlatformColor(white: 0.97, alpha: 1)
         }
         ctx.setFillColor(bgColor.cgColor)
-        let bgPath = UIBezierPath(roundedRect: rect, cornerRadius: 6)
-        ctx.addPath(bgPath.cgPath)
+        let bgPath = platformBezierPath(roundedRect: rect, cornerRadius: 6)
+        ctx.addPath(bgPath)
         ctx.fillPath()
         
         // Rahmen
-        ctx.setStrokeColor(isToday ? UIColor.systemBlue.cgColor : UIColor(white: 0.82, alpha: 1).cgColor)
+        ctx.setStrokeColor(isToday ? PlatformColor.systemBlue.cgColor : PlatformColor(white: 0.82, alpha: 1).cgColor)
         ctx.setLineWidth(isToday ? 2 : 1)
-        ctx.addPath(bgPath.cgPath)
+        ctx.addPath(bgPath)
         ctx.strokePath()
         
         // Tag-Header
-        let dayNameFont = UIFont.systemFont(ofSize: 11, weight: .bold)
-        let dateFont = UIFont.systemFont(ofSize: 9, weight: .medium)
+        let dayNameFont = PlatformFont.systemFont(ofSize: 11, weight: .bold)
+        let dateFont = PlatformFont.systemFont(ofSize: 9, weight: .medium)
         
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "de_DE")
@@ -241,12 +306,12 @@ final class PDFExportService {
         
         let dayNameAttributes: [NSAttributedString.Key: Any] = [
             .font: dayNameFont,
-            .foregroundColor: isToday ? UIColor.systemBlue : UIColor.black
+            .foregroundColor: isToday ? PlatformColor.systemBlue : PlatformColor.black
         ]
         
         let dateAttributes: [NSAttributedString.Key: Any] = [
             .font: dateFont,
-            .foregroundColor: UIColor.gray
+            .foregroundColor: PlatformColor.gray
         ]
         
         // Header zentriert
@@ -257,133 +322,108 @@ final class PDFExportService {
         dateString.draw(at: CGPoint(x: rect.midX - dateSize.width / 2, y: rect.minY + 18), withAttributes: dateAttributes)
         
         // Trennlinie unter Header
-        ctx.setStrokeColor(UIColor(white: 0.85, alpha: 1).cgColor)
+        ctx.setStrokeColor(PlatformColor(white: 0.85, alpha: 1).cgColor)
         ctx.setLineWidth(0.5)
         ctx.move(to: CGPoint(x: rect.minX + 5, y: rect.minY + 34))
         ctx.addLine(to: CGPoint(x: rect.maxX - 5, y: rect.minY + 34))
         ctx.strokePath()
         
-        // Zwei-Spalten-Layout: Events links, Tasks rechts
-        let contentPadding: CGFloat = 3
+        // Horizontales Layout: Events oben, Tasks unten (größere Schrift möglich)
+        let contentPadding: CGFloat = 4
         let headerHeight: CGFloat = 38
-        let columnSpacing: CGFloat = 2
-        let columnWidth = (rect.width - contentPadding * 2 - columnSpacing) / 2
-        let maxContentY = rect.maxY - 8
+        let maxContentY = rect.maxY - 6
         
-        let eventFont = UIFont.systemFont(ofSize: 7, weight: .medium)
-        let taskFont = UIFont.systemFont(ofSize: 7, weight: .regular)
-        let timeFont = UIFont.systemFont(ofSize: 6, weight: .regular)
-        let sectionFont = UIFont.systemFont(ofSize: 6, weight: .bold)
+        // Größere Schrift da mehr Platz horizontal
+        let eventFont = PlatformFont.systemFont(ofSize: 8, weight: .medium)
+        let taskFont = PlatformFont.systemFont(ofSize: 8, weight: .regular)
+        let timeFont = PlatformFont.systemFont(ofSize: 7, weight: .regular)
         
-        // Linke Spalte: Events (Kalender)
-        let leftColumnX = rect.minX + contentPadding
-        var leftY = rect.minY + headerHeight
+        var currentY = rect.minY + headerHeight
         
-        // Events-Überschrift nur wenn Events vorhanden
-        if !day.events.isEmpty {
-            let eventsLabel = "📅"
-            let labelAttributes: [NSAttributedString.Key: Any] = [
-                .font: sectionFont,
-                .foregroundColor: UIColor.darkGray
-            ]
-            eventsLabel.draw(at: CGPoint(x: leftColumnX, y: leftY), withAttributes: labelAttributes)
-            leftY += 9
-        }
-        
+        // Oberer Bereich: Events (Kalender)
         for event in day.events {
-            guard leftY < maxContentY - 8 else {
+            guard currentY < maxContentY - 8 else {
                 let remainingEvents = day.events.count - (day.events.firstIndex(where: { $0.id == event.id }) ?? 0)
-                if remainingEvents > 0 {
-                    let moreText = "+\(remainingEvents)"
+                let remainingTasks = day.tasks.count
+                let total = remainingEvents + remainingTasks
+                if total > 0 {
+                    let moreText = "+\(total)"
                     let moreAttributes: [NSAttributedString.Key: Any] = [
-                        .font: UIFont.systemFont(ofSize: 6, weight: .medium),
-                        .foregroundColor: UIColor.gray
+                        .font: PlatformFont.systemFont(ofSize: 7, weight: .medium),
+                        .foregroundColor: PlatformColor.gray
                     ]
-                    moreText.draw(at: CGPoint(x: leftColumnX, y: leftY), withAttributes: moreAttributes)
+                    moreText.draw(at: CGPoint(x: rect.minX + contentPadding, y: currentY), withAttributes: moreAttributes)
                 }
-                break
+                return
             }
             
             let timeString = event.isAllDay ? "○" : formatTime(event.startDate)
             
             let timeAttributes: [NSAttributedString.Key: Any] = [
                 .font: timeFont,
-                .foregroundColor: UIColor.gray
+                .foregroundColor: PlatformColor.gray
             ]
             let eventAttributes: [NSAttributedString.Key: Any] = [
                 .font: eventFont,
-                .foregroundColor: UIColor.black
+                .foregroundColor: PlatformColor.black
             ]
             
-            timeString.draw(at: CGPoint(x: leftColumnX, y: leftY), withAttributes: timeAttributes)
+            timeString.draw(at: CGPoint(x: rect.minX + contentPadding, y: currentY), withAttributes: timeAttributes)
             
-            let maxTitleWidth = columnWidth - 18
+            let maxTitleWidth = rect.width - contentPadding * 2 - 22
             let truncatedTitle = truncateText(event.title, font: eventFont, maxWidth: maxTitleWidth)
-            truncatedTitle.draw(at: CGPoint(x: leftColumnX + 16, y: leftY), withAttributes: eventAttributes)
+            truncatedTitle.draw(at: CGPoint(x: rect.minX + contentPadding + 20, y: currentY), withAttributes: eventAttributes)
             
-            leftY += 9
+            currentY += 10
         }
         
-        // Vertikale Trennlinie zwischen den Spalten (wenn beide Inhalte haben)
-        if !day.events.isEmpty && !day.tasks.isEmpty {
-            let separatorX = rect.minX + contentPadding + columnWidth + columnSpacing / 2
-            ctx.setStrokeColor(UIColor(white: 0.88, alpha: 1).cgColor)
+        // Horizontale Trennlinie zwischen Events und Tasks (wenn beide vorhanden)
+        if !day.events.isEmpty && !day.tasks.isEmpty && currentY < maxContentY - 12 {
+            currentY += 2
+            ctx.setStrokeColor(PlatformColor(white: 0.88, alpha: 1).cgColor)
             ctx.setLineWidth(0.5)
-            ctx.move(to: CGPoint(x: separatorX, y: rect.minY + headerHeight))
-            ctx.addLine(to: CGPoint(x: separatorX, y: maxContentY))
+            ctx.move(to: CGPoint(x: rect.minX + 5, y: currentY))
+            ctx.addLine(to: CGPoint(x: rect.maxX - 5, y: currentY))
             ctx.strokePath()
+            currentY += 4
         }
         
-        // Rechte Spalte: Tasks (Erinnerungen)
-        let rightColumnX = rect.minX + contentPadding + columnWidth + columnSpacing
-        var rightY = rect.minY + headerHeight
-        
-        // Tasks-Überschrift nur wenn Tasks vorhanden
-        if !day.tasks.isEmpty {
-            let tasksLabel = "☑️"
-            let labelAttributes: [NSAttributedString.Key: Any] = [
-                .font: sectionFont,
-                .foregroundColor: UIColor.darkGray
-            ]
-            tasksLabel.draw(at: CGPoint(x: rightColumnX, y: rightY), withAttributes: labelAttributes)
-            rightY += 9
-        }
-        
+        // Unterer Bereich: Tasks (Erinnerungen)
         for task in day.tasks {
-            guard rightY < maxContentY - 8 else {
+            guard currentY < maxContentY - 8 else {
                 let remainingTasks = day.tasks.count - (day.tasks.firstIndex(where: { $0.id == task.id }) ?? 0)
                 if remainingTasks > 0 {
                     let moreText = "+\(remainingTasks)"
                     let moreAttributes: [NSAttributedString.Key: Any] = [
-                        .font: UIFont.systemFont(ofSize: 6, weight: .medium),
-                        .foregroundColor: UIColor.gray
+                        .font: PlatformFont.systemFont(ofSize: 7, weight: .medium),
+                        .foregroundColor: PlatformColor.gray
                     ]
-                    moreText.draw(at: CGPoint(x: rightColumnX, y: rightY), withAttributes: moreAttributes)
+                    moreText.draw(at: CGPoint(x: rect.minX + contentPadding, y: currentY), withAttributes: moreAttributes)
                 }
-                break
+                return
             }
             
             let checkbox = task.isCompleted ? "☑" : "☐"
             let checkboxAttributes: [NSAttributedString.Key: Any] = [
                 .font: taskFont,
-                .foregroundColor: task.isCompleted ? UIColor.systemGreen : UIColor.gray
+                .foregroundColor: task.isCompleted ? PlatformColor.systemGreen : PlatformColor.gray
             ]
             let taskAttributes: [NSAttributedString.Key: Any] = [
                 .font: taskFont,
-                .foregroundColor: task.isCompleted ? UIColor.gray : UIColor.black
+                .foregroundColor: task.isCompleted ? PlatformColor.gray : PlatformColor.black
             ]
             
-            checkbox.draw(at: CGPoint(x: rightColumnX, y: rightY), withAttributes: checkboxAttributes)
+            checkbox.draw(at: CGPoint(x: rect.minX + contentPadding, y: currentY), withAttributes: checkboxAttributes)
             
-            let maxTitleWidth = columnWidth - 10
+            let maxTitleWidth = rect.width - contentPadding * 2 - 12
             let truncatedTitle = truncateText(task.title, font: taskFont, maxWidth: maxTitleWidth)
-            truncatedTitle.draw(at: CGPoint(x: rightColumnX + 8, y: rightY), withAttributes: taskAttributes)
+            truncatedTitle.draw(at: CGPoint(x: rect.minX + contentPadding + 10, y: currentY), withAttributes: taskAttributes)
             
-            rightY += 9
+            currentY += 10
         }
     }
     
-    private func truncateText(_ text: String, font: UIFont, maxWidth: CGFloat) -> String {
+    private func truncateText(_ text: String, font: PlatformFont, maxWidth: CGFloat) -> String {
         let attributes: [NSAttributedString.Key: Any] = [.font: font]
         var truncated = text
         
@@ -394,25 +434,34 @@ final class PDFExportService {
         return truncated
     }
     
+    /// Cross-platform BezierPath für abgerundete Rechtecke
+    private func platformBezierPath(roundedRect rect: CGRect, cornerRadius: CGFloat) -> CGPath {
+        #if canImport(UIKit)
+        return UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
+        #else
+        return NSBezierPath(roundedRect: rect, xRadius: cornerRadius, yRadius: cornerRadius).cgPath
+        #endif
+    }
+    
     private func drawDay(in ctx: CGContext, rect: CGRect, day: DayData, layout: PDFLayout) {
         let calendar = Calendar.current
         let isToday = calendar.isDateInToday(day.date)
         
         // Hintergrund
-        ctx.setFillColor(isToday ? UIColor.systemBlue.withAlphaComponent(0.1).cgColor : UIColor(white: 0.97, alpha: 1).cgColor)
-        let bgPath = UIBezierPath(roundedRect: rect, cornerRadius: 8)
-        ctx.addPath(bgPath.cgPath)
+        ctx.setFillColor(isToday ? PlatformColor.systemBlue.withAlphaComponent(0.1).cgColor : PlatformColor(white: 0.97, alpha: 1).cgColor)
+        let bgPath = platformBezierPath(roundedRect: rect, cornerRadius: 8)
+        ctx.addPath(bgPath)
         ctx.fillPath()
         
         // Rahmen
-        ctx.setStrokeColor(isToday ? UIColor.systemBlue.cgColor : UIColor(white: 0.85, alpha: 1).cgColor)
+        ctx.setStrokeColor(isToday ? PlatformColor.systemBlue.cgColor : PlatformColor(white: 0.85, alpha: 1).cgColor)
         ctx.setLineWidth(isToday ? 2 : 1)
-        ctx.addPath(bgPath.cgPath)
+        ctx.addPath(bgPath)
         ctx.strokePath()
         
         // Tag-Header
-        let dayNameFont = UIFont.systemFont(ofSize: 12, weight: .bold)
-        let dateFont = UIFont.systemFont(ofSize: 10, weight: .regular)
+        let dayNameFont = PlatformFont.systemFont(ofSize: 12, weight: .bold)
+        let dateFont = PlatformFont.systemFont(ofSize: 10, weight: .regular)
         
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "de_DE")
@@ -425,12 +474,12 @@ final class PDFExportService {
         
         let dayNameAttributes: [NSAttributedString.Key: Any] = [
             .font: dayNameFont,
-            .foregroundColor: isToday ? UIColor.systemBlue : UIColor.black
+            .foregroundColor: isToday ? PlatformColor.systemBlue : PlatformColor.black
         ]
         
         let dateAttributes: [NSAttributedString.Key: Any] = [
             .font: dateFont,
-            .foregroundColor: UIColor.gray
+            .foregroundColor: PlatformColor.gray
         ]
         
         dayName.draw(at: CGPoint(x: rect.minX + 10, y: rect.minY + 6), withAttributes: dayNameAttributes)
@@ -440,9 +489,9 @@ final class PDFExportService {
         let contentX = rect.minX + 90
         var currentY = rect.minY + 6
         
-        let eventFont = UIFont.systemFont(ofSize: 9, weight: .medium)
-        let taskFont = UIFont.systemFont(ofSize: 9, weight: .regular)
-        let timeFont = UIFont.systemFont(ofSize: 8, weight: .regular)
+        let eventFont = PlatformFont.systemFont(ofSize: 9, weight: .medium)
+        let taskFont = PlatformFont.systemFont(ofSize: 9, weight: .regular)
+        let timeFont = PlatformFont.systemFont(ofSize: 8, weight: .regular)
         
         // Events
         for event in day.events.prefix(3) {
@@ -450,11 +499,11 @@ final class PDFExportService {
             
             let timeAttributes: [NSAttributedString.Key: Any] = [
                 .font: timeFont,
-                .foregroundColor: UIColor.gray
+                .foregroundColor: PlatformColor.gray
             ]
             let eventAttributes: [NSAttributedString.Key: Any] = [
                 .font: eventFont,
-                .foregroundColor: UIColor.black
+                .foregroundColor: PlatformColor.black
             ]
             
             timeString.draw(at: CGPoint(x: contentX, y: currentY), withAttributes: timeAttributes)
@@ -468,8 +517,8 @@ final class PDFExportService {
         if day.events.count > 3 {
             let moreText = "+\(day.events.count - 3) weitere"
             let moreAttributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 8),
-                .foregroundColor: UIColor.gray
+                .font: PlatformFont.systemFont(ofSize: 8),
+                .foregroundColor: PlatformColor.gray
             ]
             moreText.draw(at: CGPoint(x: contentX + 35, y: currentY), withAttributes: moreAttributes)
             currentY += 12
@@ -485,11 +534,11 @@ final class PDFExportService {
             let checkbox = task.isCompleted ? "☑" : "☐"
             let checkboxAttributes: [NSAttributedString.Key: Any] = [
                 .font: taskFont,
-                .foregroundColor: task.isCompleted ? UIColor.systemGreen : UIColor.gray
+                .foregroundColor: task.isCompleted ? PlatformColor.systemGreen : PlatformColor.gray
             ]
             let taskAttributes: [NSAttributedString.Key: Any] = [
                 .font: taskFont,
-                .foregroundColor: task.isCompleted ? UIColor.gray : UIColor.black
+                .foregroundColor: task.isCompleted ? PlatformColor.gray : PlatformColor.black
             ]
             
             checkbox.draw(at: CGPoint(x: contentX, y: currentY), withAttributes: checkboxAttributes)
@@ -511,7 +560,7 @@ final class PDFExportService {
     
     private func drawFooter(in ctx: CGContext, rect: CGRect) {
         let isLandscape = rect.width > rect.height
-        let footerFont = UIFont.systemFont(ofSize: isLandscape ? 7 : 8, weight: .regular)
+        let footerFont = PlatformFont.systemFont(ofSize: isLandscape ? 7 : 8, weight: .regular)
         
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "de_DE")
@@ -520,7 +569,7 @@ final class PDFExportService {
         let footerText = "Erstellt mit I remind you • \(formatter.string(from: Date()))"
         let footerAttributes: [NSAttributedString.Key: Any] = [
             .font: footerFont,
-            .foregroundColor: UIColor.lightGray
+            .foregroundColor: PlatformColor.lightGray
         ]
         
         let footerSize = footerText.size(withAttributes: footerAttributes)

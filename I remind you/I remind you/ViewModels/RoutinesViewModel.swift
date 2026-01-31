@@ -77,10 +77,42 @@ final class RoutinesViewModel: ObservableObject {
         
         print("📝 Gefundene Erinnerungen für heute: \(reminders.count)")
         
-        // Konvertiere zu RoutineItems
-        routines = reminders
-            .sorted { ($0.dueDateComponents?.date ?? Date.distantFuture) < ($1.dueDateComponents?.date ?? Date.distantFuture) }
-            .map { RoutineItem.from(reminder: $0) }
+        // Konvertiere zu RoutineItems mit stabiler Sortierung:
+        // 1. Einträge ohne Uhrzeit zuerst
+        // 2. Dann nach Uhrzeit
+        // 3. Dann alphabetisch nach Titel
+        // Wichtig: Sortierung basiert auf stabilen Werten (nicht auf completion status)
+        let sortedReminders = reminders.sorted { reminder1, reminder2 in
+            let hour1 = reminder1.dueDateComponents?.hour
+            let hour2 = reminder2.dueDateComponents?.hour
+            let minute1 = reminder1.dueDateComponents?.minute ?? 0
+            let minute2 = reminder2.dueDateComponents?.minute ?? 0
+            
+            // Beide ohne Uhrzeit → alphabetisch
+            if hour1 == nil && hour2 == nil {
+                return (reminder1.title ?? "").localizedCompare(reminder2.title ?? "") == .orderedAscending
+            }
+            
+            // Einer ohne Uhrzeit → der kommt zuerst
+            if hour1 == nil { return true }
+            if hour2 == nil { return false }
+            
+            // Beide mit Uhrzeit → nach Stunde und Minute sortieren
+            let time1 = hour1! * 60 + minute1
+            let time2 = hour2! * 60 + minute2
+            
+            if time1 != time2 {
+                return time1 < time2
+            }
+            
+            // Gleiche Zeit → alphabetisch
+            return (reminder1.title ?? "").localizedCompare(reminder2.title ?? "") == .orderedAscending
+        }
+        
+        // Map mit originalem Index für stabile Sortierung
+        routines = sortedReminders.enumerated().map { index, reminder in
+            RoutineItem.from(reminder: reminder, sortIndex: index)
+        }
         
         print("📝 Routinen geladen: \(routines.count)")
         
@@ -94,20 +126,34 @@ final class RoutinesViewModel: ObservableObject {
     
     // MARK: - Aktionen
     
+    /// Flag um zu verhindern, dass externe Änderungen während unseres eigenen Toggles neu laden
+    private var isToggling = false
+    
     func toggleRoutine(_ routine: RoutineItem) async {
+        isToggling = true
+        
         do {
             try await reminderService.setCompleted(
                 reminderIdentifier: routine.reminderIdentifier,
                 completed: !routine.isCompleted
             )
             
-            // Update lokal
+            // Update lokal - Position bleibt gleich da sortIndex fix ist
             if let index = routines.firstIndex(where: { $0.id == routine.id }) {
                 routines[index].isCompleted.toggle()
             }
         } catch {
             self.error = error
         }
+        
+        // Kurze Verzögerung bevor externe Änderungen wieder verarbeitet werden
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 Sekunden
+        isToggling = false
+    }
+    
+    /// Prüft ob gerade getoggelt wird (für externe Change Handler)
+    var isCurrentlyToggling: Bool {
+        isToggling
     }
 }
 
@@ -122,6 +168,7 @@ struct RoutineItem: Identifiable {
     let priority: Int
     let hasRecurrence: Bool
     let listName: String
+    let sortIndex: Int  // Stabiler Sortier-Index
     
     /// Emoji basierend auf Titel
     var emoji: String {
@@ -156,7 +203,7 @@ struct RoutineItem: Identifiable {
         }
     }
     
-    static func from(reminder: EKReminder) -> RoutineItem {
+    static func from(reminder: EKReminder, sortIndex: Int = 0) -> RoutineItem {
         // Bei wiederkehrenden Erinnerungen: Datum auf HEUTE setzen, Uhrzeit beibehalten
         var displayDate: Date? = nil
         if let dueComps = reminder.dueDateComponents {
@@ -185,7 +232,8 @@ struct RoutineItem: Identifiable {
             dueDate: displayDate,
             priority: reminder.priority,
             hasRecurrence: reminder.hasRecurrenceRules,
-            listName: reminder.calendar?.title ?? ""
+            listName: reminder.calendar?.title ?? "",
+            sortIndex: sortIndex
         )
     }
 }

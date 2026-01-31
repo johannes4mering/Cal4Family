@@ -170,6 +170,9 @@ struct SettingsView: View {
     
     // MARK: - Info-Sektion
     
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
+    @State private var showOnboardingAlert = false
+    
     private var infoSection: some View {
         Section {
             NavigationLink {
@@ -178,10 +181,25 @@ struct SettingsView: View {
                 Label("Hilfe", systemImage: "questionmark.circle")
             }
             
+            Button {
+                showOnboardingAlert = true
+            } label: {
+                Label("Startbildschirm anzeigen", systemImage: "hand.wave")
+                    .foregroundStyle(.primary)
+            }
+            .alert("Startbildschirm anzeigen?", isPresented: $showOnboardingAlert) {
+                Button("Abbrechen", role: .cancel) { }
+                Button("Anzeigen") {
+                    hasCompletedOnboarding = false
+                }
+            } message: {
+                Text("Der Willkommens-Bildschirm wird beim nächsten App-Start angezeigt.")
+            }
+            
             HStack {
                 Text("Version")
                 Spacer()
-                Text("0.5.1")
+                Text("0.6.0")
                     .foregroundStyle(.secondary)
             }
             
@@ -430,7 +448,9 @@ struct AddRuleSheet: View {
                 
                 Section("Erinnerung erstellen") {
                     TextField("Erinnerungstext", text: $reminderTitle)
+                        #if os(iOS)
                         .textInputAutocapitalization(.sentences)
+                        #endif
                     
                     Picker("Ziel-Liste", selection: $selectedListId) {
                         Text("Auswählen...").tag("")
@@ -464,7 +484,9 @@ struct AddRuleSheet: View {
                 }
             }
             .navigationTitle("Neue Regel")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Abbrechen") {

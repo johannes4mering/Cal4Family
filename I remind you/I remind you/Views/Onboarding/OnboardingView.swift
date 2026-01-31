@@ -8,6 +8,12 @@
 import SwiftUI
 import EventKit
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
 /// Onboarding-Ansicht für Berechtigungsanfragen
 struct OnboardingView: View {
     @ObservedObject var calendarService: CalendarService
@@ -92,14 +98,28 @@ struct OnboardingView: View {
         }
         .alert("Berechtigung erforderlich", isPresented: $showError) {
             Button("Einstellungen öffnen") {
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
+                openSystemSettings()
             }
             Button("Abbrechen", role: .cancel) {}
         } message: {
             Text("Bitte erlaube den Zugriff auf Kalender und Erinnerungen in den Einstellungen.")
         }
+    }
+    
+    private func openSystemSettings() {
+        #if os(iOS)
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
+        }
+        #else
+        // macOS Sonoma/Sequoia: Öffne Systemeinstellungen > Datenschutz > Kalender
+        // Für macOS 13+ ist der URL-Scheme anders
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars") {
+            NSWorkspace.shared.open(url)
+        } else if let url = URL(string: "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_Calendars") {
+            NSWorkspace.shared.open(url)
+        }
+        #endif
     }
     
     private var buttonTitle: String {

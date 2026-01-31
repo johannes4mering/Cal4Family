@@ -8,6 +8,12 @@
 import SwiftUI
 import EventKit
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
 /// Hauptansicht: Wochenübersicht mit Terminen und Aufgaben
 struct WeekView: View {
     @StateObject private var viewModel: WeekViewModel
@@ -79,7 +85,12 @@ struct WeekView: View {
                 }
             }
             .sheet(item: $exportItem) { item in
+                #if os(iOS)
                 ShareSheet(items: [item.data])
+                #else
+                // macOS: NSSharingServicePicker wird direkt verwendet
+                MacShareSheet(data: item.data)
+                #endif
             }
         }
     }
@@ -133,7 +144,7 @@ struct WeekView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.platformSystemBackground)
     }
     
     private var legendView: some View {
@@ -174,7 +185,7 @@ struct WeekView: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.platformSecondarySystemBackground)
     }
     
     private var weekContent: some View {
@@ -226,8 +237,9 @@ struct ExportItem: Identifiable {
     let data: Data
 }
 
-// MARK: - Share Sheet
+// MARK: - Share Sheet (iOS)
 
+#if os(iOS)
 struct ShareSheet: UIViewControllerRepresentable {
     let items: [Any]
     
@@ -247,6 +259,104 @@ struct ShareSheet: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+#endif
+
+// MARK: - Share Sheet (macOS)
+
+#if os(macOS)
+import UniformTypeIdentifiers
+
+struct MacShareSheet: View {
+    let data: Data
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("PDF exportieren")
+                .font(.headline)
+            
+            HStack(spacing: 20) {
+                Button("Speichern unter...") {
+                    saveToFile()
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Button("Drucken") {
+                    printPDF()
+                }
+                .buttonStyle(.bordered)
+                
+                Button("Abbrechen") {
+                    dismiss()
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding(40)
+        .frame(minWidth: 400)
+    }
+    
+    private func saveToFile() {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.pdf]
+        panel.nameFieldStringValue = "Wochenplan.pdf"
+        panel.canCreateDirectories = true
+        
+        if panel.runModal() == .OK, let url = panel.url {
+            do {
+                try data.write(to: url)
+                dismiss()
+            } catch {
+                print("Fehler beim Speichern: \(error)")
+            }
+        }
+    }
+    
+    private func printPDF() {
+        guard let pdfDocument = PDFDocument(data: data) else { return }
+        
+        let printInfo = NSPrintInfo.shared
+        printInfo.horizontalPagination = .automatic
+        printInfo.verticalPagination = .automatic
+        printInfo.isHorizontallyCentered = true
+        printInfo.isVerticallyCentered = true
+        
+        let printOperation = pdfDocument.printOperation(for: printInfo, scalingMode: .pageScaleToFit, autoRotate: true)
+        printOperation?.runModal(for: NSApp.mainWindow ?? NSWindow(), delegate: nil, didRun: nil, contextInfo: nil)
+        dismiss()
+    }
+}
+
+import PDFKit
+#endif
+
+// MARK: - Platform Colors
+
+extension Color {
+    static var platformSystemBackground: Color {
+        #if os(iOS)
+        return Color(.systemBackground)
+        #else
+        return Color(nsColor: .windowBackgroundColor)
+        #endif
+    }
+    
+    static var platformSecondarySystemBackground: Color {
+        #if os(iOS)
+        return Color(.secondarySystemBackground)
+        #else
+        return Color(nsColor: .controlBackgroundColor)
+        #endif
+    }
+    
+    static var platformTertiarySystemBackground: Color {
+        #if os(iOS)
+        return Color(.tertiarySystemBackground)
+        #else
+        return Color(nsColor: .underPageBackgroundColor)
+        #endif
+    }
 }
 
 // MARK: - Day Card
@@ -301,7 +411,7 @@ struct DayCard: View {
                 }
             }
             .padding()
-            .background(isToday ? Color.accentColor : Color(.secondarySystemBackground))
+            .background(isToday ? Color.accentColor : Color.platformSecondarySystemBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             
             // Termine
@@ -340,7 +450,7 @@ struct DayCard: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.platformSystemBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
     }
@@ -463,7 +573,7 @@ struct LegendItem: View {
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .background(isActive ? Color(.tertiarySystemBackground) : Color(.tertiarySystemBackground).opacity(0.5))
+            .background(isActive ? Color.platformTertiarySystemBackground : Color.platformTertiarySystemBackground.opacity(0.5))
             .clipShape(Capsule())
             .overlay {
                 if !isActive {
