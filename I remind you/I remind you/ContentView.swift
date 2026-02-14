@@ -39,13 +39,26 @@ struct ContentView: View {
 
 // MARK: - Main Tab View
 
+enum MainTab: String {
+    case routines
+    case week
+    case settings
+}
+
 struct MainTabView: View {
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var reminderService: ReminderService
     let modelContext: ModelContext
+    @AppStorage("selectedMainTab") private var selectedMainTab = MainTab.routines.rawValue
     
     var body: some View {
-        TabView {
+        TabView(selection: $selectedMainTab) {
+            RoutinesView(reminderService: reminderService)
+                .tabItem {
+                    Label(String(localized: "tab_routines", defaultValue: "Routinen"), systemImage: "checklist")
+                }
+                .tag(MainTab.routines.rawValue)
+
             WeekView(
                 calendarService: calendarService,
                 reminderService: reminderService
@@ -53,11 +66,7 @@ struct MainTabView: View {
             .tabItem {
                 Label(String(localized: "tab_week", defaultValue: "Woche"), systemImage: "calendar")
             }
-            
-            RoutinesView(reminderService: reminderService)
-                .tabItem {
-                    Label(String(localized: "tab_routines", defaultValue: "Routinen"), systemImage: "checklist")
-                }
+            .tag(MainTab.week.rawValue)
             
             SettingsView(
                 calendarService: calendarService,
@@ -67,6 +76,7 @@ struct MainTabView: View {
             .tabItem {
                 Label(String(localized: "tab_settings", defaultValue: "Einstellungen"), systemImage: "gear")
             }
+            .tag(MainTab.settings.rawValue)
         }
     }
 }

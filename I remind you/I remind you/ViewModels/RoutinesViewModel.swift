@@ -16,10 +16,29 @@ final class RoutinesViewModel: ObservableObject {
     let reminderService: ReminderService
     
     @Published var routineLists: [EKCalendar] = []
-    @Published var selectedList: EKCalendar?
+    @Published var selectedListIdentifiers: Set<String> = []
+    @Published var activeLists: [EKCalendar] = []
     @Published var routines: [RoutineItem] = []
     @Published var isLoading: Bool = false
     @Published var error: Error?
+    @Published var showCompleted: Bool = false
+
+    private let selectedRemindersKey = "selectedReminderListIdentifiers"
+    
+    /// Fällige Routinen: Uhrzeit jetzt oder vorher, oder ganztägig – und nicht erledigt
+    var dueRoutines: [RoutineItem] {
+        routines.filter { $0.section == .due }
+    }
+    
+    /// Kommende Routinen: Uhrzeit noch in der Zukunft – und nicht erledigt
+    var upcomingRoutines: [RoutineItem] {
+        routines.filter { $0.section == .upcoming }
+    }
+    
+    /// Heute abgeschlossene Routinen
+    var completedRoutines: [RoutineItem] {
+        routines.filter { $0.section == .completed }
+    }
     
     /// Fortschritt: erledigte / gesamt
     var progress: (completed: Int, total: Int) {
@@ -48,33 +67,35 @@ final class RoutinesViewModel: ObservableObject {
         
         // Alle Listen anzeigen (keine Filterung)
         routineLists = reminderService.reminderLists
-        
-        // Wähle erste Liste automatisch wenn noch keine ausgewählt
-        if selectedList == nil, let first = routineLists.first {
-            print("📋 Wähle automatisch Liste: \(first.title)")
-            selectedList = first
-            Task { await loadRoutines() }
-        } else if let selected = selectedList {
-            print("📋 Bereits ausgewählt: \(selected.title)")
-            // Trotzdem neu laden falls sich Inhalt geändert hat
-            Task { await loadRoutines() }
+
+        loadSelectedListIdentifiers()
+
+        if selectedListIdentifiers.isEmpty {
+            activeLists = routineLists
+        } else {
+            activeLists = routineLists.filter { selectedListIdentifiers.contains($0.calendarIdentifier) }
         }
+
+        Task { await loadRoutines() }
     }
     
     func loadRoutines() async {
-        guard let list = selectedList else { 
-            print("⚠️ Keine Liste ausgewählt")
-            return 
-        }
-        
         isLoading = true
         error = nil
-        
-        print("📝 Lade Routinen aus Liste: \(list.title)")
-        
-        // Hole nur HEUTIGE Erinnerungen (unerledigt + heute erledigt)
-        let reminders = await reminderService.fetchTodaysReminders(from: list)
-        
+
+        if activeLists.isEmpty {
+            routines = []
+            isLoading = false
+            return
+        }
+
+        var reminders: [EKReminder] = []
+        for list in activeLists {
+            print("📝 Lade Routinen aus Liste: \(list.title)")
+            let listReminders = await reminderService.fetchTodaysReminders(from: list)
+            reminders.append(contentsOf: listReminders)
+        }
+
         print("📝 Gefundene Erinnerungen für heute: \(reminders.count)")
         
         // Konvertiere zu RoutineItems mit stabiler Sortierung:
@@ -118,10 +139,13 @@ final class RoutinesViewModel: ObservableObject {
         
         isLoading = false
     }
-    
-    func selectList(_ list: EKCalendar) {
-        selectedList = list
-        Task { await loadRoutines() }
+
+    private func loadSelectedListIdentifiers() {
+        if let saved = UserDefaults.standard.array(forKey: selectedRemindersKey) as? [String] {
+            selectedListIdentifiers = Set(saved)
+        } else {
+            selectedListIdentifiers = []
+        }
     }
     
     // MARK: - Aktionen
@@ -155,6 +179,54 @@ final class RoutinesViewModel: ObservableObject {
     var isCurrentlyToggling: Bool {
         isToggling
     }
+
+    var activeListTitleSummary: String {
+        guard !activeLists.isEmpty else { return "Keine Listen ausgewählt" }
+
+        if activeLists.count == 1 {
+            return activeLists[0].title
+        }
+
+        let titles = activeLists.map { $0.title }
+        if titles.count <= 2 {
+            return "Listen: \(titles.joined(separator: ", "))"
+        }
+
+        let leading = titles.prefix(2).joined(separator: ", ")
+        return "Listen: \(leading) + \(titles.count - 2)"
+    }
+}
+
+// MARK: - Routine Section
+
+enum RoutineSection: String, CaseIterable {
+    case due       // Fällig (jetzt/überfällig/ganztägig)
+    case upcoming  // Kommend (Uhrzeit in der Zukunft)
+    case completed // Abgeschlossen
+    
+    var title: String {
+        switch self {
+        case .due: return "Fällig"
+        case .upcoming: return "Kommend"
+        case .completed: return "Abgeschlossen"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .due: return "exclamationmark.circle.fill"
+        case .upcoming: return "clock.fill"
+        case .completed: return "checkmark.circle.fill"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .due: return .red
+        case .upcoming: return .blue
+        case .completed: return .green
+        }
+    }
 }
 
 // MARK: - Routine Item
@@ -165,10 +237,27 @@ struct RoutineItem: Identifiable {
     var isCompleted: Bool
     let reminderIdentifier: String
     let dueDate: Date?
+    let hasTime: Bool      // Hat die Erinnerung eine explizite Uhrzeit?
     let priority: Int
     let hasRecurrence: Bool
     let listName: String
     let sortIndex: Int  // Stabiler Sortier-Index
+    
+    /// Berechnet die Sektion basierend auf Status und Uhrzeit
+    var section: RoutineSection {
+        if isCompleted {
+            return .completed
+        }
+        // Ganztägig (keine Uhrzeit) → immer fällig
+        guard hasTime, let dueDate = dueDate else {
+            return .due
+        }
+        // Uhrzeit in der Vergangenheit oder jetzt → fällig
+        if dueDate <= Date() {
+            return .due
+        }
+        return .upcoming
+    }
     
     /// Emoji basierend auf Titel
     var emoji: String {
@@ -204,6 +293,9 @@ struct RoutineItem: Identifiable {
     }
     
     static func from(reminder: EKReminder, sortIndex: Int = 0) -> RoutineItem {
+        // Prüfe ob eine explizite Uhrzeit gesetzt ist
+        let hasExplicitTime = reminder.dueDateComponents?.hour != nil
+        
         // Bei wiederkehrenden Erinnerungen: Datum auf HEUTE setzen, Uhrzeit beibehalten
         var displayDate: Date? = nil
         if let dueComps = reminder.dueDateComponents {
@@ -230,6 +322,7 @@ struct RoutineItem: Identifiable {
             isCompleted: reminder.isCompleted,
             reminderIdentifier: reminder.calendarItemIdentifier,
             dueDate: displayDate,
+            hasTime: hasExplicitTime,
             priority: reminder.priority,
             hasRecurrence: reminder.hasRecurrenceRules,
             listName: reminder.calendar?.title ?? "",

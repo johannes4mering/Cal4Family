@@ -3,22 +3,55 @@
 > **Dieses Dokument dient als Kontext für KI-Assistenten (GitHub Copilot, Claude, etc.)**
 > Bei einem neuen Chat diese Datei zuerst lesen lassen.
 
-## 🎯 Projekt-Zusammenfassung
+## � Zugehörige Website
+
+**Website-Repo:** `/Users/johannes/work/websites/appsaufjohannesde/`  
+**App-Landingpage (Quelle):** `index.html` im App-Repo (hier)  
+**Ziel auf Website:** `appsaufjohannesde/iremindyou/index.html` (eigener Unterordner, analog zu fahrplan4u/, kinderuhr/)  
+**Hauptseite:** `appsaufjohannesde/index.html` listet alle Apps inkl. I remind you
+
+### Website-Struktur (appsaufjohannesde)
+```
+index.html              ← Hauptseite (alle Apps)
+impressum.html          ← Impressum
+fahrplan4u/             ← Fahrplan4U (index, screenshots, datenschutz)
+kinderquiz/             ← KinderQuiz (datenschutz)
+kinderuhr/              ← KinderUhr (index, screenshots, datenschutz)
+pois4u/                 ← POIs4U (index, support DE/EN)
+iremindyou/             ← I remind you (index bilingual DE/EN ✅, datenschutz TODO)
+```
+
+### Sync-Workflow
+Bei App-Änderungen, die die Website betreffen (Features, Beschreibung, FAQ, Systemanforderungen):
+1. `index.html` im App-Repo aktualisieren
+2. Datei nach `appsaufjohannesde/iremindyou/index.html` kopieren
+3. Falls nötig: App-Eintrag in `appsaufjohannesde/index.html` aktualisieren (Beschreibung, Tags, Links)
+
+### Was Website-relevant ist
+- Neue/geänderte Features → Funktionsliste + Feature-Pills in index.html
+- FAQ-Änderungen → FAQ-Sektion in index.html
+- Systemanforderungen → Sektion in index.html
+- App-Store-Link → sobald verfügbar in beiden index.html setzen
+- Datenschutz-Änderungen → iremindyou/datenschutz.html
+
+---
+
+## �🎯 Projekt-Zusammenfassung
 
 **App-Name:** I remind you  
 **Typ:** iOS & macOS App (SwiftUI, Multiplatform)  
 **Zweck:** Familienkalender & Routinen-App für Kinder und Eltern  
-**Version:** v0.5.5
+**Version:** v0.6.0
 
 ### Kernfunktionen
-1. **Wochenansicht** – Termine + Aufgaben kombiniert
-2. **Kinder-Routinen** – Wiederkehrende Aufgaben abhaken (kindgerechte UI)
-3. **Routine-Editor** – Neue Routinen mit Wiederholungen erstellen
+1. **Routinen-Ansicht (Startscreen)** – Dreigeteilt: Fällig / Kommend / Abgeschlossen
+2. **Wochenansicht** – Termine + Aufgaben kombiniert
+3. **Kinder-Routinen** – Wiederkehrende Aufgaben abhaken (kindgerechte UI)
 4. **Listen teilen** – iCloud Listen mit Familie teilen (für Kinder vorbereiten)
 5. **Auto-Regeln** – Automatisch Erinnerungen aus Kalenderevents erstellen
 6. **PDF-Druck** – Wochenkalender für Kühlschrank/Pinnwand
 7. **Bidirektionale Sync** – Änderungen in Apple Apps werden sofort reflektiert
-8. **Lokalisierung** – Deutsch und Englisch
+8. **Lokalisierung** – Deutsch, Englisch, Italienisch (Hilfe)
 
 ### Technische Grundlagen
 - **SwiftUI** + **SwiftData**
@@ -77,8 +110,15 @@ I remind you/
 - [x] **Bidirektionale Sync** – EKEventStoreChanged Observer
 - [x] **Lokalisierung** – Deutsch & Englisch (Localizable.strings)
 - [x] **TestDataGenerator** – Testdaten erstellen & löschen (Debug)
-- [x] **Routine-Editor** – Neue Routinen mit Wiederholungen erstellen (AddRoutineView)
 - [x] **Listen teilen** – Anleitung für iCloud-Sharing mit Familie (ShareListView)
+- [x] **Routinen dreiteilig** – Fällig (überfällig/ganztägig), Kommend, Abgeschlossen (eingeklappt)
+- [x] **Routinen als Startscreen** – App öffnet direkt die Routinen-Ansicht
+- [x] **Multi-Listen** – Alle abonnierten Listen werden gemeinsam angezeigt
+- [x] **Hilfe mehrsprachig** – DE/EN/IT mit Sprachwahl
+
+### Entfernt / Vereinfacht
+- ~~Routine-Editor (AddRoutineView)~~ – Erinnerungen werden in Apple Reminders erstellt (Source of Truth)
+- ~~Einzelne Liste wählen~~ – Stattdessen alle abonnierten Listen gemeinsam
 
 ### Noch offen
 - [ ] **Widgets** – Home-Screen & Lock-Screen (WidgetKit)
@@ -160,6 +200,7 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 | v0.5.1 | Onboarding Auto-Continue nach Berechtigungen |
 | v0.5.4 | Routinen-Fixes (wiederkehrende Erinnerungen, Datumsfilter) |
 | v0.5.5 | PDF Querformat + Zweispaltenlayout + US Letter + Testdaten-Sicherheit |
+| beta-2026-02-14 | Readme konsolidiert, Routinen dreiteilig, Startscreen, Multi-Listen |
 
 ---
 
@@ -168,12 +209,14 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 ```
 Projekt: I remind you – Familienkalender & Routinen-App
 Pfad: /Users/johannes/work/xcode/Cal4Family/I remind you/
-Version: v0.5.5
+Version: v0.6.0
 
 Lies AI_CONTEXT.md für den vollen Kontext.
+Website-Repo: /Users/johannes/work/websites/appsaufjohannesde/
 
 Nächste Features:
 - Widgets (Home-Screen & Lock-Screen)
+- Website aktualisieren nach Feature-Änderungen
 ```
 
 ---

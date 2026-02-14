@@ -102,7 +102,7 @@ struct SettingsView: View {
         } header: {
             Label("Erinnerungslisten", systemImage: "checklist")
         } footer: {
-            Text("Ausgewählte Listen werden in der Wochenansicht angezeigt")
+            Text("Ausgewählte Listen werden in der Routinen-Ansicht angezeigt")
         }
     }
     

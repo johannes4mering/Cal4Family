@@ -15,8 +15,6 @@ import UIKit
 /// Kindgerechte Routinen-Ansicht mit großen Abhak-Buttons
 struct RoutinesView: View {
     @StateObject private var viewModel: RoutinesViewModel
-    @State private var showListPicker = false
-    @State private var showAddRoutine = false
     @State private var celebrateCompletion = false
     
     init(reminderService: ReminderService) {
@@ -41,35 +39,6 @@ struct RoutinesView: View {
                 }
             }
             .navigationTitle("Routinen")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    HStack(spacing: 12) {
-                        Button {
-                            showAddRoutine = true
-                        } label: {
-                            Label("Neu", systemImage: "plus")
-                        }
-                        
-                        Button {
-                            showListPicker = true
-                        } label: {
-                            Label("Liste", systemImage: "list.bullet")
-                        }
-                    }
-                }
-            }
-            .sheet(isPresented: $showAddRoutine) {
-                AddRoutineView(
-                    reminderService: viewModel.reminderService,
-                    onSave: {
-                        // Reload after adding new routine
-                        viewModel.loadRoutineLists()
-                    }
-                )
-            }
-            .sheet(isPresented: $showListPicker) {
-                listPickerSheet
-            }
             .onAppear {
                 // Bei jedem Erscheinen neu laden (auch nach Tab-Wechsel)
                 viewModel.loadRoutineLists()
@@ -115,11 +84,9 @@ struct RoutinesView: View {
     private var progressHeader: some View {
         VStack(spacing: 12) {
             // Aktuelle Liste
-            if let list = viewModel.selectedList {
-                Text(list.title)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+            Text(viewModel.activeListTitleSummary)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             
             // Fortschrittsring
             ZStack {
@@ -173,8 +140,89 @@ struct RoutinesView: View {
     
     private var routinesList: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(viewModel.routines) { routine in
+            LazyVStack(spacing: 16) {
+                // Sektion: Fällig
+                if !viewModel.dueRoutines.isEmpty {
+                    sectionView(
+                        section: .due,
+                        routines: viewModel.dueRoutines,
+                        isCollapsible: false,
+                        isExpanded: .constant(true)
+                    )
+                }
+                
+                // Sektion: Kommend
+                if !viewModel.upcomingRoutines.isEmpty {
+                    sectionView(
+                        section: .upcoming,
+                        routines: viewModel.upcomingRoutines,
+                        isCollapsible: false,
+                        isExpanded: .constant(true)
+                    )
+                }
+                
+                // Sektion: Abgeschlossen (eingeklappt)
+                if !viewModel.completedRoutines.isEmpty {
+                    sectionView(
+                        section: .completed,
+                        routines: viewModel.completedRoutines,
+                        isCollapsible: true,
+                        isExpanded: $viewModel.showCompleted
+                    )
+                }
+            }
+            .padding()
+        }
+    }
+    
+    private func sectionView(
+        section: RoutineSection,
+        routines: [RoutineItem],
+        isCollapsible: Bool,
+        isExpanded: Binding<Bool>
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Section Header
+            Button {
+                if isCollapsible {
+                    withAnimation(.spring(duration: 0.3)) {
+                        isExpanded.wrappedValue.toggle()
+                    }
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: section.icon)
+                        .foregroundStyle(section.color)
+                        .font(.title3)
+                    
+                    Text(section.title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    
+                    Text("\(routines.count)")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(section.color))
+                    
+                    Spacer()
+                    
+                    if isCollapsible {
+                        Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
+                }
+                .padding(.horizontal, 4)
+            }
+            .buttonStyle(.plain)
+            .disabled(!isCollapsible)
+            
+            // Section Content
+            if isExpanded.wrappedValue {
+                ForEach(routines) { routine in
                     RoutineCard(
                         routine: routine,
                         onToggle: {
@@ -185,7 +233,6 @@ struct RoutinesView: View {
                     )
                 }
             }
-            .padding()
         }
     }
     
@@ -195,51 +242,8 @@ struct RoutinesView: View {
         ContentUnavailableView {
             Label("Keine Routinen", systemImage: "checklist")
         } description: {
-            Text("Erstelle Erinnerungen in einer Liste mit \"Routine\" im Namen")
-        } actions: {
-            Button("Liste wählen") {
-                showListPicker = true
-            }
-            .buttonStyle(.bordered)
+            Text("1. Erstelle Erinnerungen in der Apple Erinnerungen-App\n2. Wähle die Listen in den Einstellungen aus")
         }
-    }
-    
-    // MARK: - List Picker
-    
-    private var listPickerSheet: some View {
-        NavigationStack {
-            List(viewModel.routineLists, id: \.calendarIdentifier) { list in
-                Button {
-                    viewModel.selectList(list)
-                    showListPicker = false
-                } label: {
-                    HStack {
-                        Circle()
-                            .fill(Color(cgColor: list.cgColor ?? CGColor(red: 0, green: 0.5, blue: 1, alpha: 1)))
-                            .frame(width: 12, height: 12)
-                        Text(list.title)
-                        Spacer()
-                        if list.calendarIdentifier == viewModel.selectedList?.calendarIdentifier {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.tint)
-                        }
-                    }
-                }
-                .foregroundStyle(.primary)
-            }
-            .navigationTitle("Liste wählen")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Fertig") {
-                        showListPicker = false
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium])
     }
     
     // MARK: - Celebration
@@ -327,15 +331,11 @@ struct RoutineCard: View {
                         .multilineTextAlignment(.leading)
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        // Zeile 1: Datum und Uhrzeit
-                        if let dueDate = routine.dueDate {
-                            HStack(spacing: 4) {
-                                Text(dueDate, format: .dateTime.day().month(.twoDigits).year())
-                                Text("-")
-                                Text(dueDate, style: .time)
-                            }
+                        // Zeile 1: Uhrzeit oder Ganztägig
+                        if routine.hasTime, let dueDate = routine.dueDate {
+                            Text(dueDate, style: .time)
                         } else {
-                            Text("Kein Datum")
+                            Text("Ganztägig")
                                 .foregroundStyle(.orange)
                         }
                         

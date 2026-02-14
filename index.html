@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>I remind you - Familienkalender und Routinen</title>
-  <meta name="description" content="I remind you - Die Familienkalender-App mit kindgerechten Routinen, Wochenansicht und automatischen Erinnerungen." />
+  <title>I remind you – Familienkalender und Routinen</title>
+  <meta name="description" content="I remind you – Die Familienkalender-App mit kindgerechten Routinen, Wochenansicht und automatischen Erinnerungen. / The family calendar app with child-friendly routines, weekly view and automatic reminders." />
   <style>
     :root {
       --bg: #1a1f2e;
@@ -28,10 +28,10 @@
     }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    header { padding: 56px 20px 24px; max-width: 1000px; margin: 0 auto; }
+    header { padding: 56px 20px 24px; max-width: 1000px; margin: 0 auto; position: relative; }
     .badge { display: inline-flex; gap: 10px; align-items: center; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,0.05); color: var(--muted); font-size: 14px; }
     .dot { width: 10px; height: 10px; border-radius: 999px; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-    .app-icon { width: 80px; height: 80px; border-radius: 18px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .app-icon { width: 80px; height: 80px; border-radius: 18px; box-shadow: var(--shadow); margin-bottom: 16px; }
     h1 { margin: 16px 0 10px; font-size: clamp(28px, 5vw, 44px); letter-spacing: -0.02em; }
     .sub { margin: 0; color: var(--muted); font-size: 16px; max-width: 72ch; }
     main { max-width: 1000px; margin: 0 auto; padding: 16px 20px 64px; }
@@ -56,49 +56,83 @@
     footer { max-width: 1000px; margin: 0 auto; padding: 0 20px 42px; color: var(--muted); font-size: 13px; }
     .fine { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
     .footer-links a { margin-left: 12px; }
+    .lang-switch { position: absolute; top: 20px; right: 20px; display: flex; gap: 8px; }
+    .lang-switch button { background: rgba(255,255,255,0.08); border: 1px solid var(--line); color: var(--muted); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-family: inherit; transition: all 0.2s; }
+    .lang-switch button:hover, .lang-switch button.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    body [lang="en"] { display: none; }
+    body.en [lang="en"] { display: revert; }
+    body.en [lang="de"] { display: none; }
   </style>
 </head>
 <body>
   <header>
-    <div class="app-icon">📅</div>
-    <div class="badge"><span class="dot"></span> Familienkalender und Routinen</div>
+    <div class="lang-switch">
+      <button onclick="setLang('de')" id="btn-de" class="active">🇩🇪 DE</button>
+      <button onclick="setLang('en')" id="btn-en">🇬🇧 EN</button>
+    </div>
+    <img class="app-icon" src="./app-icon-180.png" alt="I remind you App Icon" />
+    <div class="badge"><span class="dot"></span> <span lang="de">Familienkalender und Routinen</span><span lang="en">Family Calendar &amp; Routines</span></div>
     <h1>I remind you</h1>
-    <p class="sub">Die Familienkalender-App, die Apple Kalender und Erinnerungen vereint. Mit kindgerechten Routinen, Wochenansicht und druckbarem Wochenplan. <strong>Besonders geeignet für Kinder mit ADHS</strong> – klare Strukturen und visuelle Routinen helfen, den Alltag zu meistern.</p>
+    <p class="sub" lang="de">Die Familienkalender-App, die Apple Kalender und Erinnerungen vereint. Mit kindgerechten Routinen, Wochenansicht und druckbarem Wochenplan. <strong>Besonders geeignet für Kinder mit ADHS</strong> – klare Strukturen und visuelle Routinen helfen, den Alltag zu meistern.</p>
+    <p class="sub" lang="en">The family calendar app that combines Apple Calendar and Reminders. With child-friendly routines, a weekly view and a printable weekly plan. <strong>Especially suitable for children with ADHD</strong> – clear structures and visual routines help master everyday life.</p>
   </header>
 
   <main>
     <div class="grid">
       <section class="card">
         <div class="inner">
-          <h2>Funktionen</h2>
-          <ul>
+          <h2 lang="de">Funktionen</h2>
+          <h2 lang="en">Features</h2>
+          <ul lang="de">
+            <li><strong>Routinen-Startscreen</strong> – Fällig, Kommend &amp; Erledigt auf einen Blick</li>
             <li><strong>Wochenansicht</strong> – Alle Termine und Aufgaben auf einen Blick</li>
             <li><strong>Kinder-Routinen</strong> – Große Buttons zum Abhaken mit Emojis</li>
             <li><strong>Apple Erinnerungen</strong> – Nutzt deine bestehenden Listen</li>
+            <li><strong>Multi-Listen</strong> – Alle abonnierten Listen gemeinsam anzeigen</li>
             <li><strong>Auto-Regeln</strong> – Automatische Erinnerungen aus Kalendern</li>
             <li><strong>PDF-Druck</strong> – Wochenkalender für Kühlschrank (A4/US Letter)</li>
             <li><strong>Familienfreigabe</strong> – Listen mit der Familie teilen</li>
           </ul>
-          <div class="features">
+          <ul lang="en">
+            <li><strong>Routines Start Screen</strong> – Due, Upcoming &amp; Completed at a glance</li>
+            <li><strong>Weekly View</strong> – All appointments and tasks at a glance</li>
+            <li><strong>Kids Routines</strong> – Large buttons with emojis to check off</li>
+            <li><strong>Apple Reminders</strong> – Uses your existing lists</li>
+            <li><strong>Multi-List</strong> – Show all subscribed lists together</li>
+            <li><strong>Auto Rules</strong> – Automatic reminders from calendar events</li>
+            <li><strong>PDF Print</strong> – Weekly planner for the fridge (A4/US Letter)</li>
+            <li><strong>Family Sharing</strong> – Share lists with your family</li>
+          </ul>
+          <div class="features" lang="de">
             <div class="pill"><div class="emoji">👨‍👩‍👧‍👦</div><strong>Für Familien</strong><span>Eltern organisieren, Kinder haken ab</span></div>
             <div class="pill"><div class="emoji">🍎</div><strong>Apple-nativ</strong><span>Nutzt Kalender und Erinnerungen</span></div>
             <div class="pill"><div class="emoji">🖨️</div><strong>Druckbar</strong><span>Wochenplan als PDF</span></div>
             <div class="pill"><div class="emoji">🔒</div><strong>Privat</strong><span>Keine eigene Cloud nötig</span></div>
             <div class="pill"><div class="emoji">🧠</div><strong>ADHS-freundlich</strong><span>Struktur und Routinen für den Alltag</span></div>
           </div>
+          <div class="features" lang="en">
+            <div class="pill"><div class="emoji">👨‍👩‍👧‍👦</div><strong>For Families</strong><span>Parents organize, kids check off</span></div>
+            <div class="pill"><div class="emoji">🍎</div><strong>Apple-native</strong><span>Uses Calendar and Reminders</span></div>
+            <div class="pill"><div class="emoji">🖨️</div><strong>Printable</strong><span>Weekly plan as PDF</span></div>
+            <div class="pill"><div class="emoji">🔒</div><strong>Private</strong><span>No cloud required</span></div>
+            <div class="pill"><div class="emoji">🧠</div><strong>ADHD-friendly</strong><span>Structure and routines for everyday life</span></div>
+          </div>
         </div>
       </section>
 
       <aside class="card">
         <div class="inner">
-          <h2>Kontakt und Support</h2>
-          <p class="sub" style="margin-top:0">Feedback, Fragen oder Probleme? Melde dich gerne!</p>
+          <h2 lang="de">Kontakt und Support</h2>
+          <h2 lang="en">Contact &amp; Support</h2>
+          <p class="sub" style="margin-top:0" lang="de">Feedback, Fragen oder Probleme? Melde dich gerne!</p>
+          <p class="sub" style="margin-top:0" lang="en">Feedback, questions or issues? Get in touch!</p>
           <ul>
-            <li>E-Mail: <a href="mailto:iremindyou@4johannes.de">iremindyou@4johannes.de</a></li>
-            <li>App Store: Bald verfügbar</li>
+            <li><span lang="de">E-Mail:</span><span lang="en">Email:</span> <a href="mailto:iremindyou@4johannes.de">iremindyou@4johannes.de</a></li>
+            <li>App Store: <span lang="de">Bald verfügbar</span><span lang="en">Coming soon</span></li>
           </ul>
           <div style="height:14px"></div>
-          <div class="note">Tipp: Listen können in der Apple Erinnerungen-App mit Familienmitgliedern geteilt werden.</div>
+          <div class="note" lang="de">Tipp: Listen können in der Apple Erinnerungen-App mit Familienmitgliedern geteilt werden.</div>
+          <div class="note" lang="en">Tip: Lists can be shared with family members in the Apple Reminders app.</div>
         </div>
       </aside>
     </div>
@@ -108,14 +142,14 @@
     <section class="card">
       <div class="inner">
         <h2>FAQ</h2>
-        <div class="faq">
+        <div class="faq" lang="de">
           <details open>
             <summary>Warum Apple Kalender und Erinnerungen?</summary>
             <p>Keine zusätzliche Cloud, keine Registrierung, automatische Sync über iCloud, und Siri inklusive.</p>
           </details>
           <details>
             <summary>Wie funktionieren die Kinder-Routinen?</summary>
-            <p>Erstelle eine Erinnerungsliste für dein Kind mit wiederkehrenden Aufgaben. Die App zeigt diese mit großen Buttons und Emojis an.</p>
+            <p>Erstelle eine Erinnerungsliste für dein Kind in der Apple Erinnerungen-App. Wähle die Liste in den App-Einstellungen aus – die App zeigt dann alle heutigen Aufgaben in drei Bereichen: Fällig, Kommend und Abgeschlossen.</p>
           </details>
           <details>
             <summary>Was sind Auto-Regeln?</summary>
@@ -130,6 +164,28 @@
             <p>Kinder mit ADHS profitieren von klaren Strukturen und visuellen Hilfen. Die App bietet große, übersichtliche Buttons, Emojis zur schnellen Orientierung und eine feste Tagesroutine – ohne Ablenkung durch unnötige Funktionen.</p>
           </details>
         </div>
+        <div class="faq" lang="en">
+          <details open>
+            <summary>Why Apple Calendar and Reminders?</summary>
+            <p>No additional cloud, no registration, automatic sync via iCloud, and Siri included.</p>
+          </details>
+          <details>
+            <summary>How do kid routines work?</summary>
+            <p>Create a reminder list for your child in the Apple Reminders app. Select the list in the app settings – the app then shows all of today's tasks in three sections: Due, Upcoming and Completed.</p>
+          </details>
+          <details>
+            <summary>What are Auto Rules?</summary>
+            <p>Auto Rules automatically create reminders from calendar events (e.g. "Take out the bin" one day before trash collection).</p>
+          </details>
+          <details>
+            <summary>Does the app work on Mac?</summary>
+            <p>Yes, I remind you is available for iOS and macOS.</p>
+          </details>
+          <details>
+            <summary>Why is the app suitable for children with ADHD?</summary>
+            <p>Children with ADHD benefit from clear structures and visual aids. The app offers large, clear buttons, emojis for quick orientation and a fixed daily routine – without distraction from unnecessary features.</p>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -137,9 +193,12 @@
 
     <section class="card">
       <div class="inner">
-        <h2>Datenschutz</h2>
-        <p class="sub" style="margin-top:0">I remind you speichert keine Daten auf externen Servern. Alle Daten bleiben auf deinem Gerät bzw. in deinem iCloud-Account.</p>
-        <div class="note">Siehe auch: <a href="./datenschutz.html">Datenschutzerklärung</a></div>
+        <h2 lang="de">Datenschutz</h2>
+        <h2 lang="en">Privacy</h2>
+        <p class="sub" style="margin-top:0" lang="de">I remind you speichert keine Daten auf externen Servern. Alle Daten bleiben auf deinem Gerät bzw. in deinem iCloud-Account.</p>
+        <p class="sub" style="margin-top:0" lang="en">I remind you does not store any data on external servers. All data stays on your device or in your iCloud account.</p>
+        <div class="note" lang="de">Siehe auch: <a href="./datenschutz.html">Datenschutzerklärung</a></div>
+        <div class="note" lang="en">See also: <a href="./datenschutz.html">Privacy Policy</a></div>
       </div>
     </section>
 
@@ -147,11 +206,17 @@
 
     <section class="card">
       <div class="inner">
-        <h2>Systemanforderungen</h2>
-        <ul>
+        <h2 lang="de">Systemanforderungen</h2>
+        <h2 lang="en">System Requirements</h2>
+        <ul lang="de">
           <li><strong>iOS 17.0</strong> oder neuer (iPhone, iPad)</li>
           <li><strong>macOS 14.0</strong> oder neuer (Mac)</li>
           <li>Kalender- und Erinnerungs-Berechtigungen erforderlich</li>
+        </ul>
+        <ul lang="en">
+          <li><strong>iOS 17.0</strong> or later (iPhone, iPad)</li>
+          <li><strong>macOS 14.0</strong> or later (Mac)</li>
+          <li>Calendar and Reminders permissions required</li>
         </ul>
       </div>
     </section>
@@ -159,12 +224,31 @@
 
   <footer>
     <div class="fine">
-      <div>I remind you – Familienkalender und Routinen</div>
+      <div lang="de">I remind you – Familienkalender und Routinen</div>
+      <div lang="en">I remind you – Family Calendar &amp; Routines</div>
       <div class="footer-links">
-        <a href="../impressum.html">Impressum</a>
-        <a href="./datenschutz.html">Datenschutz</a>
+        <a href="../impressum.html" lang="de">Impressum</a>
+        <a href="../impressum.html" lang="en">Legal Notice</a>
+        <a href="./datenschutz.html" lang="de">Datenschutz</a>
+        <a href="./datenschutz.html" lang="en">Privacy</a>
       </div>
     </div>
   </footer>
+
+  <script>
+    function setLang(lang) {
+      document.body.className = lang === 'en' ? 'en' : '';
+      document.documentElement.lang = lang;
+      document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      localStorage.setItem('lang', lang);
+    }
+    (function() {
+      var saved = localStorage.getItem('lang');
+      if (saved) { setLang(saved); return; }
+      var browserLang = (navigator.language || '').substring(0, 2);
+      if (browserLang !== 'de') { setLang('en'); }
+    })();
+  </script>
 </body>
 </html>
