@@ -199,6 +199,7 @@ final class ReminderService: ObservableObject {
         lists: [EKCalendar]? = nil
     ) async -> [EKReminder] {
         let selectedLists = lists ?? reminderLists
+        guard !selectedLists.isEmpty else { return [] }
         
         // WICHTIG: Wir laden ALLE unerledigten Reminders, nicht nur die mit Datum im Bereich
         // Grund: Erinnerungen ohne Uhrzeit oder mit Datum-only werden sonst nicht gefunden

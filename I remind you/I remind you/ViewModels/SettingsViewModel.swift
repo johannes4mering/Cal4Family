@@ -32,6 +32,16 @@ final class SettingsViewModel: ObservableObject {
     private let selectedCalendarsKey = "selectedCalendarIdentifiers"
     private let selectedRemindersKey = "selectedReminderListIdentifiers"
     
+    /// Wurde die Kalender-Auswahl jemals konfiguriert?
+    private var hasConfiguredCalendars: Bool {
+        UserDefaults.standard.object(forKey: selectedCalendarsKey) != nil
+    }
+    
+    /// Wurde die Listen-Auswahl jemals konfiguriert?
+    private var hasConfiguredReminderLists: Bool {
+        UserDefaults.standard.object(forKey: selectedRemindersKey) != nil
+    }
+    
     init(calendarService: CalendarService, reminderService: ReminderService, modelContext: ModelContext) {
         self.calendarService = calendarService
         self.reminderService = reminderService
@@ -73,16 +83,27 @@ final class SettingsViewModel: ObservableObject {
     // MARK: - Kalender Auswahl
     
     func toggleCalendar(_ calendar: EKCalendar) {
-        if selectedCalendarIdentifiers.contains(calendar.calendarIdentifier) {
-            selectedCalendarIdentifiers.remove(calendar.calendarIdentifier)
-        } else {
-            selectedCalendarIdentifiers.insert(calendar.calendarIdentifier)
+        var identifiers = selectedCalendarIdentifiers
+        
+        // Beim ersten Toggle: Alle IDs materialisieren
+        if !hasConfiguredCalendars {
+            identifiers = Set(calendarService.calendars.map { $0.calendarIdentifier })
         }
+        
+        if identifiers.contains(calendar.calendarIdentifier) {
+            identifiers.remove(calendar.calendarIdentifier)
+        } else {
+            identifiers.insert(calendar.calendarIdentifier)
+        }
+        
+        selectedCalendarIdentifiers = identifiers
         saveCalendarSelection()
     }
     
     func isCalendarSelected(_ calendar: EKCalendar) -> Bool {
-        selectedCalendarIdentifiers.contains(calendar.calendarIdentifier)
+        // Nie konfiguriert = alle aktiv (Erststart-Default)
+        guard hasConfiguredCalendars else { return true }
+        return selectedCalendarIdentifiers.contains(calendar.calendarIdentifier)
     }
     
     private func saveCalendarSelection() {
@@ -92,16 +113,27 @@ final class SettingsViewModel: ObservableObject {
     // MARK: - Erinnerungslisten Auswahl
     
     func toggleReminderList(_ list: EKCalendar) {
-        if selectedReminderListIdentifiers.contains(list.calendarIdentifier) {
-            selectedReminderListIdentifiers.remove(list.calendarIdentifier)
-        } else {
-            selectedReminderListIdentifiers.insert(list.calendarIdentifier)
+        var identifiers = selectedReminderListIdentifiers
+        
+        // Beim ersten Toggle: Alle IDs materialisieren
+        if !hasConfiguredReminderLists {
+            identifiers = Set(reminderService.reminderLists.map { $0.calendarIdentifier })
         }
+        
+        if identifiers.contains(list.calendarIdentifier) {
+            identifiers.remove(list.calendarIdentifier)
+        } else {
+            identifiers.insert(list.calendarIdentifier)
+        }
+        
+        selectedReminderListIdentifiers = identifiers
         saveReminderListSelection()
     }
     
     func isReminderListSelected(_ list: EKCalendar) -> Bool {
-        selectedReminderListIdentifiers.contains(list.calendarIdentifier)
+        // Nie konfiguriert = alle aktiv (Erststart-Default)
+        guard hasConfiguredReminderLists else { return true }
+        return selectedReminderListIdentifiers.contains(list.calendarIdentifier)
     }
     
     private func saveReminderListSelection() {

@@ -87,6 +87,7 @@ final class CalendarService: ObservableObject {
         calendars: [EKCalendar]? = nil
     ) -> [EKEvent] {
         let selectedCalendars = calendars ?? self.calendars
+        guard !selectedCalendars.isEmpty else { return [] }
         
         let predicate = eventStore.predicateForEvents(
             withStart: startDate,

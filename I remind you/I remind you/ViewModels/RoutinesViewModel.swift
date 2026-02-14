@@ -55,6 +55,11 @@ final class RoutinesViewModel: ObservableObject {
         progress.total > 0 && progress.completed == progress.total
     }
     
+    /// Wurden in den Einstellungen Listen konfiguriert? (Key existiert in UserDefaults)
+    var hasConfiguredLists: Bool {
+        UserDefaults.standard.object(forKey: selectedRemindersKey) != nil
+    }
+    
     init(reminderService: ReminderService) {
         self.reminderService = reminderService
     }
@@ -70,9 +75,11 @@ final class RoutinesViewModel: ObservableObject {
 
         loadSelectedListIdentifiers()
 
-        if selectedListIdentifiers.isEmpty {
+        if !hasConfiguredLists {
+            // Nie konfiguriert: Alle Listen anzeigen (Erststart-Default)
             activeLists = routineLists
         } else {
+            // Explizit konfiguriert: Nur gewählte Listen (kann auch leer sein)
             activeLists = routineLists.filter { selectedListIdentifiers.contains($0.calendarIdentifier) }
         }
 
@@ -99,8 +106,8 @@ final class RoutinesViewModel: ObservableObject {
         print("📝 Gefundene Erinnerungen für heute: \(reminders.count)")
         
         // Konvertiere zu RoutineItems mit stabiler Sortierung:
-        // 1. Einträge ohne Uhrzeit zuerst
-        // 2. Dann nach Uhrzeit
+        // 1. Nach Uhrzeit aufsteigend
+        // 2. Einträge ohne Uhrzeit (ganztägig) ans Ende
         // 3. Dann alphabetisch nach Titel
         // Wichtig: Sortierung basiert auf stabilen Werten (nicht auf completion status)
         let sortedReminders = reminders.sorted { reminder1, reminder2 in
@@ -114,9 +121,9 @@ final class RoutinesViewModel: ObservableObject {
                 return (reminder1.title ?? "").localizedCompare(reminder2.title ?? "") == .orderedAscending
             }
             
-            // Einer ohne Uhrzeit → der kommt zuerst
-            if hour1 == nil { return true }
-            if hour2 == nil { return false }
+            // Einer ohne Uhrzeit → der kommt ans Ende
+            if hour1 == nil { return false }
+            if hour2 == nil { return true }
             
             // Beide mit Uhrzeit → nach Stunde und Minute sortieren
             let time1 = hour1! * 60 + minute1

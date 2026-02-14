@@ -263,7 +263,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = YES;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "I remind you benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "I remind you benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
@@ -322,7 +322,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = YES;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "I remind you benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "I remind you benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";

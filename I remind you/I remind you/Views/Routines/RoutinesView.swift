@@ -24,16 +24,17 @@ struct RoutinesView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Progress Header
-                progressHeader
-                
                 if viewModel.isLoading {
+                    progressHeader
                     Spacer()
                     ProgressView("Laden...")
                     Spacer()
                 } else if viewModel.routines.isEmpty {
                     emptyState
                 } else {
+                    // Progress Header nur bei vorhandenen Routinen
+                    progressHeader
+                    
                     // Routinen-Liste
                     routinesList
                 }
@@ -239,11 +240,127 @@ struct RoutinesView: View {
     // MARK: - Empty State
     
     private var emptyState: some View {
-        ContentUnavailableView {
-            Label("Keine Routinen", systemImage: "checklist")
-        } description: {
-            Text("1. Erstelle Erinnerungen in der Apple Erinnerungen-App\n2. Wähle die Listen in den Einstellungen aus")
+        ScrollView {
+            VStack(spacing: 24) {
+                Spacer(minLength: 20)
+                
+                if !viewModel.hasConfiguredLists {
+                    // Erststart: Keine Listen konfiguriert
+                    emptyStateSetup
+                } else {
+                    // Listen konfiguriert, aber heute nichts
+                    emptyStateAllClear
+                }
+                
+                Spacer(minLength: 20)
+            }
+            .padding()
         }
+    }
+    
+    /// Erststart-Hilfe: Schritt-für-Schritt Anleitung
+    private var emptyStateSetup: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "list.bullet.clipboard")
+                .font(.system(size: 56))
+                .foregroundStyle(Color.accentColor)
+            
+            Text("So richtest du Routinen ein")
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            VStack(alignment: .leading, spacing: 16) {
+                helpStep(number: 1, icon: "app.badge.checkmark", title: "Erinnerungen-App öffnen", description: "Erstelle dort eine Liste für dein Kind (z.B. \"Paul – Routine\").")
+                
+                helpStep(number: 2, icon: "plus.circle", title: "Aufgaben hinzufügen", description: "Füge wiederkehrende Erinnerungen hinzu (z.B. \"Zähne putzen\" täglich um 7:00).")
+                
+                helpStep(number: 3, icon: "gearshape", title: "Listen hier auswählen", description: "Gehe in die Einstellungen und wähle die Listen aus, die angezeigt werden sollen.")
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.platformSecondarySystemBackground)
+            )
+            
+            // Button: Erinnerungen-App öffnen
+            openRemindersButton
+            
+            // Hinweis
+            Label("Tipp: Du kannst Listen auch mit der Familie teilen (iCloud).", systemImage: "lightbulb.fill")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
+        }
+    }
+    
+    /// Alles erledigt / heute keine Einträge
+    private var emptyStateAllClear: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 56))
+                .foregroundStyle(.green)
+            
+            Text("Keine Aufgaben für heute")
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            Text("Alle Erinnerungen für heute sind erledigt – oder es stehen keine an.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            openRemindersButton
+        }
+    }
+    
+    /// Einzelner Hilfe-Schritt
+    private func helpStep(number: Int, icon: String, title: String, description: String) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color.accentColor)
+                    .frame(width: 32, height: 32)
+                Text("\(number)")
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Image(systemName: icon)
+                        .foregroundStyle(Color.accentColor)
+                        .font(.subheadline)
+                    Text(title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                }
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+    
+    /// Button zum Öffnen der Apple Erinnerungen-App
+    private var openRemindersButton: some View {
+        Button {
+            #if os(iOS)
+            if let url = URL(string: "x-apple-reminderkit://") {
+                UIApplication.shared.open(url)
+            }
+            #elseif os(macOS)
+            if let url = URL(string: "x-apple-reminderkit://") {
+                NSWorkspace.shared.open(url)
+            }
+            #endif
+        } label: {
+            Label("Erinnerungen-App öffnen", systemImage: "arrow.up.forward.app")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+        }
+        .buttonStyle(.borderedProminent)
+        .padding(.horizontal)
     }
     
     // MARK: - Celebration

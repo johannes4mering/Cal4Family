@@ -32,6 +32,16 @@ final class WeekViewModel: ObservableObject {
     /// Gibt die ausgewählten Listen-IDs aus UserDefaults zurück
     @Published private(set) var selectedReminderListIdentifiers: Set<String> = []
     
+    /// Wurde die Kalender-Auswahl jemals konfiguriert? (Key existiert in UserDefaults)
+    private var hasConfiguredCalendars: Bool {
+        UserDefaults.standard.object(forKey: selectedCalendarsKey) != nil
+    }
+    
+    /// Wurde die Listen-Auswahl jemals konfiguriert?
+    private var hasConfiguredReminderLists: Bool {
+        UserDefaults.standard.object(forKey: selectedRemindersKey) != nil
+    }
+    
     /// Lädt die Auswahl aus UserDefaults
     private func loadSelections() {
         if let saved = UserDefaults.standard.array(forKey: selectedCalendarsKey) as? [String] {
@@ -43,9 +53,11 @@ final class WeekViewModel: ObservableObject {
     }
     
     /// Gefilterte Kalender basierend auf Auswahl
+    /// - Nie konfiguriert → nil (= alle anzeigen, Erststart-Default)
+    /// - Konfiguriert → explizite Filterliste (auch wenn leer = nichts anzeigen)
     private var selectedCalendars: [EKCalendar]? {
+        guard hasConfiguredCalendars else { return nil }
         let identifiers = selectedCalendarIdentifiers
-        guard !identifiers.isEmpty else { return nil } // nil = alle anzeigen
         return calendarService.calendars.filter { identifiers.contains($0.calendarIdentifier) }
     }
     
@@ -61,19 +73,15 @@ final class WeekViewModel: ObservableObject {
     
     /// Prüft ob ein Kalender aktiv (ausgewählt) ist
     func isCalendarActive(_ calendar: EKCalendar) -> Bool {
-        // Wenn keine Auswahl getroffen wurde, sind alle aktiv
-        if selectedCalendarIdentifiers.isEmpty {
-            return true
-        }
+        // Nie konfiguriert = alle aktiv (Erststart-Default)
+        guard hasConfiguredCalendars else { return true }
         return selectedCalendarIdentifiers.contains(calendar.calendarIdentifier)
     }
     
     /// Prüft ob eine Liste aktiv (ausgewählt) ist
     func isReminderListActive(_ list: EKCalendar) -> Bool {
-        // Wenn keine Auswahl getroffen wurde, sind alle aktiv
-        if selectedReminderListIdentifiers.isEmpty {
-            return true
-        }
+        // Nie konfiguriert = alle aktiv (Erststart-Default)
+        guard hasConfiguredReminderLists else { return true }
         return selectedReminderListIdentifiers.contains(list.calendarIdentifier)
     }
     
@@ -81,8 +89,8 @@ final class WeekViewModel: ObservableObject {
     func toggleCalendar(_ calendar: EKCalendar) {
         var identifiers = selectedCalendarIdentifiers
         
-        // Wenn noch keine Auswahl: Alle aktuellen IDs als Basis nehmen
-        if identifiers.isEmpty {
+        // Beim ersten Toggle: Alle IDs materialisieren
+        if !hasConfiguredCalendars {
             identifiers = Set(calendarService.calendars.map { $0.calendarIdentifier })
         }
         
@@ -90,11 +98,6 @@ final class WeekViewModel: ObservableObject {
             identifiers.remove(calendar.calendarIdentifier)
         } else {
             identifiers.insert(calendar.calendarIdentifier)
-        }
-        
-        // Wenn alle ausgewählt: leeres Set speichern (= alle anzeigen)
-        if identifiers.count == calendarService.calendars.count {
-            identifiers = []
         }
         
         selectedCalendarIdentifiers = identifiers
@@ -107,8 +110,8 @@ final class WeekViewModel: ObservableObject {
     func toggleReminderList(_ list: EKCalendar) {
         var identifiers = selectedReminderListIdentifiers
         
-        // Wenn noch keine Auswahl: Alle aktuellen IDs als Basis nehmen
-        if identifiers.isEmpty {
+        // Beim ersten Toggle: Alle IDs materialisieren
+        if !hasConfiguredReminderLists {
             identifiers = Set(reminderService.reminderLists.map { $0.calendarIdentifier })
         }
         
@@ -116,11 +119,6 @@ final class WeekViewModel: ObservableObject {
             identifiers.remove(list.calendarIdentifier)
         } else {
             identifiers.insert(list.calendarIdentifier)
-        }
-        
-        // Wenn alle ausgewählt: leeres Set speichern (= alle anzeigen)
-        if identifiers.count == reminderService.reminderLists.count {
-            identifiers = []
         }
         
         selectedReminderListIdentifiers = identifiers
@@ -146,9 +144,11 @@ final class WeekViewModel: ObservableObject {
     }
     
     /// Gefilterte Erinnerungslisten basierend auf Auswahl
+    /// - Nie konfiguriert → nil (= alle anzeigen, Erststart-Default)
+    /// - Konfiguriert → explizite Filterliste (auch wenn leer = nichts anzeigen)
     private var selectedReminderLists: [EKCalendar]? {
+        guard hasConfiguredReminderLists else { return nil }
         let identifiers = selectedReminderListIdentifiers
-        guard !identifiers.isEmpty else { return nil } // nil = alle anzeigen
         return reminderService.reminderLists.filter { identifiers.contains($0.calendarIdentifier) }
     }
     

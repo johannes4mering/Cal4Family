@@ -26,11 +26,11 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Kalender-Sektion
-                calendarsSection
-                
                 // Erinnerungslisten-Sektion
                 reminderListsSection
+                
+                // Kalender-Sektion
+                calendarsSection
                 
                 // Familien-Sektion
                 familyShareSection
@@ -77,9 +77,15 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Label("Kalender", systemImage: "calendar")
+            Label("Kalender für Wochenansicht & Druck", systemImage: "calendar")
         } footer: {
-            Text("Ausgewählte Kalender werden in der Wochenansicht angezeigt")
+            if !viewModel.selectedCalendarIdentifiers.isEmpty {
+                Text("Nur ausgewählte Kalender erscheinen in der Wochenansicht und im PDF-Wochenplan.")
+            } else if viewModel.calendars.isEmpty {
+                Text("Keine Kalender gefunden. Prüfe die Kalender-Berechtigung.")
+            } else {
+                Text("Wähle Kalender aus, die in der Wochenansicht und im Druck erscheinen sollen.")
+            }
         }
     }
     
@@ -100,9 +106,15 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Label("Erinnerungslisten", systemImage: "checklist")
+            Label("Erinnerungslisten für Routinen", systemImage: "checklist")
         } footer: {
-            Text("Ausgewählte Listen werden in der Routinen-Ansicht angezeigt")
+            if !viewModel.selectedReminderListIdentifiers.isEmpty {
+                Text("Ausgewählte Listen erscheinen auf dem Routinen-Startscreen und in der Wochenansicht.")
+            } else if viewModel.reminderLists.isEmpty {
+                Text("Keine Erinnerungslisten gefunden. Prüfe die Erinnerungen-Berechtigung.")
+            } else {
+                Text("Wähle Listen aus, deren Einträge angezeigt werden sollen.")
+            }
         }
     }
     
