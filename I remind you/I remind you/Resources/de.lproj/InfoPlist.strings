@@ -1,12 +1,12 @@
 /* 
   InfoPlist.strings (German)
-  I remind you
+  Checky4Family
 
   Localized Info.plist strings for German
 */
 
 // Calendar Access
-"NSCalendarsFullAccessUsageDescription" = "I remind you benötigt Zugriff auf deine Kalender, um Termine anzuzeigen und zu verwalten.";
+"NSCalendarsFullAccessUsageDescription" = "Checky4Family benötigt Zugriff auf deine Kalender, um Termine anzuzeigen und zu verwalten.";
 
 // Reminders Access
-"NSRemindersFullAccessUsageDescription" = "I remind you benötigt Zugriff auf deine Erinnerungen, um Aufgaben und Routinen zu verwalten.";
+"NSRemindersFullAccessUsageDescription" = "Checky4Family benötigt Zugriff auf deine Erinnerungen, um Aufgaben und Routinen zu verwalten.";

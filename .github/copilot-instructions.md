@@ -1,4 +1,4 @@
-# Copilot Instructions – I remind you
+# Copilot Instructions – Checky4Family
 
 ## Projekt
 iOS & macOS Familienkalender-App (SwiftUI, EventKit, SwiftData).
@@ -11,12 +11,12 @@ Apple Erinnerungen = Source of Truth. Keine eigene Cloud.
 Die App hat eine Landingpage, die mit gepflegt werden muss:
 - **Website-Repo:** `/Users/johannes/work/websites/appsaufjohannesde/`
 - **App-Landingpage (Quelle):** `index.html` im App-Repo
-- **Ziel:** `/Users/johannes/work/websites/appsaufjohannesde/iremindyou/` (Unterordner wie bei anderen Apps)
+- **Ziel:** `/Users/johannes/work/websites/appsaufjohannesde/checky4family/` (Unterordner wie bei anderen Apps)
 - **Hauptseite:** `index.html` in appsaufjohannesde listet alle Apps
 
 Bei Feature-Änderungen prüfen:
 1. Muss `index.html` im App-Repo aktualisiert werden?
-2. Muss die Datei nach `appsaufjohannesde/iremindyou/` deployt werden?
+2. Muss die Datei nach `appsaufjohannesde/checky4family/` deployt werden?
 3. Muss der App-Eintrag auf der Hauptseite aktualisiert werden?
 
 ## Code-Stil

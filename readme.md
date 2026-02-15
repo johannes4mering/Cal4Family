@@ -1,4 +1,4 @@
-# I remind you – Familienkalender & Routinen-App
+# Checky4Family – Familienkalender & Routinen-App
 
 ## Ziel
 Entwicklung einer Apple-nativen App (iOS und macOS), die Apple Kalender und Apple Erinnerungen kombiniert, um

@@ -1,4 +1,4 @@
-# App Store Beschreibungen – I remind you
+# App Store Beschreibungen – Checky4Family
 > Für Copy & Paste in App Store Connect.
 > Sprachen: Deutsch (primär), English, Italiano
 
@@ -8,7 +8,7 @@
 
 ### App-Name (30 Zeichen max)
 ```
-I remind you
+Checky4Family
 ```
 
 ### Untertitel (30 Zeichen max)
@@ -23,7 +23,7 @@ Routinen für Kinder, Wochenansicht für Eltern. Nutzt Apple Kalender & Erinneru
 
 ### Beschreibung (4000 Zeichen max)
 ```
-I remind you vereint Apple Kalender und Erinnerungen in einer familienfreundlichen App. Kinder haken ihre Routinen mit großen Buttons ab, Eltern behalten den Überblick.
+Checky4Family vereint Apple Kalender und Erinnerungen in einer familienfreundlichen App. Kinder haken ihre Routinen mit großen Buttons ab, Eltern behalten den Überblick.
 
 ROUTINEN-STARTSCREEN
 • Fällig, Kommend und Abgeschlossen – auf einen Blick
@@ -73,12 +73,12 @@ Familienkalender,Routinen,Kinder,ADHS,Erinnerungen,Wochenplan,Aufgaben,ToDo,Chec
 
 ### Support-URL
 ```
-https://apps.4johannes.de/iremindyou/
+https://apps.4johannes.de/checky4family/
 ```
 
 ### Datenschutz-URL
 ```
-https://apps.4johannes.de/iremindyou/datenschutz.html
+https://apps.4johannes.de/checky4family/datenschutz.html
 ```
 
 ### Kategorie
@@ -97,7 +97,7 @@ Lifestyle
 
 ### App Name (30 chars max)
 ```
-I remind you
+Checky4Family
 ```
 
 ### Subtitle (30 chars max)
@@ -112,7 +112,7 @@ Routines for kids, weekly view for parents. Uses Apple Calendar & Reminders – 
 
 ### Description (4000 chars max)
 ```
-I remind you combines Apple Calendar and Reminders in one family-friendly app. Kids check off their routines with large buttons, parents stay organized.
+Checky4Family combines Apple Calendar and Reminders in one family-friendly app. Kids check off their routines with large buttons, parents stay organized.
 
 ROUTINES START SCREEN
 • Due, Upcoming and Completed – all at a glance
@@ -166,7 +166,7 @@ family,calendar,routines,kids,ADHD,reminders,weekly,planner,tasks,checklist,chil
 
 ### Nome App (30 caratteri max)
 ```
-I remind you
+Checky4Family
 ```
 
 ### Sottotitolo (30 caratteri max)
@@ -181,7 +181,7 @@ Routine per i bambini, vista settimanale per i genitori. Usa Calendario e Promem
 
 ### Descrizione (4000 caratteri max)
 ```
-I remind you unisce Calendario e Promemoria Apple in un'app per tutta la famiglia. I bambini spuntano le loro routine con grandi pulsanti, i genitori mantengono il controllo.
+Checky4Family unisce Calendario e Promemoria Apple in un'app per tutta la famiglia. I bambini spuntano le loro routine con grandi pulsanti, i genitori mantengono il controllo.
 
 SCHERMATA INIZIALE ROUTINE
 • Scadute, In arrivo e Completate – tutto in un colpo d'occhio

@@ -1,12 +1,12 @@
 /* 
   Localizable.strings (English)
-  I remind you
+  Checky4Family
 
   Created by Johannes Eiseler on 25.01.26.
 */
 
 // MARK: - General
-"app_name" = "I remind you";
+"app_name" = "Checky4Family";
 "cancel" = "Cancel";
 "done" = "Done";
 "save" = "Save";
@@ -97,7 +97,7 @@
 "add_member" = "Add Member";
 
 // MARK: - Onboarding
-"welcome_title" = "Welcome to I remind you";
+"welcome_title" = "Welcome to Checky4Family";
 "welcome_subtitle" = "The family calendar for everyone";
 "calendar_permission_title" = "Calendar Access";
 "calendar_permission_description" = "We need access to your calendars to display and manage appointments.";

@@ -24,7 +24,7 @@ iremindyou/             ← I remind you (index bilingual DE/EN ✅, datenschutz
 ### Sync-Workflow
 Bei App-Änderungen, die die Website betreffen (Features, Beschreibung, FAQ, Systemanforderungen):
 1. `index.html` im App-Repo aktualisieren
-2. Datei nach `appsaufjohannesde/iremindyou/index.html` kopieren
+2. Datei nach `appsaufjohannesde/checky4family/index.html` kopieren
 3. Falls nötig: App-Eintrag in `appsaufjohannesde/index.html` aktualisieren (Beschreibung, Tags, Links)
 
 ### Was Website-relevant ist
@@ -32,13 +32,14 @@ Bei App-Änderungen, die die Website betreffen (Features, Beschreibung, FAQ, Sys
 - FAQ-Änderungen → FAQ-Sektion in index.html
 - Systemanforderungen → Sektion in index.html
 - App-Store-Link → sobald verfügbar in beiden index.html setzen
-- Datenschutz-Änderungen → iremindyou/datenschutz.html
+- Datenschutz-Änderungen → checky4family/datenschutz.html
 
 ---
 
 ## �🎯 Projekt-Zusammenfassung
 
-**App-Name:** I remind you  
+**App-Name:** Checky4Family (früher: "I remind you")  
+**Bundle ID:** com.eiseler.Checky4Family  
 **Typ:** iOS & macOS App (SwiftUI, Multiplatform)  
 **Zweck:** Familienkalender & Routinen-App für Kinder und Eltern  
 **Version:** v0.6.0
@@ -207,7 +208,7 @@ func fetchTodaysReminders(from list: EKCalendar) async -> [EKReminder]
 ## 🚀 Schnellstart für neue Session
 
 ```
-Projekt: I remind you – Familienkalender & Routinen-App
+Projekt: Checky4Family – Familienkalender & Routinen-App
 Pfad: /Users/johannes/work/xcode/Cal4Family/I remind you/
 Version: v0.6.0
 
