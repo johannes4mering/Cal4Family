@@ -266,6 +266,7 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Checky4Family;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Checky4Family benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Checky4Family benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Checky4Family benötigt Zugriff auf deine Erinnerungen, um Aufgaben und Routinen zu verwalten.";
@@ -326,6 +327,7 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Checky4Family;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Checky4Family benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Checky4Family benötigt Zugriff auf deine Kalender, um Termine anzuzeigen.";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Checky4Family benötigt Zugriff auf deine Erinnerungen, um Aufgaben und Routinen zu verwalten.";
