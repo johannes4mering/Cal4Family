@@ -34,14 +34,14 @@ struct ShareListView: View {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
                         Label {
-                            Text("Listen über iCloud teilen")
+                            Text(String(localized: "share_via_icloud"))
                                 .font(.headline)
                         } icon: {
                             Image(systemName: "icloud.and.arrow.up")
                                 .foregroundStyle(.blue)
                         }
                         
-                        Text("Teile Erinnerungslisten mit deiner Familie, um Routinen gemeinsam zu verwalten. Änderungen werden automatisch synchronisiert.")
+                        Text(String(localized: "share_via_icloud_description"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -51,7 +51,7 @@ struct ShareListView: View {
                 // Listen zum Teilen
                 Section {
                     if availableLists.isEmpty {
-                        Text("Keine Listen verfügbar")
+                        Text(String(localized: "no_lists"))
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(availableLists, id: \.calendarIdentifier) { list in
@@ -63,9 +63,9 @@ struct ShareListView: View {
                         }
                     }
                 } header: {
-                    Label("Liste auswählen", systemImage: "checklist")
+                    Label(String(localized: "select_list_to_share"), systemImage: "checklist")
                 } footer: {
-                    Text("Wähle eine Liste, die du teilen möchtest")
+                    Text(String(localized: "select_list_footer"))
                 }
                 
                 // Teilen-Aktionen
@@ -76,9 +76,9 @@ struct ShareListView: View {
                         } label: {
                             Label {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("In Erinnerungen-App öffnen")
+                                    Text(String(localized: "open_in_reminders"))
                                         .font(.body)
-                                    Text("Teilen über die native App")
+                                    Text(String(localized: "open_in_reminders_subtitle"))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
@@ -93,9 +93,9 @@ struct ShareListView: View {
                         } label: {
                             Label {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Anleitung: Familienfreigabe")
+                                    Text(String(localized: "family_sharing_instructions"))
                                         .font(.body)
-                                    Text("So teilst du mit deiner Familie")
+                                    Text(String(localized: "family_sharing_instructions_subtitle"))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
@@ -105,7 +105,7 @@ struct ShareListView: View {
                             }
                         }
                     } header: {
-                        Label("\(selected.title) teilen", systemImage: "square.and.arrow.up")
+                        Label(String(format: String(localized: "share_list_header_format"), selected.title), systemImage: "square.and.arrow.up")
                     }
                 }
                 
@@ -115,36 +115,36 @@ struct ShareListView: View {
                         InstructionStep(
                             number: 1,
                             icon: "1.circle.fill",
-                            title: "Liste öffnen",
-                            description: "Öffne die Erinnerungen-App auf deinem Gerät"
+                            title: String(localized: "step_open_list"),
+                            description: String(localized: "step_open_list_desc")
                         )
                         
                         InstructionStep(
                             number: 2,
                             icon: "2.circle.fill",
-                            title: "Liste auswählen",
-                            description: "Tippe auf die Liste, die du teilen möchtest"
+                            title: String(localized: "step_select_list"),
+                            description: String(localized: "step_select_list_desc")
                         )
                         
                         InstructionStep(
                             number: 3,
                             icon: "3.circle.fill",
-                            title: "Teilen",
-                            description: "Tippe auf ... -> Liste teilen -> Wähle Familienmitglieder"
+                            title: String(localized: "step_share"),
+                            description: String(localized: "step_share_desc")
                         )
                     }
                     .padding(.vertical, 8)
                 } header: {
-                    Label("Kurzanleitung", systemImage: "questionmark.circle")
+                    Label(String(localized: "quick_guide"), systemImage: "questionmark.circle")
                 }
             }
-            .navigationTitle("Listen teilen")
+            .navigationTitle(String(localized: "share_lists_title"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Fertig") {
+                    Button(String(localized: "done")) {
                         dismiss()
                     }
                 }
@@ -243,12 +243,12 @@ struct FamilyShareInstructionsView: View {
                             .font(.system(size: 60))
                             .foregroundStyle(.purple)
                         
-                        Text("Familienfreigabe für Erinnerungen")
+                        Text(String(localized: "family_sharing_title"))
                             .font(.title2)
                             .fontWeight(.bold)
                             .multilineTextAlignment(.center)
                         
-                        Text("So bereitest du Routinen für dein Kind vor – auch ohne dessen Gerät")
+                        Text(String(localized: "family_sharing_subtitle"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -260,74 +260,74 @@ struct FamilyShareInstructionsView: View {
                     
                     // Voraussetzungen
                     instructionSection(
-                        title: "Voraussetzungen",
+                        title: String(localized: "prerequisites"),
                         icon: "checkmark.shield.fill",
                         color: .green,
                         steps: [
-                            "Familienfreigabe muss eingerichtet sein",
-                            "Kind muss eine Apple-ID haben (auch mit Kinderkonto)",
-                            "iCloud Erinnerungen müssen auf beiden Geräten aktiv sein"
+                            String(localized: "instr_prereq_1"),
+                            String(localized: "instr_prereq_2"),
+                            String(localized: "instr_prereq_3")
                         ]
                     )
                     
                     // Schritt 1
                     instructionSection(
-                        title: "1. Liste erstellen",
+                        title: String(localized: "step_1_create_list"),
                         icon: "plus.circle.fill",
                         color: .blue,
                         steps: [
-                            "Öffne die Erinnerungen-App",
-                            "Tippe auf \"Liste hinzufügen\"",
-                            "Gib einen Namen ein (z.B. \"Morgenroutine\")",
-                            "Wähle eine Farbe und ein Symbol"
+                            String(localized: "instr_s1_1"),
+                            String(localized: "instr_s1_2"),
+                            String(localized: "instr_s1_3"),
+                            String(localized: "instr_s1_4")
                         ]
                     )
                     
                     // Schritt 2
                     instructionSection(
-                        title: "2. Routinen hinzufügen",
+                        title: String(localized: "step_2_add_routines"),
                         icon: "checklist",
                         color: .orange,
                         steps: [
-                            "Öffne die neue Liste",
-                            "Füge Erinnerungen hinzu (z.B. \"Zähne putzen\")",
-                            "Stelle Wiederholungen ein (täglich, wochentags, etc.)",
-                            "Optional: Füge Uhrzeiten hinzu"
+                            String(localized: "instr_s2_1"),
+                            String(localized: "instr_s2_2"),
+                            String(localized: "instr_s2_3"),
+                            String(localized: "instr_s2_4")
                         ]
                     )
                     
                     // Schritt 3
                     instructionSection(
-                        title: "3. Mit Kind teilen",
+                        title: String(localized: "step_3_share_with_child"),
                         icon: "square.and.arrow.up",
                         color: .purple,
                         steps: [
-                            "Tippe auf ... (oben rechts)",
-                            "Wähle \"Liste teilen\"",
-                            "Wähle dein Kind aus der Familienfreigabe",
-                            "Sende die Einladung"
+                            String(localized: "instr_s3_1"),
+                            String(localized: "instr_s3_2"),
+                            String(localized: "instr_s3_3"),
+                            String(localized: "instr_s3_4")
                         ]
                     )
                     
                     // Schritt 4
                     instructionSection(
-                        title: "4. Auf Kinderseite",
+                        title: String(localized: "step_4_on_child_device"),
                         icon: "iphone",
                         color: .cyan,
                         steps: [
-                            "Die Liste erscheint automatisch in der Erinnerungen-App",
-                            "In \"I remind you\" wird die Liste im Routinen-Tab sichtbar",
-                            "Änderungen werden in Echtzeit synchronisiert"
+                            String(localized: "instr_s4_1"),
+                            String(localized: "instr_s4_2"),
+                            String(localized: "instr_s4_3")
                         ]
                     )
                     
                     // Tipp
                     VStack(alignment: .leading, spacing: 8) {
-                        Label("Tipp", systemImage: "lightbulb.fill")
+                        Label(String(localized: "tip"), systemImage: "lightbulb.fill")
                             .font(.headline)
                             .foregroundStyle(.yellow)
                         
-                        Text("Du kannst Routinen komplett auf deinem Gerät vorbereiten. Sobald du die Liste teilst, erscheinen alle Einträge automatisch auf dem Gerät deines Kindes.")
+                        Text(String(localized: "tip_prepare_routines"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -339,13 +339,13 @@ struct FamilyShareInstructionsView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Anleitung")
+            .navigationTitle(String(localized: "family_instructions_title"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") {
+                    Button(String(localized: "done")) {
                         dismiss()
                     }
                 }

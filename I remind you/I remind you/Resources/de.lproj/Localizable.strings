@@ -106,6 +106,109 @@
 "grant_access" = "Zugriff erlauben";
 "continue_button" = "Weiter";
 "get_started" = "Los geht's";
+"onboarding_description" = "Um Termine und Aufgaben anzuzeigen, benötigt die App Zugriff auf Kalender und Erinnerungen.";
+"required_permissions" = "Benötigte Berechtigungen:";
+"calendar_label" = "Kalender";
+"reminders_label" = "Erinnerungen";
+"permission_required_title" = "Berechtigung erforderlich";
+"permission_required_message" = "Bitte erlaube den Zugriff auf Kalender und Erinnerungen in den Einstellungen.";
+"open_settings" = "Einstellungen öffnen";
+
+// MARK: - Settings Extended
+"no_calendars" = "Keine Kalender verfügbar";
+"calendars_section_header" = "Kalender für Wochenansicht & Druck";
+"calendars_footer_selected" = "Nur ausgewählte Kalender erscheinen in der Wochenansicht und im PDF-Wochenplan.";
+"calendars_footer_empty" = "Keine Kalender gefunden. Prüfe die Kalender-Berechtigung.";
+"calendars_footer_hint" = "Wähle Kalender aus, die in der Wochenansicht und im Druck erscheinen sollen.";
+"no_lists" = "Keine Listen verfügbar";
+"reminder_lists_section_header" = "Erinnerungslisten für Routinen";
+"reminder_lists_footer_selected" = "Ausgewählte Listen erscheinen auf dem Routinen-Startscreen und in der Wochenansicht.";
+"reminder_lists_footer_empty" = "Keine Erinnerungslisten gefunden. Prüfe die Erinnerungen-Berechtigung.";
+"reminder_lists_footer_hint" = "Wähle Listen aus, deren Einträge angezeigt werden sollen.";
+"family_share_footer" = "Teile Erinnerungslisten über iCloud mit deiner Familie";
+"no_rules" = "Keine Regeln erstellt";
+"add_new_rule" = "Neue Regel erstellen";
+"auto_rules_header" = "Auto-Regeln";
+"auto_rules_footer" = "Erstelle automatisch Erinnerungen aus Kalenderereignissen";
+"help" = "Hilfe";
+"show_onboarding" = "Startbildschirm anzeigen";
+"show_onboarding_alert_title" = "Startbildschirm anzeigen?";
+"show_onboarding_action" = "Anzeigen";
+"show_onboarding_message" = "Der Willkommens-Bildschirm wird beim nächsten App-Start angezeigt.";
+"version_label" = "Version";
+"privacy_label" = "Datenschutz";
+"info_section" = "Info";
+"unknown_calendar" = "Unbekannt";
+"rule_timing_format" = "%d Tag(e), %@ Uhr";
+"rule_name_section" = "Regel-Name";
+"rule_name_placeholder" = "z.B. Müllabfuhr";
+"trigger_section" = "Auslöser";
+"source_calendar_label" = "Quell-Kalender";
+"please_select" = "Auswählen...";
+"title_contains_placeholder" = "Titel enthält (optional)";
+"create_reminder_section" = "Erinnerung erstellen";
+"reminder_text_placeholder" = "Erinnerungstext";
+"target_list_label" = "Ziel-Liste";
+"days_before_stepper_format" = "Tage vorher: %d";
+"new_rule_title" = "Neue Regel";
+"fill_all_fields" = "Fülle alle Felder aus";
+"preview_event_format" = "Bei Event in \"%@\"";
+"preview_create_format" = "→ Erstelle \"%@\"";
+"preview_timing_format" = "→ %d Tag(e) vorher um %@";
+"select_list_footer" = "Wähle eine Liste, die du teilen möchtest";
+"share_list_header_format" = "%@ teilen";
+"family_instructions_title" = "Anleitung";
+"instr_prereq_1" = "Familienfreigabe muss eingerichtet sein";
+"instr_prereq_2" = "Kind muss eine Apple-ID haben (auch mit Kinderkonto)";
+"instr_prereq_3" = "iCloud Erinnerungen müssen auf beiden Geräten aktiv sein";
+"instr_s1_1" = "Öffne die Erinnerungen-App";
+"instr_s1_2" = "Tippe auf \"Liste hinzufügen\"";
+"instr_s1_3" = "Gib einen Namen ein (z.B. \"Morgenroutine\")";
+"instr_s1_4" = "Wähle eine Farbe und ein Symbol";
+"instr_s2_1" = "Öffne die neue Liste";
+"instr_s2_2" = "Füge Erinnerungen hinzu (z.B. \"Zähne putzen\")";
+"instr_s2_3" = "Stelle Wiederholungen ein (täglich, wochentags, etc.)";
+"instr_s2_4" = "Optional: Füge Uhrzeiten hinzu";
+"instr_s3_1" = "Tippe auf ... (oben rechts)";
+"instr_s3_2" = "Wähle \"Liste teilen\"";
+"instr_s3_3" = "Wähle dein Kind aus der Familienfreigabe";
+"instr_s3_4" = "Sende die Einladung";
+"instr_s4_1" = "Die Liste erscheint automatisch in der Erinnerungen-App";
+"instr_s4_2" = "In \"Checky4Family\" wird die Liste im Routinen-Tab sichtbar";
+"instr_s4_3" = "Änderungen werden in Echtzeit synchronisiert";
+
+// MARK: - Routines Progress & Sections
+"completed_label" = "erledigt";
+"section_due" = "Fällig";
+"section_upcoming" = "Kommend";
+"section_completed" = "Abgeschlossen";
+"motivation_all_done" = "🎉 Super gemacht!";
+"motivation_almost" = "Fast geschafft!";
+"motivation_halfway" = "Weiter so!";
+"motivation_started" = "Guter Start!";
+"motivation_begin" = "Los geht's!";
+"no_lists_selected" = "Keine Listen ausgewählt";
+"lists_label" = "Listen";
+
+// MARK: - Week View Format
+"week_abbrev" = "KW";
+"week_pdf_filename" = "Wochenplan.pdf";
+"pdf_footer" = "Erstellt mit Checky4Family";
+
+// MARK: - Routines Empty State
+"routines_setup_title" = "So richtest du Routinen ein";
+"routines_setup_step1_title" = "Erinnerungen-App öffnen";
+"routines_setup_step1_desc" = "Erstelle dort eine Liste für dein Kind (z.B. \"Paul – Routine\").";
+"routines_setup_step2_title" = "Aufgaben hinzufügen";
+"routines_setup_step2_desc" = "Füge wiederkehrende Erinnerungen hinzu (z.B. \"Zähne putzen\" täglich um 7:00).";
+"routines_setup_step3_title" = "Listen hier auswählen";
+"routines_setup_step3_desc" = "Gehe in die Einstellungen und wähle die Listen aus, die angezeigt werden sollen.";
+"routines_setup_tip" = "Tipp: Du kannst Listen auch mit der Familie teilen (iCloud).";
+"routines_empty_title" = "Keine Aufgaben für heute";
+"routines_empty_desc" = "Alle Erinnerungen für heute sind erledigt – oder es stehen keine an.";
+"open_reminders_app" = "Erinnerungen-App öffnen";
+"celebration_title" = "Alle Aufgaben erledigt!";
+"celebration_subtitle" = "Toll gemacht!";
 
 // MARK: - Days of Week
 "monday" = "Montag";

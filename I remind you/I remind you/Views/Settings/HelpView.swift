@@ -58,7 +58,7 @@ struct HelpContent {
     // MARK: - German Content
     
     static let germanContent = HelpContent(
-        appTitle: "I remind you",
+        appTitle: "Checky4Family",
         appDescription: "Diese App stellt einfach zu bedienende Checklisten bereit und zeigt Kalendertermine und Erinnerungen deiner Familie in einer druckbaren Wochenansicht.\n\n🧠 Besonders geeignet für Kinder mit ADHS: Klare Strukturen, visuelle Routinen und übersichtliche Wochenpläne helfen bei der Tagesorganisation.",
         
         createRemindersTitle: "Erinnerungen anlegen",
@@ -99,7 +99,7 @@ struct HelpContent {
     // MARK: - English Content
     
     static let englishContent = HelpContent(
-        appTitle: "I remind you",
+        appTitle: "Checky4Family",
         appDescription: "This app provides easy-to-use checklists and displays your family's calendar events and reminders in a printable weekly view.\n\n🧠 Especially suitable for children with ADHD: Clear structures, visual routines and organized weekly schedules help with daily planning.",
         
         createRemindersTitle: "Create Reminders",
@@ -140,7 +140,7 @@ struct HelpContent {
     // MARK: - Italian Content
     
     static let italianContent = HelpContent(
-        appTitle: "I remind you",
+        appTitle: "Checky4Family",
         appDescription: "Questa app fornisce checklist facili da usare e mostra gli eventi del calendario e i promemoria della tua famiglia in una vista settimanale stampabile.\n\n🧠 Particolarmente adatta per bambini con ADHD: Strutture chiare, routine visive e programmi settimanali organizzati aiutano nella pianificazione quotidiana.",
         
         createRemindersTitle: "Creare Promemoria",

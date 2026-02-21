@@ -165,7 +165,8 @@ final class WeekViewModel: ObservableObject {
     var weekTitle: String {
         let formatter = DateFormatter()
         formatter.locale = Locale.current
-        formatter.dateFormat = "'KW' w, MMMM yyyy"
+        let prefix = String(localized: "week_abbrev")
+        formatter.dateFormat = "'\(prefix)' w, MMMM yyyy"
         return formatter.string(from: currentWeekStart)
     }
     

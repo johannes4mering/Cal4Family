@@ -38,13 +38,13 @@ struct WeekView: View {
                 
                 // Wochentage
                 if viewModel.isLoading {
-                    ProgressView("Laden...")
+                    ProgressView(String(localized: "loading"))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     weekContent
                 }
             }
-            .navigationTitle("Wochenansicht")
+            .navigationTitle(String(localized: "week_view_title"))
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     HStack(spacing: 16) {
@@ -300,7 +300,7 @@ struct MacShareSheet: View {
     private func saveToFile() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.pdf]
-        panel.nameFieldStringValue = "Wochenplan.pdf"
+        panel.nameFieldStringValue = String(localized: "week_pdf_filename")
         panel.canCreateDirectories = true
         
         if panel.runModal() == .OK, let url = panel.url {
@@ -463,7 +463,7 @@ struct EventRow: View {
     
     private var timeString: String {
         if event.isAllDay {
-            return "Ganztägig"
+            return String(localized: "all_day")
         }
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"

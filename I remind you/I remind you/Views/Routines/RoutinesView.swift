@@ -27,7 +27,7 @@ struct RoutinesView: View {
                 if viewModel.isLoading {
                     progressHeader
                     Spacer()
-                    ProgressView("Laden...")
+                    ProgressView(String(localized: "loading"))
                     Spacer()
                 } else if viewModel.routines.isEmpty {
                     emptyState
@@ -39,7 +39,7 @@ struct RoutinesView: View {
                     routinesList
                 }
             }
-            .navigationTitle("Routinen")
+            .navigationTitle(String(localized: "routines_title"))
             .onAppear {
                 // Bei jedem Erscheinen neu laden (auch nach Tab-Wechsel)
                 viewModel.loadRoutineLists()
@@ -106,7 +106,7 @@ struct RoutinesView: View {
                 VStack(spacing: 4) {
                     Text("\(viewModel.progress.completed)/\(viewModel.progress.total)")
                         .font(.system(size: 32, weight: .bold, design: .rounded))
-                    Text("erledigt")
+                    Text(String(localized: "completed_label"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -125,15 +125,15 @@ struct RoutinesView: View {
     
     private var motivationText: String {
         if viewModel.allDone {
-            return "🎉 Super gemacht!"
+            return String(localized: "motivation_all_done")
         } else if viewModel.progressPercentage >= 0.75 {
-            return "Fast geschafft!"
+            return String(localized: "motivation_almost")
         } else if viewModel.progressPercentage >= 0.5 {
-            return "Weiter so!"
+            return String(localized: "motivation_halfway")
         } else if viewModel.progressPercentage > 0 {
-            return "Guter Start!"
+            return String(localized: "motivation_started")
         } else {
-            return "Los geht's!"
+            return String(localized: "motivation_begin")
         }
     }
     
@@ -265,16 +265,16 @@ struct RoutinesView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(Color.accentColor)
             
-            Text("So richtest du Routinen ein")
+            Text(String(localized: "routines_setup_title"))
                 .font(.title2)
                 .fontWeight(.bold)
             
             VStack(alignment: .leading, spacing: 16) {
-                helpStep(number: 1, icon: "app.badge.checkmark", title: "Erinnerungen-App öffnen", description: "Erstelle dort eine Liste für dein Kind (z.B. \"Paul – Routine\").")
+                helpStep(number: 1, icon: "app.badge.checkmark", title: String(localized: "routines_setup_step1_title"), description: String(localized: "routines_setup_step1_desc"))
                 
-                helpStep(number: 2, icon: "plus.circle", title: "Aufgaben hinzufügen", description: "Füge wiederkehrende Erinnerungen hinzu (z.B. \"Zähne putzen\" täglich um 7:00).")
+                helpStep(number: 2, icon: "plus.circle", title: String(localized: "routines_setup_step2_title"), description: String(localized: "routines_setup_step2_desc"))
                 
-                helpStep(number: 3, icon: "gearshape", title: "Listen hier auswählen", description: "Gehe in die Einstellungen und wähle die Listen aus, die angezeigt werden sollen.")
+                helpStep(number: 3, icon: "gearshape", title: String(localized: "routines_setup_step3_title"), description: String(localized: "routines_setup_step3_desc"))
             }
             .padding()
             .background(
@@ -286,7 +286,7 @@ struct RoutinesView: View {
             openRemindersButton
             
             // Hinweis
-            Label("Tipp: Du kannst Listen auch mit der Familie teilen (iCloud).", systemImage: "lightbulb.fill")
+            Label(String(localized: "routines_setup_tip"), systemImage: "lightbulb.fill")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
@@ -300,11 +300,11 @@ struct RoutinesView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.green)
             
-            Text("Keine Aufgaben für heute")
+            Text(String(localized: "routines_empty_title"))
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text("Alle Erinnerungen für heute sind erledigt – oder es stehen keine an.")
+            Text(String(localized: "routines_empty_desc"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -354,7 +354,7 @@ struct RoutinesView: View {
             }
             #endif
         } label: {
-            Label("Erinnerungen-App öffnen", systemImage: "arrow.up.forward.app")
+            Label(String(localized: "open_reminders_app"), systemImage: "arrow.up.forward.app")
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
@@ -373,11 +373,11 @@ struct RoutinesView: View {
                 Text("🎉")
                     .font(.system(size: 80))
                 
-                Text("Alle Aufgaben erledigt!")
+                Text(String(localized: "celebration_title"))
                     .font(.title2)
                     .fontWeight(.bold)
                 
-                Text("Toll gemacht!")
+                Text(String(localized: "celebration_subtitle"))
                     .font(.headline)
                     .foregroundStyle(.secondary)
             }
@@ -452,7 +452,7 @@ struct RoutineCard: View {
                         if routine.hasTime, let dueDate = routine.dueDate {
                             Text(dueDate, style: .time)
                         } else {
-                            Text("Ganztägig")
+                            Text(String(localized: "all_day"))
                                 .foregroundStyle(.orange)
                         }
                         

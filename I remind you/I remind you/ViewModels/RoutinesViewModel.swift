@@ -188,19 +188,20 @@ final class RoutinesViewModel: ObservableObject {
     }
 
     var activeListTitleSummary: String {
-        guard !activeLists.isEmpty else { return "Keine Listen ausgewählt" }
+        guard !activeLists.isEmpty else { return String(localized: "no_lists_selected") }
 
         if activeLists.count == 1 {
             return activeLists[0].title
         }
 
         let titles = activeLists.map { $0.title }
+        let listsLabel = String(localized: "lists_label")
         if titles.count <= 2 {
-            return "Listen: \(titles.joined(separator: ", "))"
+            return "\(listsLabel): \(titles.joined(separator: ", "))"
         }
 
         let leading = titles.prefix(2).joined(separator: ", ")
-        return "Listen: \(leading) + \(titles.count - 2)"
+        return "\(listsLabel): \(leading) + \(titles.count - 2)"
     }
 }
 
@@ -213,9 +214,9 @@ enum RoutineSection: String, CaseIterable {
     
     var title: String {
         switch self {
-        case .due: return "Fällig"
-        case .upcoming: return "Kommend"
-        case .completed: return "Abgeschlossen"
+        case .due: return String(localized: "section_due")
+        case .upcoming: return String(localized: "section_upcoming")
+        case .completed: return String(localized: "section_completed")
         }
     }
     

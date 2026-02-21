@@ -106,6 +106,109 @@
 "grant_access" = "Grant Access";
 "continue_button" = "Continue";
 "get_started" = "Get Started";
+"onboarding_description" = "To display appointments and tasks, the app needs access to Calendar and Reminders.";
+"required_permissions" = "Required Permissions:";
+"calendar_label" = "Calendar";
+"reminders_label" = "Reminders";
+"permission_required_title" = "Permission Required";
+"permission_required_message" = "Please allow access to Calendar and Reminders in Settings.";
+"open_settings" = "Open Settings";
+
+// MARK: - Settings Extended
+"no_calendars" = "No calendars available";
+"calendars_section_header" = "Calendars for Week View & Print";
+"calendars_footer_selected" = "Only selected calendars appear in the week view and PDF weekly plan.";
+"calendars_footer_empty" = "No calendars found. Check the Calendar permission.";
+"calendars_footer_hint" = "Select calendars to display in the week view and when printing.";
+"no_lists" = "No lists available";
+"reminder_lists_section_header" = "Reminder Lists for Routines";
+"reminder_lists_footer_selected" = "Selected lists appear on the routines start screen and in the week view.";
+"reminder_lists_footer_empty" = "No reminder lists found. Check the Reminders permission.";
+"reminder_lists_footer_hint" = "Select lists whose items should be displayed.";
+"family_share_footer" = "Share reminder lists via iCloud with your family";
+"no_rules" = "No rules created";
+"add_new_rule" = "Create New Rule";
+"auto_rules_header" = "Auto Rules";
+"auto_rules_footer" = "Automatically create reminders from calendar events";
+"help" = "Help";
+"show_onboarding" = "Show Welcome Screen";
+"show_onboarding_alert_title" = "Show Welcome Screen?";
+"show_onboarding_action" = "Show";
+"show_onboarding_message" = "The welcome screen will be shown next time the app starts.";
+"version_label" = "Version";
+"privacy_label" = "Privacy";
+"info_section" = "Info";
+"unknown_calendar" = "Unknown";
+"rule_timing_format" = "%d day(s) at %@";
+"rule_name_section" = "Rule Name";
+"rule_name_placeholder" = "e.g. Trash collection";
+"trigger_section" = "Trigger";
+"source_calendar_label" = "Source Calendar";
+"please_select" = "Select...";
+"title_contains_placeholder" = "Title contains (optional)";
+"create_reminder_section" = "Create Reminder";
+"reminder_text_placeholder" = "Reminder text";
+"target_list_label" = "Target List";
+"days_before_stepper_format" = "Days before: %d";
+"new_rule_title" = "New Rule";
+"fill_all_fields" = "Fill in all fields";
+"preview_event_format" = "For event in \"%@\"";
+"preview_create_format" = "→ Create \"%@\"";
+"preview_timing_format" = "→ %d day(s) before at %@";
+"select_list_footer" = "Select a list you want to share";
+"share_list_header_format" = "Share %@";
+"family_instructions_title" = "Instructions";
+"instr_prereq_1" = "Family Sharing must be set up";
+"instr_prereq_2" = "Child must have an Apple ID (child accounts work too)";
+"instr_prereq_3" = "iCloud Reminders must be enabled on both devices";
+"instr_s1_1" = "Open the Reminders app";
+"instr_s1_2" = "Tap \"Add List\"";
+"instr_s1_3" = "Enter a name (e.g. \"Morning Routine\")";
+"instr_s1_4" = "Choose a color and symbol";
+"instr_s2_1" = "Open the new list";
+"instr_s2_2" = "Add reminders (e.g. \"Brush teeth\")";
+"instr_s2_3" = "Set recurrence (daily, weekdays, etc.)";
+"instr_s2_4" = "Optional: Add times";
+"instr_s3_1" = "Tap ... (top right)";
+"instr_s3_2" = "Choose \"Share List\"";
+"instr_s3_3" = "Select your child from Family Sharing";
+"instr_s3_4" = "Send the invitation";
+"instr_s4_1" = "The list appears automatically in the Reminders app";
+"instr_s4_2" = "In \"Checky4Family\" the list becomes visible in the Routines tab";
+"instr_s4_3" = "Changes sync in real time";
+
+// MARK: - Routines Progress & Sections
+"completed_label" = "completed";
+"section_due" = "Due";
+"section_upcoming" = "Upcoming";
+"section_completed" = "Completed";
+"motivation_all_done" = "🎉 Well done!";
+"motivation_almost" = "Almost there!";
+"motivation_halfway" = "Keep it up!";
+"motivation_started" = "Good start!";
+"motivation_begin" = "Let's go!";
+"no_lists_selected" = "No lists selected";
+"lists_label" = "Lists";
+
+// MARK: - Week View Format
+"week_abbrev" = "W";
+"week_pdf_filename" = "WeeklyPlan.pdf";
+"pdf_footer" = "Created with Checky4Family";
+
+// MARK: - Routines Empty State
+"routines_setup_title" = "How to Set Up Routines";
+"routines_setup_step1_title" = "Open Reminders App";
+"routines_setup_step1_desc" = "Create a list for your child there (e.g. \"Paul – Routine\").";
+"routines_setup_step2_title" = "Add Tasks";
+"routines_setup_step2_desc" = "Add recurring reminders (e.g. \"Brush teeth\" daily at 7:00).";
+"routines_setup_step3_title" = "Select Lists Here";
+"routines_setup_step3_desc" = "Go to Settings and select the lists you want to display.";
+"routines_setup_tip" = "Tip: You can also share lists with your family (iCloud).";
+"routines_empty_title" = "No Tasks for Today";
+"routines_empty_desc" = "All reminders for today are done – or none are scheduled.";
+"open_reminders_app" = "Open Reminders App";
+"celebration_title" = "All Tasks Done!";
+"celebration_subtitle" = "Well done!";
 
 // MARK: - Days of Week
 "monday" = "Monday";

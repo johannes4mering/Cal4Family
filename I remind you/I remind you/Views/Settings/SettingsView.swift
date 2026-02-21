@@ -41,7 +41,7 @@ struct SettingsView: View {
                 // Info-Sektion
                 infoSection
             }
-            .navigationTitle("Einstellungen")
+            .navigationTitle(String(localized: "settings_title"))
             .onAppear {
                 viewModel.loadData()
             }
@@ -65,7 +65,7 @@ struct SettingsView: View {
     private var calendarsSection: some View {
         Section {
             if viewModel.calendars.isEmpty {
-                Text("Keine Kalender verfügbar")
+                Text(String(localized: "no_calendars"))
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(viewModel.calendars, id: \.calendarIdentifier) { calendar in
@@ -77,14 +77,14 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Label("Kalender für Wochenansicht & Druck", systemImage: "calendar")
+            Label(String(localized: "calendars_section_header"), systemImage: "calendar")
         } footer: {
             if !viewModel.selectedCalendarIdentifiers.isEmpty {
-                Text("Nur ausgewählte Kalender erscheinen in der Wochenansicht und im PDF-Wochenplan.")
+                Text(String(localized: "calendars_footer_selected"))
             } else if viewModel.calendars.isEmpty {
-                Text("Keine Kalender gefunden. Prüfe die Kalender-Berechtigung.")
+                Text(String(localized: "calendars_footer_empty"))
             } else {
-                Text("Wähle Kalender aus, die in der Wochenansicht und im Druck erscheinen sollen.")
+                Text(String(localized: "calendars_footer_hint"))
             }
         }
     }
@@ -94,7 +94,7 @@ struct SettingsView: View {
     private var reminderListsSection: some View {
         Section {
             if viewModel.reminderLists.isEmpty {
-                Text("Keine Listen verfügbar")
+                Text(String(localized: "no_lists"))
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(viewModel.reminderLists, id: \.calendarIdentifier) { list in
@@ -106,14 +106,14 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Label("Erinnerungslisten für Routinen", systemImage: "checklist")
+            Label(String(localized: "reminder_lists_section_header"), systemImage: "checklist")
         } footer: {
             if !viewModel.selectedReminderListIdentifiers.isEmpty {
-                Text("Ausgewählte Listen erscheinen auf dem Routinen-Startscreen und in der Wochenansicht.")
+                Text(String(localized: "reminder_lists_footer_selected"))
             } else if viewModel.reminderLists.isEmpty {
-                Text("Keine Erinnerungslisten gefunden. Prüfe die Erinnerungen-Berechtigung.")
+                Text(String(localized: "reminder_lists_footer_empty"))
             } else {
-                Text("Wähle Listen aus, deren Einträge angezeigt werden sollen.")
+                Text(String(localized: "reminder_lists_footer_hint"))
             }
         }
     }
@@ -127,9 +127,9 @@ struct SettingsView: View {
             } label: {
                 Label {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Listen mit Familie teilen")
+                        Text(String(localized: "share_lists"))
                             .foregroundStyle(.primary)
-                        Text("Routinen für Kinder vorbereiten")
+                        Text(String(localized: "share_lists_subtitle"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -139,9 +139,9 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Label("Familie", systemImage: "heart.fill")
+            Label(String(localized: "family_section"), systemImage: "heart.fill")
         } footer: {
-            Text("Teile Erinnerungslisten über iCloud mit deiner Familie")
+            Text(String(localized: "family_share_footer"))
         }
     }
     
@@ -150,7 +150,7 @@ struct SettingsView: View {
     private var autoRulesSection: some View {
         Section {
             if viewModel.autoRules.isEmpty {
-                Text("Keine Regeln erstellt")
+                Text(String(localized: "no_rules"))
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(viewModel.autoRules) { rule in
@@ -171,12 +171,12 @@ struct SettingsView: View {
             Button {
                 showAddRuleSheet = true
             } label: {
-                Label("Neue Regel erstellen", systemImage: "plus.circle.fill")
+                Label(String(localized: "add_new_rule"), systemImage: "plus.circle.fill")
             }
         } header: {
-            Label("Auto-Regeln", systemImage: "wand.and.stars")
+            Label(String(localized: "auto_rules_header"), systemImage: "wand.and.stars")
         } footer: {
-            Text("Erstelle automatisch Erinnerungen aus Kalenderereignissen")
+            Text(String(localized: "auto_rules_footer"))
         }
     }
     
@@ -190,26 +190,26 @@ struct SettingsView: View {
             NavigationLink {
                 HelpView()
             } label: {
-                Label("Hilfe", systemImage: "questionmark.circle")
+                Label(String(localized: "help"), systemImage: "questionmark.circle")
             }
             
             Button {
                 showOnboardingAlert = true
             } label: {
-                Label("Startbildschirm anzeigen", systemImage: "hand.wave")
+                Label(String(localized: "show_onboarding"), systemImage: "hand.wave")
                     .foregroundStyle(.primary)
             }
-            .alert("Startbildschirm anzeigen?", isPresented: $showOnboardingAlert) {
-                Button("Abbrechen", role: .cancel) { }
-                Button("Anzeigen") {
+            .alert(String(localized: "show_onboarding_alert_title"), isPresented: $showOnboardingAlert) {
+                Button(String(localized: "cancel"), role: .cancel) { }
+                Button(String(localized: "show_onboarding_action")) {
                     hasCompletedOnboarding = false
                 }
             } message: {
-                Text("Der Willkommens-Bildschirm wird beim nächsten App-Start angezeigt.")
+                Text(String(localized: "show_onboarding_message"))
             }
             
             HStack {
-                Text("Version")
+                Text(String(localized: "version_label"))
                 Spacer()
                 Text("0.6.0")
                     .foregroundStyle(.secondary)
@@ -217,7 +217,7 @@ struct SettingsView: View {
             
             Link(destination: URL(string: "https://apple.com")!) {
                 HStack {
-                    Text("Datenschutz")
+                    Text(String(localized: "privacy_label"))
                     Spacer()
                     Image(systemName: "arrow.up.right")
                         .font(.caption)
@@ -229,7 +229,7 @@ struct SettingsView: View {
             debugSection
             #endif
         } header: {
-            Label("Info", systemImage: "info.circle")
+            Label(String(localized: "info_section"), systemImage: "info.circle")
         }
     }
     
@@ -389,11 +389,11 @@ struct AutoRuleRow: View {
     let onToggle: () -> Void
     
     private var sourceCalendarName: String {
-        calendars.first { $0.calendarIdentifier == rule.sourceCalendarIdentifier }?.title ?? "Unbekannt"
+        calendars.first { $0.calendarIdentifier == rule.sourceCalendarIdentifier }?.title ?? String(localized: "unknown_calendar")
     }
     
     private var targetListName: String {
-        reminderLists.first { $0.calendarIdentifier == rule.targetListIdentifier }?.title ?? "Unbekannt"
+        reminderLists.first { $0.calendarIdentifier == rule.targetListIdentifier }?.title ?? String(localized: "unknown_calendar")
     }
     
     var body: some View {
@@ -406,7 +406,7 @@ struct AutoRuleRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
-                Text("\(rule.dayOffset) Tag(e), \(String(format: "%02d:%02d", rule.reminderHour, rule.reminderMinute)) Uhr")
+                Text(String(format: String(localized: "rule_timing_format"), rule.dayOffset, String(format: "%02d:%02d", rule.reminderHour, rule.reminderMinute)))
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
@@ -443,70 +443,70 @@ struct AddRuleSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Regel-Name") {
-                    TextField("z.B. Müllabfuhr", text: $name)
+                Section(String(localized: "rule_name_section")) {
+                    TextField(String(localized: "rule_name_placeholder"), text: $name)
                 }
                 
-                Section("Auslöser") {
-                    Picker("Quell-Kalender", selection: $selectedCalendarId) {
-                        Text("Auswählen...").tag("")
+                Section(String(localized: "trigger_section")) {
+                    Picker(String(localized: "source_calendar_label"), selection: $selectedCalendarId) {
+                        Text(String(localized: "please_select")).tag("")
                         ForEach(calendars, id: \.calendarIdentifier) { calendar in
                             Text(calendar.title).tag(calendar.calendarIdentifier)
                         }
                     }
                     
-                    TextField("Titel enthält (optional)", text: $titleContains)
+                    TextField(String(localized: "title_contains_placeholder"), text: $titleContains)
                 }
                 
-                Section("Erinnerung erstellen") {
-                    TextField("Erinnerungstext", text: $reminderTitle)
+                Section(String(localized: "create_reminder_section")) {
+                    TextField(String(localized: "reminder_text_placeholder"), text: $reminderTitle)
                         #if os(iOS)
                         .textInputAutocapitalization(.sentences)
                         #endif
                     
-                    Picker("Ziel-Liste", selection: $selectedListId) {
-                        Text("Auswählen...").tag("")
+                    Picker(String(localized: "target_list_label"), selection: $selectedListId) {
+                        Text(String(localized: "please_select")).tag("")
                         ForEach(reminderLists, id: \.calendarIdentifier) { list in
                             Text(list.title).tag(list.calendarIdentifier)
                         }
                     }
                     
-                    Stepper("Tage vorher: \(abs(dayOffset))", value: $dayOffset, in: -14...0)
+                    Stepper(String(format: String(localized: "days_before_stepper_format"), abs(dayOffset)), value: $dayOffset, in: -14...0)
                     
-                    DatePicker("Uhrzeit", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                    DatePicker(String(localized: "reminder_time"), selection: $reminderTime, displayedComponents: .hourAndMinute)
                 }
                 
                 Section {
                     // Vorschau
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Vorschau")
+                        Text(String(localized: "preview"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         
                         if !name.isEmpty && !selectedCalendarId.isEmpty && !reminderTitle.isEmpty {
-                            Text("Bei Event in \"\(calendarName)\"")
-                            Text("→ Erstelle \"\(reminderTitle)\"")
-                            Text("→ \(abs(dayOffset)) Tag(e) vorher um \(timeString)")
+                            Text(String(format: String(localized: "preview_event_format"), calendarName))
+                            Text(String(format: String(localized: "preview_create_format"), reminderTitle))
+                            Text(String(format: String(localized: "preview_timing_format"), abs(dayOffset), timeString))
                         } else {
-                            Text("Fülle alle Felder aus")
+                            Text(String(localized: "fill_all_fields"))
                                 .foregroundStyle(.tertiary)
                         }
                     }
                     .font(.subheadline)
                 }
             }
-            .navigationTitle("Neue Regel")
+            .navigationTitle(String(localized: "new_rule_title"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") {
+                    Button(String(localized: "cancel")) {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
+                    Button(String(localized: "save")) {
                         saveRule()
                     }
                     .disabled(!canSave)

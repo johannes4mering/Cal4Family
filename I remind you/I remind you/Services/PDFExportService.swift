@@ -1,4 +1,4 @@
-//
+                                        //
 //  PDFExportService.swift
 //  I remind you
 //
@@ -563,10 +563,12 @@ final class PDFExportService {
         let footerFont = PlatformFont.systemFont(ofSize: isLandscape ? 7 : 8, weight: .regular)
         
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
-        formatter.dateFormat = "dd.MM.yyyy HH:mm"
+        formatter.locale = Locale.current
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
         
-        let footerText = "Erstellt mit I remind you • \(formatter.string(from: Date()))"
+        let footerBase = String(localized: "pdf_footer")
+        let footerText = "\(footerBase) • \(formatter.string(from: Date()))"
         let footerAttributes: [NSAttributedString.Key: Any] = [
             .font: footerFont,
             .foregroundColor: PlatformColor.lightGray

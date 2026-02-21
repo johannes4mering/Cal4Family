@@ -36,16 +36,17 @@ struct OnboardingView: View {
             
             // Titel
             VStack(spacing: 8) {
-                Text("Willkommen bei")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
-                Text("I remind you")
+                Text(String(localized: "welcome_title"))
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                Text(String(localized: "welcome_subtitle"))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
             
             // Beschreibung
-            Text("Um deine Termine und Aufgaben anzuzeigen, benötigt die App Zugriff auf Kalender und Erinnerungen.")
+            Text(String(localized: "onboarding_description"))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 32)
@@ -54,17 +55,17 @@ struct OnboardingView: View {
             
             // Status-Anzeige als einfache Checkliste
             VStack(alignment: .leading, spacing: 16) {
-                Text("Benötigte Berechtigungen:")
+                Text(String(localized: "required_permissions"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
                 PermissionCheckItem(
-                    title: "Kalender",
+                    title: String(localized: "calendar_label"),
                     isGranted: calendarAccessGranted
                 )
                 
                 PermissionCheckItem(
-                    title: "Erinnerungen",
+                    title: String(localized: "reminders_label"),
                     isGranted: reminderAccessGranted
                 )
             }
@@ -96,13 +97,13 @@ struct OnboardingView: View {
         .onAppear {
             checkExistingPermissions()
         }
-        .alert("Berechtigung erforderlich", isPresented: $showError) {
-            Button("Einstellungen öffnen") {
+        .alert(String(localized: "permission_required_title"), isPresented: $showError) {
+            Button(String(localized: "open_settings")) {
                 openSystemSettings()
             }
-            Button("Abbrechen", role: .cancel) {}
+            Button(String(localized: "cancel"), role: .cancel) {}
         } message: {
-            Text("Bitte erlaube den Zugriff auf Kalender und Erinnerungen in den Einstellungen.")
+            Text(String(localized: "permission_required_message"))
         }
     }
     
@@ -124,11 +125,9 @@ struct OnboardingView: View {
     
     private var buttonTitle: String {
         if canContinue {
-            return "Los geht's"
-        } else if !calendarAccessGranted {
-            return "Zugriff erlauben"
+            return String(localized: "get_started")
         } else {
-            return "Zugriff erlauben"
+            return String(localized: "grant_access")
         }
     }
     

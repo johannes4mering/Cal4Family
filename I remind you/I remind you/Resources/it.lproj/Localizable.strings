@@ -1,0 +1,242 @@
+/* 
+  Localizable.strings (Italian)
+  Checky4Family
+
+  Created by Johannes Eiseler on 21.02.26.
+*/
+
+// MARK: - General
+"app_name" = "Checky4Family";
+"cancel" = "Annulla";
+"done" = "Fine";
+"save" = "Salva";
+"delete" = "Elimina";
+"edit" = "Modifica";
+"loading" = "Caricamento...";
+"error" = "Errore";
+"ok" = "OK";
+
+// MARK: - Tabs
+"tab_week" = "Settimana";
+"tab_routines" = "Routine";
+"tab_settings" = "Impostazioni";
+
+// MARK: - Week View
+"today_button" = "Oggi";
+"week_view_title" = "Vista settimanale";
+"all_day" = "Tutto il giorno";
+"no_events" = "Nessun evento";
+"pdf_export_error" = "Impossibile creare il PDF";
+
+// MARK: - Routines
+"routines_title" = "Routine";
+"morning_routine" = "Routine mattutina";
+"evening_routine" = "Routine serale";
+"well_done" = "Ben fatto! 🎉";
+"progress" = "Progresso";
+"add_routine" = "Nuova routine";
+"routine_title" = "Titolo";
+"routine_title_placeholder" = "es. Lavarsi i denti";
+"select_list" = "Seleziona lista";
+"reminder_time" = "Orario";
+"no_time" = "Nessuno";
+"with_time" = "Con orario";
+
+// MARK: - Recurrence
+"recurrence" = "Ricorrenza";
+"recurrence_daily" = "Quotidianamente";
+"recurrence_weekdays" = "Giorni feriali (Lun-Ven)";
+"recurrence_weekly" = "Settimanalmente";
+"recurrence_monthly" = "Mensilmente";
+"recurrence_custom" = "Personalizzato";
+"weekdays_selection" = "Seleziona giorni";
+"preview" = "Anteprima";
+"repeats" = "Si ripete:";
+
+// MARK: - Family Sharing
+"family_section" = "Famiglia";
+"share_lists" = "Condividi liste con la famiglia";
+"share_lists_subtitle" = "Prepara le routine per i bambini";
+"share_lists_title" = "Condividi liste";
+"share_via_icloud" = "Condividi liste tramite iCloud";
+"share_via_icloud_description" = "Condividi le liste promemoria con la tua famiglia per gestire le routine insieme. Le modifiche vengono sincronizzate automaticamente.";
+"select_list_to_share" = "Seleziona lista";
+"open_in_reminders" = "Apri in Promemoria";
+"open_in_reminders_subtitle" = "Condividi tramite l'app nativa";
+"family_sharing_instructions" = "Guida: Condivisione famiglia";
+"family_sharing_instructions_subtitle" = "Come condividere con la tua famiglia";
+"quick_guide" = "Guida rapida";
+"step_open_list" = "Apri lista";
+"step_open_list_desc" = "Apri l'app Promemoria sul tuo dispositivo";
+"step_select_list" = "Seleziona lista";
+"step_select_list_desc" = "Tocca la lista che vuoi condividere";
+"step_share" = "Condividi";
+"step_share_desc" = "Tocca ••• → 'Condividi lista' → Scegli i membri della famiglia";
+"family_sharing_title" = "Condivisione famiglia per Promemoria";
+"family_sharing_subtitle" = "Come preparare le routine per tuo figlio – anche senza il suo dispositivo";
+"prerequisites" = "Prerequisiti";
+"prerequisite_1" = "La Condivisione in famiglia deve essere configurata";
+"prerequisite_2" = "Il bambino deve avere un Apple ID (anche account bambino)";
+"prerequisite_3" = "I Promemoria iCloud devono essere attivi su entrambi i dispositivi";
+"step_1_create_list" = "1. Crea lista";
+"step_2_add_routines" = "2. Aggiungi routine";
+"step_3_share_with_child" = "3. Condividi con il bambino";
+"step_4_on_child_device" = "4. Sul dispositivo del bambino";
+"tip" = "Suggerimento";
+"tip_prepare_routines" = "Puoi preparare le routine interamente sul tuo dispositivo. Una volta condivisa la lista, tutte le voci appaiono automaticamente sul dispositivo di tuo figlio.";
+
+// MARK: - Settings
+"settings_title" = "Impostazioni";
+"calendars_section" = "Calendari";
+"reminders_section" = "Liste promemoria";
+"auto_rules_section" = "Regole automatiche";
+"family_members_section" = "Membri della famiglia";
+"select_calendars" = "Seleziona calendari";
+"select_reminder_lists" = "Seleziona liste";
+"add_rule" = "Aggiungi regola";
+"add_member" = "Aggiungi membro";
+
+// MARK: - Onboarding
+"welcome_title" = "Benvenuto in Checky4Family";
+"welcome_subtitle" = "Il calendario di famiglia per tutti";
+"calendar_permission_title" = "Accesso al Calendario";
+"calendar_permission_description" = "Abbiamo bisogno dell'accesso ai tuoi calendari per visualizzare e gestire gli appuntamenti.";
+"reminder_permission_title" = "Accesso ai Promemoria";
+"reminder_permission_description" = "Abbiamo bisogno dell'accesso ai tuoi promemoria per gestire le attività e le routine.";
+"grant_access" = "Consenti accesso";
+"continue_button" = "Continua";
+"get_started" = "Inizia";
+"onboarding_description" = "Per visualizzare appuntamenti e attività, l'app ha bisogno dell'accesso a Calendario e Promemoria.";
+"required_permissions" = "Autorizzazioni richieste:";
+"calendar_label" = "Calendario";
+"reminders_label" = "Promemoria";
+"permission_required_title" = "Autorizzazione richiesta";
+"permission_required_message" = "Consenti l'accesso a Calendario e Promemoria nelle Impostazioni.";
+"open_settings" = "Apri Impostazioni";
+
+// MARK: - Settings Extended
+"no_calendars" = "Nessun calendario disponibile";
+"calendars_section_header" = "Calendari per vista settimanale e stampa";
+"calendars_footer_selected" = "Solo i calendari selezionati appaiono nella vista settimanale e nel piano PDF.";
+"calendars_footer_empty" = "Nessun calendario trovato. Controlla il permesso Calendario.";
+"calendars_footer_hint" = "Seleziona i calendari da visualizzare nella vista settimanale e nella stampa.";
+"no_lists" = "Nessuna lista disponibile";
+"reminder_lists_section_header" = "Liste promemoria per le routine";
+"reminder_lists_footer_selected" = "Le liste selezionate appaiono nella schermata iniziale routine e nella vista settimanale.";
+"reminder_lists_footer_empty" = "Nessuna lista trovata. Controlla il permesso Promemoria.";
+"reminder_lists_footer_hint" = "Seleziona le liste i cui elementi devono essere visualizzati.";
+"family_share_footer" = "Condividi liste promemoria via iCloud con la tua famiglia";
+"no_rules" = "Nessuna regola creata";
+"add_new_rule" = "Crea nuova regola";
+"auto_rules_header" = "Regole auto";
+"auto_rules_footer" = "Crea automaticamente promemoria dagli eventi del calendario";
+"help" = "Aiuto";
+"show_onboarding" = "Mostra schermata di benvenuto";
+"show_onboarding_alert_title" = "Mostrare la schermata di benvenuto?";
+"show_onboarding_action" = "Mostra";
+"show_onboarding_message" = "La schermata di benvenuto verrà mostrata al prossimo avvio dell'app.";
+"version_label" = "Versione";
+"privacy_label" = "Privacy";
+"info_section" = "Info";
+"unknown_calendar" = "Sconosciuto";
+"rule_timing_format" = "%d giorno/i alle %@";
+"rule_name_section" = "Nome regola";
+"rule_name_placeholder" = "es. Raccolta rifiuti";
+"trigger_section" = "Attivatore";
+"source_calendar_label" = "Calendario sorgente";
+"please_select" = "Seleziona...";
+"title_contains_placeholder" = "Il titolo contiene (opzionale)";
+"create_reminder_section" = "Crea promemoria";
+"reminder_text_placeholder" = "Testo promemoria";
+"target_list_label" = "Lista destinazione";
+"days_before_stepper_format" = "Giorni prima: %d";
+"new_rule_title" = "Nuova regola";
+"fill_all_fields" = "Compila tutti i campi";
+"preview_event_format" = "Per evento in \"%@\"";
+"preview_create_format" = "→ Crea \"%@\"";
+"preview_timing_format" = "→ %d giorno/i prima alle %@";
+"select_list_footer" = "Seleziona una lista da condividere";
+"share_list_header_format" = "Condividi %@";
+"family_instructions_title" = "Istruzioni";
+"instr_prereq_1" = "La Condivisione in famiglia deve essere configurata";
+"instr_prereq_2" = "Il bambino deve avere un Apple ID (anche account bambino)";
+"instr_prereq_3" = "I Promemoria iCloud devono essere attivi su entrambi i dispositivi";
+"instr_s1_1" = "Apri l'app Promemoria";
+"instr_s1_2" = "Tocca \"Aggiungi lista\"";
+"instr_s1_3" = "Inserisci un nome (es. \"Routine mattutina\")";
+"instr_s1_4" = "Scegli un colore e un simbolo";
+"instr_s2_1" = "Apri la nuova lista";
+"instr_s2_2" = "Aggiungi promemoria (es. \"Lavarsi i denti\")";
+"instr_s2_3" = "Imposta la ricorrenza (quotidiana, feriali, ecc.)";
+"instr_s2_4" = "Opzionale: aggiungi orari";
+"instr_s3_1" = "Tocca ... (in alto a destra)";
+"instr_s3_2" = "Scegli \"Condividi lista\"";
+"instr_s3_3" = "Seleziona tuo figlio dalla Condivisione in famiglia";
+"instr_s3_4" = "Invia l'invito";
+"instr_s4_1" = "La lista appare automaticamente nell'app Promemoria";
+"instr_s4_2" = "In \"Checky4Family\" la lista diventa visibile nella scheda Routine";
+"instr_s4_3" = "Le modifiche si sincronizzano in tempo reale";
+
+// MARK: - Routines Progress & Sections
+"completed_label" = "completate";
+"section_due" = "Scadute";
+"section_upcoming" = "In arrivo";
+"section_completed" = "Completate";
+"motivation_all_done" = "🎉 Ottimo lavoro!";
+"motivation_almost" = "Quasi finito!";
+"motivation_halfway" = "Continua così!";
+"motivation_started" = "Buon inizio!";
+"motivation_begin" = "Andiamo!";
+"no_lists_selected" = "Nessuna lista selezionata";
+"lists_label" = "Liste";
+
+// MARK: - Week View Format
+"week_abbrev" = "S.";
+"week_pdf_filename" = "PianoSettimanale.pdf";
+"pdf_footer" = "Creato con Checky4Family";
+
+// MARK: - Routines Empty State
+"routines_setup_title" = "Come configurare le routine";
+"routines_setup_step1_title" = "Apri app Promemoria";
+"routines_setup_step1_desc" = "Crea lì una lista per tuo figlio (es. \"Paolo – Routine\").";
+"routines_setup_step2_title" = "Aggiungi attività";
+"routines_setup_step2_desc" = "Aggiungi promemoria ricorrenti (es. \"Lavarsi i denti\" ogni giorno alle 7:00).";
+"routines_setup_step3_title" = "Seleziona liste qui";
+"routines_setup_step3_desc" = "Vai alle Impostazioni e seleziona le liste da visualizzare.";
+"routines_setup_tip" = "Suggerimento: puoi condividere le liste con la famiglia (iCloud).";
+"routines_empty_title" = "Nessuna attività per oggi";
+"routines_empty_desc" = "Tutti i promemoria per oggi sono completati – o non ce ne sono.";
+"open_reminders_app" = "Apri Promemoria";
+"celebration_title" = "Tutte le attività completate!";
+"celebration_subtitle" = "Ottimo lavoro!";
+
+// MARK: - Days of Week
+"monday" = "Lunedì";
+"tuesday" = "Martedì";
+"wednesday" = "Mercoledì";
+"thursday" = "Giovedì";
+"friday" = "Venerdì";
+"saturday" = "Sabato";
+"sunday" = "Domenica";
+
+"monday_short" = "Lun";
+"tuesday_short" = "Mar";
+"wednesday_short" = "Mer";
+"thursday_short" = "Gio";
+"friday_short" = "Ven";
+"saturday_short" = "Sab";
+"sunday_short" = "Dom";
+
+// MARK: - Months
+"january" = "Gennaio";
+"february" = "Febbraio";
+"march" = "Marzo";
+"april" = "Aprile";
+"may" = "Maggio";
+"june" = "Giugno";
+"july" = "Luglio";
+"august" = "Agosto";
+"september" = "Settembre";
+"october" = "Ottobre";
+"november" = "Novembre";
+"december" = "Dicembre";
