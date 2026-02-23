@@ -267,33 +267,99 @@ struct RoutineItem: Identifiable {
         return .upcoming
     }
     
-    /// Emoji basierend auf Titel
+    /// Emoji basierend auf Titel – DE/EN/IT
     var emoji: String {
-        let lowercased = title.lowercased()
+        let t = title.lowercased()
         
-        if lowercased.contains("zähne") || lowercased.contains("zahn") {
+        // 🪥 Zähne putzen / Brush teeth / Denti
+        if t.contains("zähne") || t.contains("zahn") ||
+           t.contains("teeth") || t.contains("brush") ||
+           t.contains("denti") || t.contains("spazzolin") {
             return "🪥"
-        } else if lowercased.contains("anzieh") || lowercased.contains("kleid") {
+        // 💊 Tablette / Medicine / Medicina
+        } else if t.contains("tablette") || t.contains("medikament") || t.contains("pille") ||
+                  t.contains("medicine") || t.contains("tablet") || t.contains("pill") ||
+                  t.contains("farmaco") || t.contains("compressa") || t.contains("medicinale") {
+            return "💊"
+        // 👕 Anziehen / Get dressed / Vestirsi
+        } else if t.contains("anzieh") || t.contains("kleid") ||
+                  t.contains("dress") || t.contains("cloth") || t.contains("wear") || t.contains("shirt") ||
+                  t.contains("vestir") || t.contains("abbigliam") {
             return "👕"
-        } else if lowercased.contains("frühstück") || lowercased.contains("essen") {
+        // 🧥 Jacke / Jacket / Giacca
+        } else if t.contains("jacke") || t.contains("mantel") ||
+                  t.contains("jacket") || t.contains("coat") ||
+                  t.contains("giacca") || t.contains("cappotto") {
+            return "🧥"
+        // 🍳 Frühstück / Breakfast / Colazione
+        } else if t.contains("frühstück") ||
+                  t.contains("breakfast") ||
+                  t.contains("colazione") {
             return "🍳"
-        } else if lowercased.contains("schul") || lowercased.contains("ranzen") || lowercased.contains("tasche") {
+        // 🍽️ Essen / Meal / Pasto
+        } else if t.contains("essen") || t.contains("mittag") || t.contains("abendessen") ||
+                  t.contains("meal") || t.contains("lunch") || t.contains("dinner") || t.contains("eat") || t.contains("food") ||
+                  t.contains("mangiare") || t.contains("pranzo") || t.contains("cena") || t.contains("pasto") {
+            return "🍽️"
+        // 🎒 Schule / School / Scuola
+        } else if t.contains("schul") || t.contains("ranzen") || t.contains("tasche") ||
+                  t.contains("school") || t.contains("backpack") || t.contains("bag") ||
+                  t.contains("scuola") || t.contains("zaino") || t.contains("borsa") {
             return "🎒"
-        } else if lowercased.contains("bett") || lowercased.contains("schlaf") {
+        // 🛏️ Schlafen / Sleep / Dormire
+        } else if t.contains("bett") || t.contains("schlaf") ||
+                  t.contains("bed") || t.contains("sleep") ||
+                  t.contains("letto") || t.contains("dormire") || t.contains("sonno") {
             return "🛏️"
-        } else if lowercased.contains("dusch") || lowercased.contains("wasch") || lowercased.contains("bad") {
+        // 🚿 Duschen / Shower / Doccia
+        } else if t.contains("dusch") || t.contains("wasch") || t.contains("bad") ||
+                  t.contains("shower") || t.contains("wash") || t.contains("bath") ||
+                  t.contains("doccia") || t.contains("bagno") || t.contains("lavare") {
             return "🚿"
-        } else if lowercased.contains("hausaufgab") || lowercased.contains("lernen") {
+        // 📚 Hausaufgaben / Homework / Compiti
+        } else if t.contains("hausaufgab") || t.contains("lernen") ||
+                  t.contains("homework") || t.contains("study") || t.contains("learn") ||
+                  t.contains("compiti") || t.contains("studiare") || t.contains("lezione") {
             return "📚"
-        } else if lowercased.contains("aufräum") || lowercased.contains("zimmer") {
+        // ✏️ Schreiben / Write / Scrivere
+        } else if t.contains("schreib") || t.contains("stift") || t.contains("zeich") ||
+                  t.contains("write") || t.contains("draw") || t.contains("pen") || t.contains("pencil") ||
+                  t.contains("scriv") || t.contains("penna") || t.contains("disegn") {
+            return "✏️"
+        // 🧹 Aufräumen / Tidy up / Riordinare
+        } else if t.contains("aufräum") || t.contains("zimmer") ||
+                  t.contains("clean") || t.contains("tidy") || t.contains("room") ||
+                  t.contains("pulire") || t.contains("ordine") || t.contains("stanza") || t.contains("camera") {
             return "🧹"
-        } else if lowercased.contains("lesen") || lowercased.contains("buch") {
+        // 📖 Lesen / Read / Leggere
+        } else if t.contains("lesen") || t.contains("buch") ||
+                  t.contains("read") || t.contains("book") ||
+                  t.contains("legger") || t.contains("libro") {
             return "📖"
-        } else if lowercased.contains("sport") || lowercased.contains("bewegung") {
+        // 🎮 Spielen / Play / Giocare
+        } else if t.contains("spielen") || t.contains("spiel") ||
+                  t.contains("play") || t.contains("game") ||
+                  t.contains("giocare") || t.contains("gioco") {
+            return "🎮"
+        // ⚽ Sport / Exercise / Sport
+        } else if t.contains("sport") || t.contains("bewegung") || t.contains("turnen") ||
+                  t.contains("exercise") || t.contains("gym") || t.contains("workout") ||
+                  t.contains("esercizio") || t.contains("palestra") || t.contains("allenamento") {
             return "⚽"
-        } else if lowercased.contains("musik") || lowercased.contains("üben") {
+        // 🎵 Musik / Music / Musica
+        } else if t.contains("musik") || t.contains("üben") || t.contains("instrument") ||
+                  t.contains("music") || t.contains("practice") ||
+                  t.contains("musica") || t.contains("suonare") || t.contains("strumento") {
             return "🎵"
-        } else if lowercased.contains("hund") || lowercased.contains("tier") {
+        // 💧 Trinken / Drink / Bere
+        } else if t.contains("trinken") || t.contains("wasser") ||
+                  t.contains("drink") || t.contains("water") ||
+                  t.contains("bere") || t.contains("acqua") {
+            return "💧"
+        // 🐕 Hund / Dog / Cane
+        } else if t.contains("hund") || t.contains("tier") || t.contains("katze") ||
+                  t.contains("dog") || t.contains("animal") || t.contains("pet") || t.contains("cat") ||
+                  t.contains("cane") || t.contains("animale") || t.contains("gatto") {
             return "🐕"
         } else {
             return "✨"

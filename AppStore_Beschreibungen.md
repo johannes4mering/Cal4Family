@@ -18,12 +18,19 @@ Familienkalender & Routinen
 
 ### Werbebeschreibung (170 Zeichen max)
 ```
-Routinen für Kinder, Wochenansicht für Eltern. Nutzt Apple Kalender & Erinnerungen – keine Cloud nötig. Besonders geeignet bei ADHS.
+Bewusst einfach für Kinder & Eltern: Routinen abhaken, Woche planen – nutzt Apple Kalender & Erinnerungen. Klar strukturiert, ideal auch bei ADHS.
 ```
 
 ### Beschreibung (4000 Zeichen max)
 ```
-Checky4Family vereint Apple Kalender und Erinnerungen in einer familienfreundlichen App. Kinder haken ihre Routinen mit großen Buttons ab, Eltern behalten den Überblick.
+Checky4Family vereint Apple Kalender und Erinnerungen in einer familienfreundlichen App. Die Oberfläche ist bewusst einfach und übersichtlich gehalten – damit Kinder selbstständig durchstarten können und Eltern den Überblick behalten.
+
+BEWUSST EINFACH GESTALTET
+• Nur das Wesentliche auf einen Blick – keine überladenen Menüs
+• Große, klare Buttons, die sofort zum Benutzen einladen
+• Emojis und Farben statt langer Texte – auch für Leseanfänger geeignet
+• Kinder lernen spielend, ihren Tag selbst zu strukturieren
+• Auch für Erwachsene, die Klarheit und Ordnung im Alltag schätzen
 
 ROUTINEN-STARTSCREEN
 • Fällig, Kommend und Abgeschlossen – auf einen Blick
@@ -32,10 +39,10 @@ ROUTINEN-STARTSCREEN
 • Feier-Animation wenn alles geschafft ist
 
 BESONDERS GEEIGNET BEI ADHS
-• Klare visuelle Struktur ohne Ablenkung
+• Klare visuelle Struktur ohne Ablenkung oder Reizüberflutung
 • Feste Tagesroutinen mit großen, übersichtlichen Buttons
 • Emojis zur schnellen Orientierung
-• Motivierende Fortschrittsanzeige
+• Motivierende Fortschrittsanzeige – jeder erledigte Schritt zählt
 
 WOCHENANSICHT
 • Alle Termine und Aufgaben der Woche kombiniert
@@ -107,12 +114,19 @@ Family Calendar & Routines
 
 ### Promotional Text (170 chars max)
 ```
-Routines for kids, weekly view for parents. Uses Apple Calendar & Reminders – no cloud needed. Especially helpful for children with ADHD.
+Intentionally simple for the whole family: check off routines, plan the week – uses Apple Calendar & Reminders. Clear and focused, great for ADHD too.
 ```
 
 ### Description (4000 chars max)
 ```
-Checky4Family combines Apple Calendar and Reminders in one family-friendly app. Kids check off their routines with large buttons, parents stay organized.
+Checky4Family combines Apple Calendar and Reminders in one family-friendly app. The interface is intentionally kept simple and clear – so kids can get started on their own and parents always stay in the loop.
+
+INTENTIONALLY SIMPLE BY DESIGN
+• Only what matters – no cluttered menus, no overwhelm
+• Large, inviting buttons that are easy to use right away
+• Emojis and colors instead of long texts – great for early readers too
+• Kids build confidence by structuring their day independently
+• Works just as well for adults who value clarity and calm
 
 ROUTINES START SCREEN
 • Due, Upcoming and Completed – all at a glance
@@ -121,10 +135,10 @@ ROUTINES START SCREEN
 • Celebration animation when everything is completed
 
 ESPECIALLY HELPFUL FOR ADHD
-• Clear visual structure without distractions
+• Clear visual structure without distractions or visual noise
 • Fixed daily routines with large, easy-to-read buttons
 • Emojis for quick orientation
-• Motivating progress display
+• Motivating progress display – every completed step counts
 
 WEEKLY VIEW
 • All appointments and tasks for the week combined
@@ -176,12 +190,19 @@ Calendario famiglia & routine
 
 ### Testo promozionale (170 caratteri max)
 ```
-Routine per i bambini, vista settimanale per i genitori. Usa Calendario e Promemoria Apple – nessun cloud necessario. Ideale per bambini con ADHD.
+Volutamente semplice per tutta la famiglia: spunta le routine, pianifica la settimana – usa Calendario e Promemoria Apple. Chiara e mirata, ideale anche per l'ADHD.
 ```
 
 ### Descrizione (4000 caratteri max)
 ```
-Checky4Family unisce Calendario e Promemoria Apple in un'app per tutta la famiglia. I bambini spuntano le loro routine con grandi pulsanti, i genitori mantengono il controllo.
+Checky4Family unisce Calendario e Promemoria Apple in un'app per tutta la famiglia. L'interfaccia è volutamente semplice e ordinata – così i bambini partono in autonomia e i genitori mantengono sempre il controllo.
+
+SEMPLICITÀ PENSATA PER VOI
+• Solo l'essenziale in un colpo d'occhio – nessun menu complicato
+• Pulsanti grandi e chiari, intuitivi fin dai primi utilizzi
+• Emoji e colori al posto di testi lunghi – adatto anche ai più piccoli
+• I bambini imparano a strutturare la giornata in modo autonomo e positivo
+• Ideale anche per adulti che apprezzano ordine e semplicità nella vita quotidiana
 
 SCHERMATA INIZIALE ROUTINE
 • Scadute, In arrivo e Completate – tutto in un colpo d'occhio
@@ -190,10 +211,10 @@ SCHERMATA INIZIALE ROUTINE
 • Animazione di festeggiamento quando tutto è completato
 
 PARTICOLARMENTE UTILE PER L'ADHD
-• Struttura visiva chiara senza distrazioni
+• Struttura visiva chiara senza distrazioni o sovraccarico visivo
 • Routine giornaliere fisse con pulsanti grandi e leggibili
 • Emoji per un orientamento rapido
-• Indicatore di progresso motivante
+• Indicatore di progresso motivante – ogni passo completato conta
 
 VISTA SETTIMANALE
 • Tutti gli appuntamenti e le attività della settimana combinati

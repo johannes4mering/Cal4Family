@@ -183,7 +183,12 @@ struct HelpContent {
 
 /// Hilfeseite mit Erklaerungen zur App-Nutzung
 struct HelpView: View {
-    @State private var selectedLanguage: HelpLanguage = .german
+    @State private var selectedLanguage: HelpLanguage = {
+        let lang = Locale.current.language.languageCode?.identifier ?? "de"
+        if lang == "it" { return .italian }
+        if lang == "en" { return .english }
+        return .german
+    }()
     
     private var content: HelpContent {
         HelpContent.content(for: selectedLanguage)

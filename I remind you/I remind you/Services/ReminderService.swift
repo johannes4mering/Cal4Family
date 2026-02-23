@@ -165,7 +165,15 @@ final class ReminderService: ObservableObject {
                 continue
             }
             
-            // Nicht-wiederkehrend: Nur wenn dueDate HEUTE ist
+            // Nicht-wiederkehrend: Anzeigen wenn dueDate HEUTE ist
+            // ODER wenn die Erinnerung heute erledigt wurde (auch wenn sie überfällig war)
+            if reminder.isCompleted,
+               let completionDate = reminder.completionDate,
+               completionDate >= startOfDay && completionDate < endOfDay {
+                result.append(reminder)
+                continue
+            }
+            
             if let dueComponents = reminder.dueDateComponents,
                let dueDate = calendar.date(from: dueComponents) {
                 if dueDate >= startOfDay && dueDate < endOfDay {

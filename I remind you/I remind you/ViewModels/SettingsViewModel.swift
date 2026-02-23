@@ -60,6 +60,9 @@ final class SettingsViewModel: ObservableObject {
         calendars = calendarService.calendars
         reminderLists = reminderService.reminderLists
         loadAutoRules()
+        
+        // UserDefaults neu lesen – könnten durch WeekView geändert worden sein
+        loadSavedSelections()
     }
     
     private func loadSavedSelections() {

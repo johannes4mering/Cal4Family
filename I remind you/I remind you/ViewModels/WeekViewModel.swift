@@ -227,6 +227,9 @@ final class WeekViewModel: ObservableObject {
         isLoading = true
         error = nil
         
+        // Auswahl neu einlesen – könnte durch Einstellungen geändert worden sein
+        loadSelections()
+        
         do {
             // Kalender-Events laden (gefiltert nach Auswahl)
             let calendarEvents = calendarService.fetchFamilyEvents(

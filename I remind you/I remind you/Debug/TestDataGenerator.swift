@@ -14,60 +14,13 @@ import EventKit
 final class TestDataGenerator {
     private let eventStore = EKEventStore()
     
-    // MARK: - Kalender erstellen
-    
-    func createTestCalendars() async throws -> [EKCalendar] {
-        var createdCalendars: [EKCalendar] = []
-        
-        let calendarData = [
-            ("Test Familie", CGColor(red: 0.2, green: 0.6, blue: 1.0, alpha: 1.0)),
-            ("Test Müllabfuhr", CGColor(red: 0.4, green: 0.3, blue: 0.2, alpha: 1.0)),
-            ("Test Schule", CGColor(red: 1.0, green: 0.6, blue: 0.0, alpha: 1.0)),
-            ("Test Sport", CGColor(red: 0.3, green: 0.8, blue: 0.3, alpha: 1.0)),
-        ]
-        
-        guard let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) ??
-                               eventStore.sources.first(where: { $0.sourceType == .calDAV }) ??
-                               eventStore.defaultCalendarForNewEvents?.source else {
-            print("⚠️ Keine Kalender-Quelle gefunden")
-            return []
-        }
-        
-        for (title, color) in calendarData {
-            // Prüfen ob Kalender bereits existiert
-            if eventStore.calendars(for: .event).contains(where: { $0.title == title }) {
-                print("📅 Kalender '\(title)' existiert bereits")
-                continue
-            }
-            
-            let calendar = EKCalendar(for: .event, eventStore: eventStore)
-            calendar.title = title
-            calendar.cgColor = color
-            calendar.source = localSource
-            
-            do {
-                try eventStore.saveCalendar(calendar, commit: true)
-                createdCalendars.append(calendar)
-                print("✅ Kalender erstellt: \(title)")
-            } catch {
-                print("❌ Fehler bei Kalender '\(title)': \(error)")
-            }
-        }
-        
-        return createdCalendars
-    }
-    
-    // MARK: - Erinnerungslisten erstellen
+    // MARK: - Erinnerungsliste erstellen
     
     func createTestReminderLists() async throws -> [EKCalendar] {
         var createdLists: [EKCalendar] = []
         
         let listData = [
-            ("Test Paul – Morgenroutine", CGColor(red: 0.9, green: 0.5, blue: 0.1, alpha: 1.0)),
-            ("Test Paul – Abendroutine", CGColor(red: 0.5, green: 0.3, blue: 0.7, alpha: 1.0)),
-            ("Test Emma – Routine", CGColor(red: 1.0, green: 0.4, blue: 0.6, alpha: 1.0)),
-            ("Test Haushalt", CGColor(red: 0.3, green: 0.7, blue: 0.9, alpha: 1.0)),
-            ("Test Einkaufen", CGColor(red: 0.2, green: 0.8, blue: 0.4, alpha: 1.0)),
+            ("Checky4Family", CGColor(red: 0.2, green: 0.7, blue: 1.0, alpha: 1.0)),
         ]
         
         guard let localSource = eventStore.sources.first(where: { $0.sourceType == .local }) ??
@@ -100,128 +53,18 @@ final class TestDataGenerator {
         return createdLists
     }
     
-    // MARK: - Test-Events erstellen
-    
-    func createTestEvents() async throws {
-        let familyCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Familie" }
-        let muellCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Müllabfuhr" }
-        let schoolCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Schule" }
-        let sportCalendar = eventStore.calendars(for: .event).first { $0.title == "Test Sport" }
-        
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        
-        let events: [(String, EKCalendar?, Int, Int, Int)] = [
-            // (Titel, Kalender, Tage ab heute, Stunde Start, Dauer in Stunden)
-            ("Oma besuchen", familyCalendar, 0, 15, 2),
-            ("Elternabend", schoolCalendar, 1, 19, 2),
-            ("Restmüll", muellCalendar, 2, 6, 1),
-            ("Fußballtraining Paul", sportCalendar, 2, 16, 2),
-            ("Zahnarzt Emma", familyCalendar, 3, 10, 1),
-            ("Gelber Sack", muellCalendar, 4, 6, 1),
-            ("Geburtstag Opa", familyCalendar, 5, 0, 24), // Ganztägig
-            ("Schwimmen", sportCalendar, 5, 14, 1),
-            ("Papier", muellCalendar, 6, 6, 1),
-        ]
-        
-        for (title, cal, daysFromNow, hour, duration) in events {
-            guard let targetCalendar = cal else { continue }
-            
-            let event = EKEvent(eventStore: eventStore)
-            event.title = title
-            event.calendar = targetCalendar
-            
-            if duration == 24 {
-                // Ganztägig
-                event.isAllDay = true
-                event.startDate = calendar.date(byAdding: .day, value: daysFromNow, to: today)!
-                event.endDate = event.startDate
-            } else {
-                var startComponents = calendar.dateComponents([.year, .month, .day], from: today)
-                startComponents.day! += daysFromNow
-                startComponents.hour = hour
-                startComponents.minute = 0
-                event.startDate = calendar.date(from: startComponents)!
-                event.endDate = calendar.date(byAdding: .hour, value: duration, to: event.startDate)!
-            }
-            
-            do {
-                try eventStore.save(event, span: .thisEvent)
-                print("✅ Event erstellt: \(title)")
-            } catch {
-                print("❌ Fehler bei Event '\(title)': \(error)")
-            }
-        }
-    }
-    
     // MARK: - Test-Erinnerungen erstellen
     
-    func createTestReminders() async throws {
-        let paulMorning = eventStore.calendars(for: .reminder).first { $0.title == "Test Paul – Morgenroutine" }
-        let paulEvening = eventStore.calendars(for: .reminder).first { $0.title == "Test Paul – Abendroutine" }
-        let emmaRoutine = eventStore.calendars(for: .reminder).first { $0.title == "Test Emma – Routine" }
-        let haushalt = eventStore.calendars(for: .reminder).first { $0.title == "Test Haushalt" }
-        
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        
-        // Morgenroutine Paul
-        let morningTasks = [
-            ("Aufstehen", 7, 0),
-            ("Zähne putzen", 7, 10),
-            ("Anziehen", 7, 20),
-            ("Frühstücken", 7, 30),
-            ("Schultasche packen", 7, 45),
+    func createTestReminders(in list: EKCalendar) async throws {
+        let tasks: [(String, Int, Int)] = [
+            ("Zähne putzen / Brush teeth / Lavarsi i denti", 7, 0),
+            ("Anziehen / Get dressed / Vestirsi", 7, 15),
+            ("Frühstücken / Have breakfast / Fare colazione", 7, 30),
+            ("Schultasche packen / Pack school bag / Preparare lo zaino", 7, 45),
         ]
         
-        for (title, hour, minute) in morningTasks {
-            if let list = paulMorning {
-                try createReminder(title: title, hour: hour, minute: minute, in: list, recurring: true)
-            }
-        }
-        
-        // Abendroutine Paul
-        let eveningTasks = [
-            ("Hausaufgaben machen", 15, 0),
-            ("Zimmer aufräumen", 17, 0),
-            ("Abendessen", 18, 30),
-            ("Duschen", 19, 30),
-            ("Zähne putzen", 20, 0),
-            ("Lesen", 20, 15),
-            ("Schlafen", 20, 30),
-        ]
-        
-        for (title, hour, minute) in eveningTasks {
-            if let list = paulEvening {
-                try createReminder(title: title, hour: hour, minute: minute, in: list, recurring: true)
-            }
-        }
-        
-        // Emma Routine
-        let emmaTasks = [
-            ("Aufwachen", 7, 30),
-            ("Anziehen", 7, 45),
-            ("Zähne putzen", 8, 0),
-            ("Frühstück", 8, 15),
-        ]
-        
-        for (title, hour, minute) in emmaTasks {
-            if let list = emmaRoutine {
-                try createReminder(title: title, hour: hour, minute: minute, in: list, recurring: true)
-            }
-        }
-        
-        // Haushalt
-        let haushaltTasks = [
-            ("Wäsche waschen", 10, 0),
-            ("Staubsaugen", 11, 0),
-            ("Blumen gießen", 9, 0),
-        ]
-        
-        for (title, hour, minute) in haushaltTasks {
-            if let list = haushalt {
-                try createReminder(title: title, hour: hour, minute: minute, in: list, recurring: false)
-            }
+        for (title, hour, minute) in tasks {
+            try createReminder(title: title, hour: hour, minute: minute, in: list, recurring: true)
         }
     }
     
@@ -254,26 +97,24 @@ final class TestDataGenerator {
         print("\n🚀 Starte Testdaten-Generierung...\n")
         
         do {
-            // Berechtigungen prüfen
-            let eventAccess = try await eventStore.requestFullAccessToEvents()
             let reminderAccess = try await eventStore.requestFullAccessToReminders()
             
-            guard eventAccess && reminderAccess else {
-                print("❌ Keine Berechtigung für Kalender/Erinnerungen")
+            guard reminderAccess else {
+                print("❌ Keine Berechtigung für Erinnerungen")
                 return
             }
             
-            print("📅 Erstelle Kalender...")
-            _ = try await createTestCalendars()
+            print("\n📋 Erstelle Erinnerungsliste...")
+            let lists = try await createTestReminderLists()
             
-            print("\n📋 Erstelle Erinnerungslisten...")
-            _ = try await createTestReminderLists()
-            
-            print("\n📆 Erstelle Events...")
-            try await createTestEvents()
+            // Frisch erstellte Liste bevorzugen; sonst bestehende suchen
+            guard let list = lists.first ?? eventStore.calendars(for: .reminder).first(where: { $0.title == "Checky4Family" }) else {
+                print("❌ Liste 'Checky4Family' nicht verfügbar")
+                return
+            }
             
             print("\n✅ Erstelle Erinnerungen...")
-            try await createTestReminders()
+            try await createTestReminders(in: list)
             
             print("\n🎉 Testdaten erfolgreich erstellt!\n")
         } catch {
@@ -283,41 +124,20 @@ final class TestDataGenerator {
     
     // MARK: - Alles löschen
     
-    /// ACHTUNG: Diese Funktion löscht nur Kalender aus LOKALER Quelle!
-    /// iCloud-Kalender werden nicht gelöscht.
     func deleteAllTestData() async {
         print("\n🗑️ Starte Löschung der Testdaten...\n")
         
         do {
-            let eventAccess = try await eventStore.requestFullAccessToEvents()
             let reminderAccess = try await eventStore.requestFullAccessToReminders()
             
-            guard eventAccess && reminderAccess else {
+            guard reminderAccess else {
                 print("❌ Keine Berechtigung")
                 return
             }
             
-            // Test-Kalender löschen - NUR wenn sie aus LOKALER Quelle stammen!
-            let testCalendarNames = ["Test Familie", "Test Müllabfuhr", "Test Schule", "Test Sport"]
-            for calendar in eventStore.calendars(for: .event) {
-                // Nur lokale Kalender löschen, keine iCloud/CalDAV Kalender!
-                guard calendar.source.sourceType == .local else {
-                    if testCalendarNames.contains(calendar.title) {
-                        print("⚠️ Kalender '\(calendar.title)' übersprungen (nicht lokal, Quelle: \(calendar.source.title))")
-                    }
-                    continue
-                }
-                
-                if testCalendarNames.contains(calendar.title) {
-                    try eventStore.removeCalendar(calendar, commit: true)
-                    print("🗑️ Kalender gelöscht: \(calendar.title)")
-                }
-            }
-            
             // Test-Erinnerungslisten löschen - NUR wenn sie aus LOKALER Quelle stammen!
-            let testListNames = ["Test Paul – Morgenroutine", "Test Paul – Abendroutine", "Test Emma – Routine", "Test Haushalt", "Test Einkaufen"]
+            let testListNames = ["Checky4Family"]
             for list in eventStore.calendars(for: .reminder) {
-                // Nur lokale Listen löschen, keine iCloud Listen!
                 guard list.source.sourceType == .local else {
                     if testListNames.contains(list.title) {
                         print("⚠️ Liste '\(list.title)' übersprungen (nicht lokal, Quelle: \(list.source.title))")

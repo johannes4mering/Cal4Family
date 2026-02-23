@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checky4Family – Familienkalender und Routinen</title>
-  <meta name="description" content="Checky4Family – Die Familienkalender-App mit kindgerechten Routinen, Wochenansicht und automatischen Erinnerungen. / The family calendar app with child-friendly routines, weekly view and automatic reminders." />
+  <meta name="description" content="Checky4Family – Die Familienkalender-App mit kindgerechten Routinen, Wochenansicht und automatischen Erinnerungen. Besonders geeignet für Kinder mit ADHS." />
   <style>
     :root {
       --bg: #1a1f2e;
@@ -59,9 +59,11 @@
     .lang-switch { position: absolute; top: 20px; right: 20px; display: flex; gap: 8px; }
     .lang-switch button { background: rgba(255,255,255,0.08); border: 1px solid var(--line); color: var(--muted); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-family: inherit; transition: all 0.2s; }
     .lang-switch button:hover, .lang-switch button.active { background: var(--accent); color: #000; border-color: var(--accent); }
-    body [lang="en"] { display: none; }
+    body [lang="en"], body [lang="it"] { display: none; }
     body.en [lang="en"] { display: revert; }
-    body.en [lang="de"] { display: none; }
+    body.en [lang="de"], body.en [lang="it"] { display: none; }
+    body.it [lang="it"] { display: revert; }
+    body.it [lang="de"], body.it [lang="en"] { display: none; }
   </style>
 </head>
 <body>
@@ -69,12 +71,14 @@
     <div class="lang-switch">
       <button onclick="setLang('de')" id="btn-de" class="active">🇩🇪 DE</button>
       <button onclick="setLang('en')" id="btn-en">🇬🇧 EN</button>
+      <button onclick="setLang('it')" id="btn-it">🇮🇹 IT</button>
     </div>
     <img class="app-icon" src="./app-icon-180.png" alt="Checky4Family App Icon" />
-    <div class="badge"><span class="dot"></span> <span lang="de">Familienkalender und Routinen</span><span lang="en">Family Calendar &amp; Routines</span></div>
+    <div class="badge"><span class="dot"></span> <span lang="de">Familienkalender und Routinen</span><span lang="en">Family Calendar &amp; Routines</span><span lang="it">Calendario famiglia e routine</span></div>
     <h1>Checky4Family</h1>
-    <p class="sub" lang="de">Die Familienkalender-App, die Apple Kalender und Erinnerungen vereint. Mit kindgerechten Routinen, Wochenansicht und druckbarem Wochenplan. <strong>Besonders geeignet für Kinder mit ADHS</strong> – klare Strukturen und visuelle Routinen helfen, den Alltag zu meistern.</p>
-    <p class="sub" lang="en">The family calendar app that combines Apple Calendar and Reminders. With child-friendly routines, a weekly view and a printable weekly plan. <strong>Especially suitable for children with ADHD</strong> – clear structures and visual routines help master everyday life.</p>
+    <p class="sub" lang="de">Die Familienkalender-App, die Apple Kalender und Erinnerungen vereint. Bewusst einfach und übersichtlich gestaltet – damit Kinder selbstständig ihre Routinen abhaken können und Eltern den Überblick behalten. <strong>Besonders geeignet bei ADHS</strong> – klare Strukturen und große Buttons machen den Alltag leichter.</p>
+    <p class="sub" lang="en">The family calendar app that combines Apple Calendar and Reminders. Intentionally simple and clear – so kids can independently check off their routines and parents always stay in the loop. <strong>Especially helpful for ADHD</strong> – clear structure and large buttons make daily life easier.</p>
+    <p class="sub" lang="it">L'app per il calendario di famiglia che unisce Calendario e Promemoria Apple. Volutamente semplice e ordinata – così i bambini gestiscono le loro routine in autonomia e i genitori mantengono il controllo. <strong>Particolarmente utile per l'ADHD</strong> – struttura chiara e pulsanti grandi per affrontare la giornata con serenità.</p>
   </header>
 
   <main>
@@ -83,13 +87,13 @@
         <div class="inner">
           <h2 lang="de">Funktionen</h2>
           <h2 lang="en">Features</h2>
+          <h2 lang="it">Funzionalità</h2>
           <ul lang="de">
             <li><strong>Routinen-Startscreen</strong> – Fällig, Kommend &amp; Erledigt auf einen Blick</li>
             <li><strong>Wochenansicht</strong> – Alle Termine und Aufgaben auf einen Blick</li>
             <li><strong>Kinder-Routinen</strong> – Große Buttons zum Abhaken mit Emojis</li>
             <li><strong>Apple Erinnerungen</strong> – Nutzt deine bestehenden Listen</li>
             <li><strong>Multi-Listen</strong> – Alle abonnierten Listen gemeinsam anzeigen</li>
-            <li><strong>Auto-Regeln</strong> – Automatische Erinnerungen aus Kalendern</li>
             <li><strong>PDF-Druck</strong> – Wochenkalender für Kühlschrank (A4/US Letter)</li>
             <li><strong>Familienfreigabe</strong> – Listen mit der Familie teilen</li>
           </ul>
@@ -99,12 +103,21 @@
             <li><strong>Kids Routines</strong> – Large buttons with emojis to check off</li>
             <li><strong>Apple Reminders</strong> – Uses your existing lists</li>
             <li><strong>Multi-List</strong> – Show all subscribed lists together</li>
-            <li><strong>Auto Rules</strong> – Automatic reminders from calendar events</li>
             <li><strong>PDF Print</strong> – Weekly planner for the fridge (A4/US Letter)</li>
             <li><strong>Family Sharing</strong> – Share lists with your family</li>
           </ul>
+          <ul lang="it">
+            <li><strong>Schermata routine</strong> – Scadute, In arrivo e Completate in un colpo d'occhio</li>
+            <li><strong>Vista settimanale</strong> – Tutti gli appuntamenti e le attività</li>
+            <li><strong>Routine bambini</strong> – Grandi pulsanti con emoji da spuntare</li>
+            <li><strong>Promemoria Apple</strong> – Usa le tue liste esistenti</li>
+            <li><strong>Multi-liste</strong> – Mostra tutte le liste abbonate insieme</li>
+            <li><strong>Stampa PDF</strong> – Planner settimanale per il frigo (A4/US Letter)</li>
+            <li><strong>Condivisione famiglia</strong> – Condividi le liste con la famiglia</li>
+          </ul>
           <div class="features" lang="de">
             <div class="pill"><div class="emoji">👨‍👩‍👧‍👦</div><strong>Für Familien</strong><span>Eltern organisieren, Kinder haken ab</span></div>
+            <div class="pill"><div class="emoji">✨</div><strong>Bewusst einfach</strong><span>Klare Oberfläche ohne Ablenkung</span></div>
             <div class="pill"><div class="emoji">🍎</div><strong>Apple-nativ</strong><span>Nutzt Kalender und Erinnerungen</span></div>
             <div class="pill"><div class="emoji">🖨️</div><strong>Druckbar</strong><span>Wochenplan als PDF</span></div>
             <div class="pill"><div class="emoji">🔒</div><strong>Privat</strong><span>Keine eigene Cloud nötig</span></div>
@@ -112,10 +125,19 @@
           </div>
           <div class="features" lang="en">
             <div class="pill"><div class="emoji">👨‍👩‍👧‍👦</div><strong>For Families</strong><span>Parents organize, kids check off</span></div>
+            <div class="pill"><div class="emoji">✨</div><strong>Simply simple</strong><span>Clear interface without distractions</span></div>
             <div class="pill"><div class="emoji">🍎</div><strong>Apple-native</strong><span>Uses Calendar and Reminders</span></div>
             <div class="pill"><div class="emoji">🖨️</div><strong>Printable</strong><span>Weekly plan as PDF</span></div>
             <div class="pill"><div class="emoji">🔒</div><strong>Private</strong><span>No cloud required</span></div>
             <div class="pill"><div class="emoji">🧠</div><strong>ADHD-friendly</strong><span>Structure and routines for everyday life</span></div>
+          </div>
+          <div class="features" lang="it">
+            <div class="pill"><div class="emoji">👨‍👩‍👧‍👦</div><strong>Per famiglie</strong><span>I genitori organizzano, i bambini spuntano</span></div>
+            <div class="pill"><div class="emoji">✨</div><strong>Volutamente semplice</strong><span>Interfaccia chiara senza distrazioni</span></div>
+            <div class="pill"><div class="emoji">🍎</div><strong>Nativo Apple</strong><span>Usa Calendario e Promemoria</span></div>
+            <div class="pill"><div class="emoji">🖨️</div><strong>Stampabile</strong><span>Planner settimanale in PDF</span></div>
+            <div class="pill"><div class="emoji">🔒</div><strong>Privato</strong><span>Nessun cloud necessario</span></div>
+            <div class="pill"><div class="emoji">🧠</div><strong>ADHD-friendly</strong><span>Struttura e routine per il quotidiano</span></div>
           </div>
         </div>
       </section>
@@ -124,15 +146,18 @@
         <div class="inner">
           <h2 lang="de">Kontakt und Support</h2>
           <h2 lang="en">Contact &amp; Support</h2>
+          <h2 lang="it">Contatto e supporto</h2>
           <p class="sub" style="margin-top:0" lang="de">Feedback, Fragen oder Probleme? Melde dich gerne!</p>
           <p class="sub" style="margin-top:0" lang="en">Feedback, questions or issues? Get in touch!</p>
+          <p class="sub" style="margin-top:0" lang="it">Feedback, domande o problemi? Scrivici!</p>
           <ul>
-            <li><span lang="de">E-Mail:</span><span lang="en">Email:</span> <a href="mailto:iremindyou@4johannes.de">iremindyou@4johannes.de</a></li>
-            <li>App Store: <span lang="de">Bald verfügbar</span><span lang="en">Coming soon</span></li>
+            <li><span lang="de">E-Mail:</span><span lang="en">Email:</span><span lang="it">E-mail:</span> <a href="mailto:checky4family@4johannes.de">checky4family@4johannes.de</a></li>
+            <li>App Store: <span lang="de">In Kürze verfügbar</span><span lang="en">Coming soon</span><span lang="it">Disponibile a breve</span></li>
           </ul>
           <div style="height:14px"></div>
           <div class="note" lang="de">Tipp: Listen können in der Apple Erinnerungen-App mit Familienmitgliedern geteilt werden.</div>
           <div class="note" lang="en">Tip: Lists can be shared with family members in the Apple Reminders app.</div>
+          <div class="note" lang="it">Suggerimento: Le liste possono essere condivise con i familiari nell'app Promemoria Apple.</div>
         </div>
       </aside>
     </div>
@@ -145,45 +170,67 @@
         <div class="faq" lang="de">
           <details open>
             <summary>Warum Apple Kalender und Erinnerungen?</summary>
-            <p>Keine zusätzliche Cloud, keine Registrierung, automatische Sync über iCloud, und Siri inklusive.</p>
+            <p>Keine zusätzliche Cloud, keine Registrierung, automatische Sync über iCloud, und Siri inklusive. Daten bleiben auf deinem Gerät.</p>
           </details>
           <details>
             <summary>Wie funktionieren die Kinder-Routinen?</summary>
-            <p>Erstelle eine Erinnerungsliste für dein Kind in der Apple Erinnerungen-App. Wähle die Liste in den App-Einstellungen aus – die App zeigt dann alle heutigen Aufgaben in drei Bereichen: Fällig, Kommend und Abgeschlossen.</p>
+            <p>Erstelle eine Erinnerungsliste für dein Kind in der Apple Erinnerungen-App. Wähle die Liste in den App-Einstellungen aus – die App zeigt dann alle heutigen Aufgaben übersichtlich in drei Bereichen: Fällig, Kommend und Abgeschlossen.</p>
           </details>
           <details>
-            <summary>Was sind Auto-Regeln?</summary>
-            <p>Auto-Regeln erstellen automatisch Erinnerungen aus Kalenderereignissen (z.B. Tonne rausstellen einen Tag vor Müllabfuhr).</p>
+            <summary>Warum ist die Oberfläche so schlicht gehalten?</summary>
+            <p>Bewusste Entscheidung: Kinder – besonders mit ADHS oder Konzentrationsschwierigkeiten – brauchen klare Strukturen ohne Ablenkung. Nur das Wesentliche auf einen Blick, große Buttons, Emojis statt langer Texte. Das Ergebnis: mehr Eigenständigkeit und weniger Stress für die ganze Familie.</p>
           </details>
           <details>
             <summary>Funktioniert die App auch auf dem Mac?</summary>
-            <p>Ja, Checky4Family ist für iOS und macOS verfügbar.</p>
+            <p>Ja, Checky4Family ist für iPhone, iPad und Mac verfügbar.</p>
           </details>
           <details>
             <summary>Warum ist die App für Kinder mit ADHS geeignet?</summary>
-            <p>Kinder mit ADHS profitieren von klaren Strukturen und visuellen Hilfen. Die App bietet große, übersichtliche Buttons, Emojis zur schnellen Orientierung und eine feste Tagesroutine – ohne Ablenkung durch unnötige Funktionen.</p>
+            <p>Kinder mit ADHS profitieren von klaren Strukturen und visuellen Hilfen. Die App bietet große, übersichtliche Buttons, Emojis zur schnellen Orientierung und eine feste Tagesroutine – ohne Ablenkung durch unnötige Funktionen. Der Fortschrittsring und die Feier-Animation motivieren zusätzlich.</p>
           </details>
         </div>
         <div class="faq" lang="en">
           <details open>
             <summary>Why Apple Calendar and Reminders?</summary>
-            <p>No additional cloud, no registration, automatic sync via iCloud, and Siri included.</p>
+            <p>No additional cloud, no registration, automatic sync via iCloud, and Siri included. Data stays on your device.</p>
           </details>
           <details>
             <summary>How do kid routines work?</summary>
-            <p>Create a reminder list for your child in the Apple Reminders app. Select the list in the app settings – the app then shows all of today's tasks in three sections: Due, Upcoming and Completed.</p>
+            <p>Create a reminder list for your child in the Apple Reminders app. Select the list in the app settings – the app then shows all of today's tasks clearly in three sections: Due, Upcoming and Completed.</p>
           </details>
           <details>
-            <summary>What are Auto Rules?</summary>
-            <p>Auto Rules automatically create reminders from calendar events (e.g. "Take out the bin" one day before trash collection).</p>
+            <summary>Why is the interface kept so simple?</summary>
+            <p>A deliberate choice: children – especially those with ADHD or difficulty concentrating – need clear structure without distraction. Only what matters, at a glance, with large buttons and emojis instead of long texts. The result: more independence and less stress for the whole family.</p>
           </details>
           <details>
             <summary>Does the app work on Mac?</summary>
-            <p>Yes, Checky4Family is available for iOS and macOS.</p>
+            <p>Yes, Checky4Family is available for iPhone, iPad and Mac.</p>
           </details>
           <details>
             <summary>Why is the app suitable for children with ADHD?</summary>
-            <p>Children with ADHD benefit from clear structures and visual aids. The app offers large, clear buttons, emojis for quick orientation and a fixed daily routine – without distraction from unnecessary features.</p>
+            <p>Children with ADHD benefit from clear structures and visual aids. The app offers large, clear buttons, emojis for quick orientation and a fixed daily routine – without distraction from unnecessary features. The progress ring and celebration animation provide extra motivation.</p>
+          </details>
+        </div>
+        <div class="faq" lang="it">
+          <details open>
+            <summary>Perché Calendario e Promemoria Apple?</summary>
+            <p>Nessun cloud aggiuntivo, nessuna registrazione, sincronizzazione automatica via iCloud, e Siri incluso. I dati restano sul tuo dispositivo.</p>
+          </details>
+          <details>
+            <summary>Come funzionano le routine per bambini?</summary>
+            <p>Crea una lista di promemoria per tuo figlio nell'app Promemoria Apple. Seleziona la lista nelle impostazioni dell'app – l'app mostrerà tutte le attività di oggi in tre sezioni: Scadute, In arrivo e Completate.</p>
+          </details>
+          <details>
+            <summary>Perché l'interfaccia è così semplice?</summary>
+            <p>Una scelta consapevole: i bambini – specialmente quelli con ADHD o difficoltà di concentrazione – hanno bisogno di strutture chiare senza distrazioni. Solo l'essenziale, pulsanti grandi, emoji al posto di testi lunghi. Il risultato: più autonomia e meno stress per tutta la famiglia.</p>
+          </details>
+          <details>
+            <summary>L'app funziona anche su Mac?</summary>
+            <p>Sì, Checky4Family è disponibile per iPhone, iPad e Mac.</p>
+          </details>
+          <details>
+            <summary>Perché l'app è adatta ai bambini con ADHD?</summary>
+            <p>I bambini con ADHD beneficiano di strutture chiare e supporti visivi. L'app offre pulsanti grandi e leggibili, emoji per un orientamento rapido e una routine giornaliera fissa – senza distrazioni da funzioni inutili. L'anello di progresso e l'animazione di festeggiamento motivano ulteriormente.</p>
           </details>
         </div>
       </div>
@@ -195,10 +242,13 @@
       <div class="inner">
         <h2 lang="de">Datenschutz</h2>
         <h2 lang="en">Privacy</h2>
-        <p class="sub" style="margin-top:0" lang="de">Checky4Family speichert keine Daten auf externen Servern. Alle Daten bleiben auf deinem Gerät bzw. in deinem iCloud-Account.</p>
-        <p class="sub" style="margin-top:0" lang="en">Checky4Family does not store any data on external servers. All data stays on your device or in your iCloud account.</p>
+        <h2 lang="it">Privacy</h2>
+        <p class="sub" style="margin-top:0" lang="de">Checky4Family speichert keine Daten auf externen Servern. Alle Daten bleiben auf deinem Gerät bzw. in deinem iCloud-Account. Kein Tracking, keine Werbung, keine Registrierung.</p>
+        <p class="sub" style="margin-top:0" lang="en">Checky4Family does not store any data on external servers. All data stays on your device or in your iCloud account. No tracking, no ads, no registration.</p>
+        <p class="sub" style="margin-top:0" lang="it">Checky4Family non memorizza dati su server esterni. Tutti i dati restano sul tuo dispositivo o nel tuo account iCloud. Nessun tracciamento, nessuna pubblicità, nessuna registrazione.</p>
         <div class="note" lang="de">Siehe auch: <a href="./datenschutz.html">Datenschutzerklärung</a></div>
         <div class="note" lang="en">See also: <a href="./datenschutz.html">Privacy Policy</a></div>
+        <div class="note" lang="it">Vedi anche: <a href="./datenschutz.html">Informativa sulla privacy</a></div>
       </div>
     </section>
 
@@ -208,6 +258,7 @@
       <div class="inner">
         <h2 lang="de">Systemanforderungen</h2>
         <h2 lang="en">System Requirements</h2>
+        <h2 lang="it">Requisiti di sistema</h2>
         <ul lang="de">
           <li><strong>iOS 17.0</strong> oder neuer (iPhone, iPad)</li>
           <li><strong>macOS 14.0</strong> oder neuer (Mac)</li>
@@ -218,6 +269,11 @@
           <li><strong>macOS 14.0</strong> or later (Mac)</li>
           <li>Calendar and Reminders permissions required</li>
         </ul>
+        <ul lang="it">
+          <li><strong>iOS 17.0</strong> o successivo (iPhone, iPad)</li>
+          <li><strong>macOS 14.0</strong> o successivo (Mac)</li>
+          <li>Autorizzazioni per Calendario e Promemoria necessarie</li>
+        </ul>
       </div>
     </section>
   </main>
@@ -226,28 +282,33 @@
     <div class="fine">
       <div lang="de">Checky4Family – Familienkalender und Routinen</div>
       <div lang="en">Checky4Family – Family Calendar &amp; Routines</div>
+      <div lang="it">Checky4Family – Calendario famiglia e routine</div>
       <div class="footer-links">
         <a href="../impressum.html" lang="de">Impressum</a>
         <a href="../impressum.html" lang="en">Legal Notice</a>
+        <a href="../impressum.html" lang="it">Note legali</a>
         <a href="./datenschutz.html" lang="de">Datenschutz</a>
         <a href="./datenschutz.html" lang="en">Privacy</a>
+        <a href="./datenschutz.html" lang="it">Privacy</a>
       </div>
     </div>
   </footer>
 
   <script>
     function setLang(lang) {
-      document.body.className = lang === 'en' ? 'en' : '';
+      document.body.className = (lang === 'en' || lang === 'it') ? lang : '';
       document.documentElement.lang = lang;
       document.getElementById('btn-de').classList.toggle('active', lang === 'de');
       document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-it').classList.toggle('active', lang === 'it');
       localStorage.setItem('lang', lang);
     }
     (function() {
       var saved = localStorage.getItem('lang');
       if (saved) { setLang(saved); return; }
       var browserLang = (navigator.language || '').substring(0, 2);
-      if (browserLang !== 'de') { setLang('en'); }
+      if (browserLang === 'it') { setLang('it'); }
+      else if (browserLang !== 'de') { setLang('en'); }
     })();
   </script>
 </body>

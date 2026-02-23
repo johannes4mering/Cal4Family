@@ -86,15 +86,30 @@ final class PDFExportService {
         #else
         // macOS: Verwende CGContext direkt
         let pdfData = NSMutableData()
+        var mediaBox = pageRect
+        let mediaBoxData = Data(bytes: &mediaBox, count: MemoryLayout<CGRect>.size) as CFData
         guard let consumer = CGDataConsumer(data: pdfData as CFMutableData),
-              let ctx = CGContext(consumer: consumer, mediaBox: nil, nil) else {
+              let ctx = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) else {
             return nil
         }
         
-        var mediaBox = pageRect
-        ctx.beginPDFPage([kCGPDFContextMediaBox as String: NSValue(rect: mediaBox)] as CFDictionary)
+        ctx.beginPDFPage([kCGPDFContextMediaBox as String: mediaBoxData] as CFDictionary)
+        
+        // NSGraphicsContext aktivieren, damit NSAttributedString.draw() funktioniert.
+        // flipped: true → Koordinatenursprung oben-links, y nach unten (wie der Zeichencode erwartet)
+        let nsContext = NSGraphicsContext(cgContext: ctx, flipped: true)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = nsContext
+        
+        // CGContext-Koordinatensystem flippen: PDF-Ursprung ist unten-links → auf oben-links umstellen
+        ctx.saveGState()
+        ctx.translateBy(x: 0, y: pageRect.height)
+        ctx.scaleBy(x: 1, y: -1)
         
         drawPDFContent(in: ctx, rect: pageRect, weekData: weekData, layout: layout, orientation: orientation)
+        
+        ctx.restoreGState()
+        NSGraphicsContext.restoreGraphicsState()
         
         ctx.endPDFPage()
         ctx.closePDF()

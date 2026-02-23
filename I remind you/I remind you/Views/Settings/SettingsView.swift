@@ -35,8 +35,10 @@ struct SettingsView: View {
                 // Familien-Sektion
                 familyShareSection
                 
-                // Auto-Regeln-Sektion
+                // Auto-Regeln-Sektion (vorerst ausgeblendet)
+                #if false
                 autoRulesSection
+                #endif
                 
                 // Info-Sektion
                 infoSection
@@ -215,7 +217,7 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
             
-            Link(destination: URL(string: "https://apple.com")!) {
+            Link(destination: URL(string: "https://apps.4johannes.de/checky4family/datenschutz.html")!) {
                 HStack {
                     Text(String(localized: "privacy_label"))
                     Spacer()
@@ -283,10 +285,10 @@ struct SettingsView: View {
                 }
                 Button("Abbrechen", role: .cancel) { }
             } message: {
-                Text("Folgende Test-Kalender und -Listen werden gelöscht:\n• Test Familie, Test Müllabfuhr, Test Schule, Test Sport\n• Test Paul – Morgenroutine/Abendroutine\n• Test Emma – Routine, Test Haushalt, Test Einkaufen")
+            Text("Die Erinnerungsliste 'Checky4Family' und alle darin enthaltenen Einträge werden gelöscht.")
             }
             
-            Text("⚠️ Debug-Modus: Erstellt/Löscht Kalender, Listen und Beispieldaten")
+            Text("⚠️ Debug-Modus: Erstellt/Löscht die Liste 'Checky4Family' mit Beispieldaten")
                 .font(.caption2)
                 .foregroundStyle(.orange)
         }

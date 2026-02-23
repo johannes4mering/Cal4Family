@@ -148,7 +148,7 @@ struct WeekView: View {
     }
     
     private var legendView: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 // Kalender
                 ForEach(viewModel.allCalendars, id: \.calendarIdentifier) { calendar in
@@ -185,6 +185,11 @@ struct WeekView: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
         }
+        #if os(macOS)
+        .scrollIndicators(.visible)
+        #else
+        .scrollIndicators(.hidden)
+        #endif
         .background(Color.platformSecondarySystemBackground)
     }
     
