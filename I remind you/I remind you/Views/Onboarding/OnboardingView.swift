@@ -127,7 +127,7 @@ struct OnboardingView: View {
         if canContinue {
             return String(localized: "get_started")
         } else {
-            return String(localized: "grant_access")
+            return String(localized: "continue_button")
         }
     }
     
